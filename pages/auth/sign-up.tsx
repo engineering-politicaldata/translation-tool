@@ -1,9 +1,8 @@
 import Head from 'next/head';
 import React from 'react';
 import RegistrationForm from '../../components/forms/registration-form';
-import { Typography } from '@material-ui/core';
 
-const RegisterPage = () => {
+const SignUpPage = () => {
     return (
         <>
             <div
@@ -21,4 +20,4 @@ const RegisterPage = () => {
         </>
     );
 };
-export default RegisterPage;
+export default SignUpPage;

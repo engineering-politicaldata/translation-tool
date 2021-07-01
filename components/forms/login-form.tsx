@@ -16,7 +16,7 @@ const SignInComponent = styled.div`
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 40px;
+            padding-top: 80px;
             max-width: 700px;
 
             .form-container {
@@ -132,7 +132,7 @@ export const LoginForm = () => {
 
                         <div className='sign-up-text'>
                             <a>Don't have an account? </a>
-                            <Link href='/auth'>
+                            <Link href='/auth/sign-up'>
                                 <a>Sign up</a>
                             </Link>
                         </div>

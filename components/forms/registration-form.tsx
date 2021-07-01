@@ -14,6 +14,7 @@ const SignUpComponent = styled.div`
             display: flex;
             justify-content: center;
             align-items: center;
+            padding-top: 60px;
 
             .form-container {
                 .sign-in-nav-text {
@@ -29,8 +30,7 @@ const SignUpComponent = styled.div`
                     padding-top: 16px;
                 }
                 .sign-up-image {
-                    width: 120px;
-                    height: 120px;
+                    height: 50px;
                 }
 
                 justify-content: center;
@@ -82,7 +82,10 @@ const RegistrationForm = () => {
                 {({ errors, submitForm }) => (
                     <div className='form-container'>
                         <div className='sign-up-heading'>
-                            <img className='sign-up-image' src='/images/logos/oc-icon.png' />
+                            <img
+                                className='sign-up-image'
+                                src='/images/logos/outreach_circle_logo.png'
+                            />
                         </div>
                         <div className='sign-up-heading'>
                             <Typography variant='h4' color='primary'>
