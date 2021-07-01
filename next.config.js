@@ -7,4 +7,13 @@ module.exports = {
         DB_TABLE_NAME: process.env.DB_TABLE_NAME,
         NEXT_PUBLIC_IMG_URL_PREFIX: process.env.NEXT_PUBLIC_IMG_URL_PREFIX,
     },
+    async redirects() {
+        return [
+            {
+                source: '/auth',
+                destination: '/auth/sign-up',
+                permanent: true,
+            },
+        ];
+    },
 };
