@@ -1,7 +1,3 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { Typography } from '@material-ui/core';
-import { Link } from '@material-ui/core';
 import React from 'react';
 import { LoginForm } from '../components/forms/login-form';
 

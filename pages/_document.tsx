@@ -50,11 +50,26 @@ MyDocument.getInitialProps = async ctx => {
 
     const initialProps = await Document.getInitialProps(ctx);
 
-    return {
-        ...initialProps,
-        // Styles fragment is rendered after the app and page rendering finish.
-        styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
-    };
+    try {
+        ctx.renderPage = () =>
+            originalRenderPage({
+                enhanceApp: App => props => sheet.collectStyles(sheets.collect(<App {...props} />)),
+            });
+
+        const initialProps = await Document.getInitialProps(ctx);
+
+        return {
+            ...initialProps,
+            // Styles fragment is rendered after the app and page rendering finish.
+            styles: [
+                ...React.Children.toArray(initialProps.styles),
+                sheets.getStyleElement(),
+                sheet.getStyleElement(),
+            ],
+        };
+    } finally {
+        sheet.seal();
+    }
 };
 
 // Add it inline to avoid additional api fetch to download css file
