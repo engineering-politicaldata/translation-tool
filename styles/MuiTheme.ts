@@ -12,7 +12,7 @@ export interface ThemeProps {
     };
 }
 
-export interface CustomTheme extends Theme {
+export interface customTheme extends Theme {
     contrastColor: string;
     primary: ColorPartial;
     secondary: ColorPartial;
