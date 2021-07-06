@@ -7,7 +7,7 @@ import { Grid } from '@material-ui/core';
 import styled, { css } from 'styled-components';
 import { string, object } from 'yup';
 import { EMAIL_VALIDATION_REGEX } from '../../shared/Constants';
-import { LoginSchema } from '../../schemas/login-schemas';
+import { LoginSchema } from '../../utils/schemas';
 
 const SignInComponent = styled.div`
     ${props =>
