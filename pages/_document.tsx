@@ -2,6 +2,7 @@
 import React from 'react';
 import Document, { Html, Main, NextScript, Head } from 'next/document';
 import { ServerStyleSheets } from '@material-ui/core/styles';
+import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
     render() {
@@ -38,6 +39,7 @@ export default class MyDocument extends Document {
 
 MyDocument.getInitialProps = async ctx => {
     // Render app and page and get the context of the page with collected side effects.
+    const sheet = new ServerStyleSheet();
     const sheets = new ServerStyleSheets();
     const originalRenderPage = ctx.renderPage;
 
@@ -48,11 +50,26 @@ MyDocument.getInitialProps = async ctx => {
 
     const initialProps = await Document.getInitialProps(ctx);
 
-    return {
-        ...initialProps,
-        // Styles fragment is rendered after the app and page rendering finish.
-        styles: [...React.Children.toArray(initialProps.styles), sheets.getStyleElement()],
-    };
+    try {
+        ctx.renderPage = () =>
+            originalRenderPage({
+                enhanceApp: App => props => sheet.collectStyles(sheets.collect(<App {...props} />)),
+            });
+
+        const initialProps = await Document.getInitialProps(ctx);
+
+        return {
+            ...initialProps,
+            // Styles fragment is rendered after the app and page rendering finish.
+            styles: [
+                ...React.Children.toArray(initialProps.styles),
+                sheets.getStyleElement(),
+                sheet.getStyleElement(),
+            ],
+        };
+    } finally {
+        sheet.seal();
+    }
 };
 
 // Add it inline to avoid additional api fetch to download css file

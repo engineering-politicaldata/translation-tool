@@ -1,21 +1,23 @@
+import Head from 'next/head';
 import React from 'react';
-import { LoginForm } from '../components/forms/login-form';
+import RegistrationForm from '../../components/forms/registration-form';
 
-export default function Home() {
+const SignUpPage = () => {
     return (
-        <React.Fragment>
+        <>
             <div
-                className='login-container'
+                className='sign-up-form'
                 style={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                 }}
             >
-                <div className='login-form'>
-                    <LoginForm />
+                <div>
+                    <RegistrationForm />
                 </div>
             </div>
-        </React.Fragment>
+        </>
     );
-}
+};
+export default SignUpPage;
