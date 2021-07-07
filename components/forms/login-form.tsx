@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Button, Typography, useTheme } from '@material-ui/core';
 import GenericTextField from '../common/generic-text-field';
 import styled, { css } from 'styled-components';
-import { LoginSchema } from '../../schemas/login-schemas';
+import { LoginSchema } from '../../utils/schemas';
 
 const SignInComponent = styled.div`
     ${props =>
