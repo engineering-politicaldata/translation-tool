@@ -1,12 +1,9 @@
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Formik } from 'formik';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { Button, Typography, useTheme } from '@material-ui/core';
 import GenericTextField from '../common/generic-text-field';
-import { Grid } from '@material-ui/core';
 import styled, { css } from 'styled-components';
-import { string, object } from 'yup';
-import { EMAIL_VALIDATION_REGEX } from '../../shared/Constants';
 import { LoginSchema } from '../../schemas/login-schemas';
 
 const SignInComponent = styled.div`

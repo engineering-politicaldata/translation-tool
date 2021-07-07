@@ -88,7 +88,7 @@ const RegistrationForm = () => {
                             />
                         </div>
                         <div className='sign-up-heading'>
-                            <Typography variant='h4' color='primary'>
+                            <Typography variant='h4'>
                                 Get started with Translation Tool account
                             </Typography>
                         </div>
