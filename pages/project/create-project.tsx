@@ -1,10 +1,8 @@
-import { Container, TextField, Typography, Button, useTheme } from '@material-ui/core';
+import { Container, TextField, Typography, Button, useTheme, Chip } from '@material-ui/core';
 import { AddCircleOutline } from '@material-ui/icons';
-import Multiselect from 'multiselect-react-dropdown';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-
-const languages = ['Spanish(es)', 'French(fr)', 'Kannada(kn)'];
+import { TARGET_LANGUAGES } from '../../shared/Constants';
 
 const CreateProjectComponent = styled.div`
     ${props =>
@@ -67,53 +65,56 @@ const CreateProjectComponent = styled.div`
                             .default-language {
                                 padding-right: ${props.theme.spacing(12)}px;
                             }
+                            .target-language-column {
+                                .selected-language-div {
+                                    display: flex;
+                                    padding-right: ${props.theme.spacing(4)}px;
+                                    padding-bottom: ${props.theme.spacing(2)}px;
+                                    .selected_chip {
+                                        margin: ${props.theme.spacing(1)}px;
+                                    }
+                                }
+                                .target-language-div {
+                                    width: 160px;
+                                    background-color: #f4f5f7;
+                                    min-height: 32px;
+                                    padding: ${props.theme.spacing(2)}px;
+                                    border: 1px solid black;
+                                }
+                            }
                             .separation-text {
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
                                 padding-right: 40px;
                             }
-                            .target-language-div {
-                                padding-top: ${props.theme.spacing(1)}px;
-                                width: 240px;
-                            }
                         }
                         .create-project-button {
                             width: 120px;
-                            height: 32px;
                         }
                     }
                 }
             }
         `}
 `;
-
-const dropDownStyle = {
-    chips: { background: '#4b4e52' },
-    searchBox: {
-        minHeight: '40px',
-    },
-    option: {
-        background: '#4b4e52',
-        color: '#ffffff',
-    },
-};
-
 export default function CreateProject() {
-    const [projectName, setProjectName] = useState({
-        projectName: '',
-    });
+    const [projectName, setProjectName] = useState('');
 
-    var [language, setLanguage] = useState([]);
-    var onSelect = event => {
-        setLanguage = event;
-        console.log(setLanguage);
-    };
-    var onRemove = event => {
-        setLanguage = event;
-        console.log(setLanguage);
-    };
+    var [selectedLanguages, setLanguage] = useState([]);
+    var [targetLanguages, setTargetLanguages] = useState([...TARGET_LANGUAGES]);
     const theme = useTheme();
+    const handleAdd = chipToAdd => () => {
+        setLanguage(selectedLanguages.concat(chipToAdd));
+        setTargetLanguages(chips => chips.filter(chip => chip !== chipToAdd));
+    };
+
+    const handleDelete = chipToDelete => () => {
+        setLanguage(chips => chips.filter(chip => chip !== chipToDelete));
+        setTargetLanguages(targetLanguages.concat(chipToDelete));
+    };
+    const handleChange = event => {
+        setProjectName(event.target.value);
+    };
 
     return (
         <CreateProjectComponent theme={theme}>
@@ -136,6 +137,8 @@ export default function CreateProject() {
                                 className='name-textfield'
                                 placeholder='Type your project name'
                                 variant='outlined'
+                                defaultValue={projectName}
+                                onChange={handleChange}
                             />
                             <div className='project-name-hint-container'>
                                 e.g. "Translation Tool". A unique project URL will be created based
@@ -156,6 +159,7 @@ export default function CreateProject() {
                                         id='filled-read-only-input'
                                         variant='outlined'
                                         defaultValue='English(es)'
+                                        helperText
                                         InputProps={{
                                             readOnly: true,
                                         }}
@@ -169,17 +173,40 @@ export default function CreateProject() {
                                 <div className='target-language-column'>
                                     <a>Target languages</a>
 
+                                    <div className='selected-language-div'>
+                                        {selectedLanguages.map(data => {
+                                            return (
+                                                <div key={data.code}>
+                                                    <Chip
+                                                        label={data.value}
+                                                        onDelete={handleDelete(data)}
+                                                        className='selected_chip'
+                                                        color='primary'
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+
                                     <div className='target-language-div'>
-                                        <Multiselect
-                                            options={languages}
-                                            isObject={false}
-                                            showArrow={true}
-                                            keepSearchTerm={true}
-                                            placeholder='Choose target language'
-                                            onSelect={onSelect}
-                                            onRemove={onRemove}
-                                            style={dropDownStyle}
-                                        />
+                                        {targetLanguages.map(data => {
+                                            return (
+                                                <li key={data.code}>
+                                                    <Chip
+                                                        label={data.value}
+                                                        onClick={handleAdd(data)}
+                                                        className='chip_class'
+                                                        style={{ margin: '4px' }}
+                                                    />
+                                                </li>
+                                            );
+                                        })}
+
+                                        <a>
+                                            {targetLanguages.length > 0
+                                                ? ''
+                                                : 'No more target languages'}
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -189,6 +216,8 @@ export default function CreateProject() {
                                 type='submit'
                                 variant='contained'
                                 color='primary'
+                                size='small'
+                                disabled={projectName.length > 0 ? false : true}
                                 // onClick={submitForm}
                             >
                                 create
