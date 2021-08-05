@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../../components/common/generic-text-field';
 import { Form, Formik, FormikHelpers } from 'formik';
+import WebsiteHeader from '../../../components/common/website-header';
 
 const ProjectSettingsComponent = styled.div`
     ${props =>
@@ -16,31 +17,6 @@ const ProjectSettingsComponent = styled.div`
                     background-color: #ffffff;
                     padding: 0px;
                     height: 100%;
-                }
-                .add-project-header {
-                    display: flex;
-                    background-color: #f4f5f7;
-                    height: 108px;
-                    align-items: center;
-                    justify-content: flex-start;
-                    padding: ${props.theme.spacing(2)}px;
-                    padding-left: ${props.theme.spacing(6)}px;
-                    .my-circle {
-                        content: attr(data-letters);
-                        display: inline-block;
-                        font-size: 1em;
-                        width: 2.5em;
-                        height: 2.5em;
-                        line-height: 2.5em;
-                        text-align: center;
-                        border-radius: 50%;
-                        background: plum;
-                        vertical-align: middle;
-                        color: white;
-                    }
-                    .add-circle-icon {
-                        font-size: 32px;
-                    }
                 }
                 .project-settings-body {
                     padding-left: 24px;
@@ -79,18 +55,11 @@ const ProjectSettingsComponent = styled.div`
         `}
 `;
 
-const dropDownStyle = {
-    chips: { background: '#4b4e52' },
-    searchBox: {
-        minHeight: '40px',
-    },
-    option: {
-        background: '#4b4e52',
-        color: '#ffffff',
-    },
+type Props = {
+    title: string;
+    description: string;
 };
-
-export default function ProjectSettingsPage() {
+export default function ProjectSettingsPage(props: Props) {
     const [projectDetails, setProjectDetails] = useState({
         projectName: '',
         projectDescription: '',
@@ -120,7 +89,6 @@ export default function ProjectSettingsPage() {
 
     const validate = (values: any) => {
         const errors: any = {};
-        console.log(values, 'manu us bjs');
         if (!values.projectName) {
             errors['projectName'] = 'Required';
         } else if (values.projectName.length > 120) {
@@ -129,7 +97,6 @@ export default function ProjectSettingsPage() {
                     COUNT: 120,
                 };
         }
-        console.log(errors, 'manu us errr');
         return errors;
     };
 
@@ -147,21 +114,7 @@ export default function ProjectSettingsPage() {
 
                         return (
                             <Container fixed className='container'>
-                                <div className='title-column' style={{ flexDirection: 'column' }}>
-                                    <Typography
-                                        variant='h5'
-                                        component='div'
-                                        className='add-project-header'
-                                    >
-                                        <p data-letters='MN' className='my-circle'>
-                                            {' '}
-                                            OC
-                                        </p>{' '}
-                                        {/*need to get initial values by using title */}
-                                        <div style={{ paddingRight: '8px' }} />
-                                        Project Name here
-                                    </Typography>
-                                </div>
+                                <WebsiteHeader title='Project name here' description='' />
 
                                 <div className='project-settings-body'>
                                     <Typography
