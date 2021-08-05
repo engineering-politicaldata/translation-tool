@@ -1,7 +1,7 @@
 import { Container, TextField, Typography, Button, useTheme, Chip } from '@material-ui/core';
-import { AddCircleOutline } from '@material-ui/icons';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
+import WebsiteHeader from '../../components/common/website-header';
 import { TARGET_LANGUAGES } from '../../shared/Constants';
 
 const CreateProjectComponent = styled.div`
@@ -13,21 +13,9 @@ const CreateProjectComponent = styled.div`
                 background-color: ${props.theme.grey[200]};
                 height: 100%;
                 .container {
-                    background-color: #ffffff;
+                    background-color: ${props.theme.contrastColor};
                     padding: 0px;
                     height: 100%;
-                }
-                .add-project-header {
-                    display: flex;
-                    background-color: #f4f5f7;
-                    height: 108px;
-                    align-items: center;
-                    justify-content: flex-start;
-                    padding: ${props.theme.spacing(2)}px;
-                    padding-left: ${props.theme.spacing(6)}px;
-                    .add-circle-icon {
-                        font-size: 32px;
-                    }
                 }
                 .create-project-body {
                     padding-left: 24px;
@@ -44,9 +32,9 @@ const CreateProjectComponent = styled.div`
                         .project-name-hint-container {
                             border-style: solid;
                             width: 80%;
-                            border: 1px solid #777777;
+                            border: 1px solid ${props.theme.grey[400]};
                             padding-left: ${props.theme.spacing(4)}px;
-                            background-color: #f1f1f1;
+                            background-color: ${props.theme.grey[100]};
                         }
                     }
                     .select-language-text {
@@ -75,18 +63,12 @@ const CreateProjectComponent = styled.div`
                                     }
                                 }
                                 .target-language-div {
-                                    width: 160px;
-                                    background-color: #f4f5f7;
+                                    width: 120px;
+                                    background-color: ${props.theme.grey[100]};
                                     min-height: 32px;
                                     padding: ${props.theme.spacing(2)}px;
-                                    border: 1px solid black;
+                                    border: 1px solid ${props.theme.black};
                                 }
-                            }
-                            .separation-text {
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                padding-right: 40px;
                             }
                         }
                         .create-project-button {
@@ -115,17 +97,15 @@ export default function CreateProject() {
     const handleChange = event => {
         setProjectName(event.target.value);
     };
+    const createProject = async () => {
+        //TODO:: implement create project
+    };
 
     return (
         <CreateProjectComponent theme={theme}>
             <div className='create-project-container'>
                 <Container fixed className='container'>
-                    <Typography variant='h5' component='div' className='add-project-header'>
-                        <AddCircleOutline className='add-circle-icon' />
-                        <div style={{ paddingRight: '8px' }} />
-                        Add a new project
-                    </Typography>
-
+                    <WebsiteHeader title={'Add new project'} description={''} />
                     <div className='create-project-body'>
                         <Typography variant='h6' component='div' className='set-project-info'>
                             Set project information
@@ -168,7 +148,6 @@ export default function CreateProject() {
                                         }}
                                     />
                                 </div>
-                                <div className='separation-text'>to</div>
 
                                 <div className='target-language-column'>
                                     <a>Target languages</a>
@@ -176,14 +155,13 @@ export default function CreateProject() {
                                     <div className='selected-language-div'>
                                         {selectedLanguages.map(data => {
                                             return (
-                                                <div key={data.code}>
-                                                    <Chip
-                                                        label={data.value}
-                                                        onDelete={handleDelete(data)}
-                                                        className='selected_chip'
-                                                        color='primary'
-                                                    />
-                                                </div>
+                                                <Chip
+                                                    key={data.code}
+                                                    label={data.value}
+                                                    onDelete={handleDelete(data)}
+                                                    className='selected_chip'
+                                                    color='primary'
+                                                />
                                             );
                                         })}
                                     </div>
@@ -191,14 +169,13 @@ export default function CreateProject() {
                                     <div className='target-language-div'>
                                         {targetLanguages.map(data => {
                                             return (
-                                                <li key={data.code}>
-                                                    <Chip
-                                                        label={data.value}
-                                                        onClick={handleAdd(data)}
-                                                        className='chip_class'
-                                                        style={{ margin: '4px' }}
-                                                    />
-                                                </li>
+                                                <Chip
+                                                    key={data.code}
+                                                    label={data.value}
+                                                    onClick={handleAdd(data)}
+                                                    className='chip_class'
+                                                    style={{ margin: '4px' }}
+                                                />
                                             );
                                         })}
 
@@ -218,7 +195,7 @@ export default function CreateProject() {
                                 color='primary'
                                 size='small'
                                 disabled={projectName.length > 0 ? false : true}
-                                // onClick={submitForm}
+                                onClick={createProject}
                             >
                                 create
                             </Button>
