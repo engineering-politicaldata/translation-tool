@@ -1,207 +1,326 @@
-import { Container, TextField, Typography, Button, useTheme, Chip } from '@material-ui/core';
-import React, { useState } from 'react';
+import { Button, Chip, TextField, Typography, useTheme } from '@material-ui/core';
+import { Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import GenericTextField from '../../components/common/generic-text-field';
 import WebsiteHeader from '../../components/common/website-header';
-import { TARGET_LANGUAGES } from '../../shared/Constants';
 
 const CreateProjectComponent = styled.div`
     ${props =>
         props.theme &&
         css`
-            height: 1000px;
+            display: flex;
+            justify-content: center;
+            background-color: ${props.theme.grey[200]};
+            padding-bottom: ${props.theme.spacing(8)}px;
             .create-project-container {
-                background-color: ${props.theme.grey[200]};
-                height: 100%;
-                .container {
-                    background-color: ${props.theme.contrastColor};
-                    padding: 0px;
-                    height: 100%;
-                }
+                background-color: ${props.theme.contrastColor};
+                width: 800px;
+
                 .create-project-body {
-                    padding-left: 24px;
+                    padding: ${props.theme.spacing(8)}px;
                     .set-project-info {
-                        padding-top: ${props.theme.spacing(16)}px;
-                        margin-bottom: ${props.theme.spacing(2)}px;
+                        padding-bottom: ${props.theme.spacing(4)}px;
                     }
-                    .project-name-textfield {
-                        display: flex;
-                        flex-direction: column;
-                        .name-textfield {
-                            width: 80%;
-                        }
-                        .project-name-hint-container {
-                            border-style: solid;
-                            width: 80%;
-                            border: 1px solid ${props.theme.grey[400]};
-                            padding-left: ${props.theme.spacing(4)}px;
-                            background-color: ${props.theme.grey[100]};
-                        }
+                    .project-textfield {
+                        width: 50%;
+                        margin-bottom: ${props.theme.spacing(2)}px;
                     }
                     .select-language-text {
-                        padding-top: ${props.theme.spacing(16)}px;
+                        margin-top: ${props.theme.spacing(4)}px;
                         margin-bottom: ${props.theme.spacing(2)}px;
                     }
-                    .language-selection-column {
-                        display: flex;
-                        flex-direction: column;
-                        align-items: flex-start;
-                        justify-content: flex-start;
-                        .language-selection-row {
-                            display: flex;
-                            flex-direction: row;
-                            margin-bottom: ${props.theme.spacing(16)}px;
-                            .default-language {
-                                padding-right: ${props.theme.spacing(12)}px;
+                    .language-selection-section {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr;
+                        margin-bottom: ${props.theme.spacing(16)}px;
+                        grid-gap: ${props.theme.spacing(8)}px;
+                        .source-language {
+                            display: grid;
+                            grid-template-rows: auto 1fr;
+                            grid-gap: ${props.theme.spacing(2)}px;
+                        }
+                        .selected-target-languages {
+                            display: grid;
+                            grid-template-rows: auto 1fr;
+                            grid-gap: ${props.theme.spacing(2)}px;
+                            .selected_chip {
+                                margin: ${props.theme.spacing(1)}px;
                             }
-                            .target-language-column {
-                                .selected-language-div {
-                                    display: flex;
-                                    padding-right: ${props.theme.spacing(4)}px;
-                                    padding-bottom: ${props.theme.spacing(2)}px;
-                                    .selected_chip {
-                                        margin: ${props.theme.spacing(1)}px;
-                                    }
-                                }
-                                .target-language-div {
-                                    width: 120px;
-                                    background-color: ${props.theme.grey[100]};
-                                    min-height: 32px;
-                                    padding: ${props.theme.spacing(2)}px;
-                                    border: 1px solid ${props.theme.black};
-                                }
+                            .selected-language-container {
+                                padding: ${props.theme.spacing(2)}px;
+                                border: 1px solid ${props.theme.black};
                             }
                         }
-                        .create-project-button {
-                            width: 120px;
+                        .remaining-languages {
+                            display: grid;
+                            grid-template-rows: auto 1fr;
+                            grid-gap: ${props.theme.spacing(2)}px;
+                            .remaining-languages-container {
+                                background-color: ${props.theme.grey[100]};
+                                min-height: 32px;
+                                padding: ${props.theme.spacing(2)}px;
+                                border: 1px solid ${props.theme.black};
+                            }
                         }
+                    }
+                    .create-project-button {
+                        width: 120px;
                     }
                 }
             }
         `}
 `;
 export default function CreateProject() {
-    const [projectName, setProjectName] = useState('');
+    const [projectData, setProjectData] = useState({
+        projectName: '',
+        projectDescription: '',
+        sourceLanguage: null,
+        targetLanguages: [],
+    });
+    const [allLanguages, setAllLanguages] = useState<
+        {
+            id: string;
+            code: string;
+            name: string;
+        }[]
+    >([]);
 
-    var [selectedLanguages, setLanguage] = useState([]);
-    var [targetLanguages, setTargetLanguages] = useState([...TARGET_LANGUAGES]);
+    useEffect(() => {
+        // TODO: API call to get languages
+        const lanugageApiResponse = [
+            {
+                id: '1',
+                code: 'en',
+                name: 'English',
+            },
+            {
+                id: '2',
+                code: 'es',
+                name: 'Spanish',
+            },
+            {
+                id: '3',
+                code: 'fr',
+                name: 'French',
+            },
+        ];
+        setAllLanguages(lanugageApiResponse);
+        const sourceLanguage = lanugageApiResponse.find(item => (item.code = 'en'));
+        setProjectData({
+            ...projectData,
+            sourceLanguage,
+        });
+    }, []);
+
     const theme = useTheme();
-    const handleAdd = chipToAdd => () => {
-        setLanguage(selectedLanguages.concat(chipToAdd));
-        setTargetLanguages(chips => chips.filter(chip => chip !== chipToAdd));
+    const addTargetLanguage = lang => () => {
+        setProjectData({
+            ...projectData,
+            targetLanguages: [...projectData.targetLanguages, lang],
+        });
     };
 
-    const handleDelete = chipToDelete => () => {
-        setLanguage(chips => chips.filter(chip => chip !== chipToDelete));
-        setTargetLanguages(targetLanguages.concat(chipToDelete));
-    };
-    const handleChange = event => {
-        setProjectName(event.target.value);
-    };
-    const createProject = async () => {
-        //TODO:: implement create project
+    const deleteTargetLanguage = lang => () => {
+        setProjectData({
+            ...projectData,
+            targetLanguages: projectData.targetLanguages.filter(tLang => tLang.id !== lang.id),
+        });
     };
 
+    const handleFormChange = (fieldName: string, value: string) => {
+        let newState: any = {};
+        newState[fieldName] = value;
+        setProjectData({ ...projectData, ...newState });
+    };
+
+    const createProject = async (values: any) => {
+        const input = {
+            userId: 'default_user_id',
+            name: values.projectName,
+            description: values.projectDescription,
+            sourceLanguageId: values.sourceLanguage.id,
+            targetLanguageIds: values.targetLanguages.map(lang => lang.id),
+        };
+        console.log(input);
+        //TODO:: use create project api
+        // handle project name exists error
+        // redirect to project page
+    };
+
+    const validate = (values: any) => {
+        const errors: any = {};
+        if (!values.projectName) {
+            errors['projectName'] = 'Required';
+        } else if (values.projectName.length > 120) {
+            errors['projectName'] = 'Text should not be more than 120 chars';
+        }
+
+        if (values.projectDescription.length > 500) {
+            errors['projectDescription'] = 'Text should not be more than 500 chars';
+        }
+
+        if (values.sourceLanguage === null) {
+            errors['sourceLanguage'] = 'please select source language';
+        }
+
+        return errors;
+    };
     return (
         <CreateProjectComponent theme={theme}>
             <div className='create-project-container'>
-                <Container fixed className='container'>
-                    <WebsiteHeader title={'Add new project'} description={''} />
-                    <div className='create-project-body'>
-                        <Typography variant='h6' component='div' className='set-project-info'>
-                            Set project information
-                        </Typography>
-                        <div className='project-name-textfield'>
-                            <a>Name (required)</a>
-                            <TextField
-                                id='outlined-basic'
-                                className='name-textfield'
-                                placeholder='Type your project name'
-                                variant='outlined'
-                                defaultValue={projectName}
-                                onChange={handleChange}
-                            />
-                            <div className='project-name-hint-container'>
-                                e.g. "Translation Tool". A unique project URL will be created based
-                                on the name.
+                <WebsiteHeader title={'Add new project'} description={''} />
+                <Formik
+                    initialValues={projectData}
+                    enableReinitialize={true}
+                    onSubmit={values => createProject(values)}
+                    validate={validate}
+                >
+                    {({ errors, submitForm }) => (
+                        <div className='create-project-body'>
+                            <Typography variant='h6' component='div' className='set-project-info'>
+                                Set project information
+                            </Typography>
+
+                            <div className='project-textfield'>
+                                <GenericTextField
+                                    key={'projectName'}
+                                    defaultValue={projectData.projectName}
+                                    fieldName={'projectName'}
+                                    onChange={(field, value, event) => {
+                                        handleFormChange(field, value);
+                                    }}
+                                    onReset={field => {
+                                        handleFormChange(field, '');
+                                    }}
+                                    label={'Name'}
+                                    error={!!errors.projectName}
+                                    helperMessage={errors.projectName}
+                                    textFieldProps={{
+                                        type: 'text',
+                                    }}
+                                />
                             </div>
-                        </div>
-                        <Typography variant='h6' component='div' className='select-language-text'>
-                            Select languages
-                        </Typography>
 
-                        <div className='language-selection-column'>
-                            <div className='language-selection-row'>
-                                <div className='default-language'>
-                                    <a>Source language set to English</a>
-                                    <div style={{ padding: '2px' }} />
+                            <div className='project-textfield'>
+                                <GenericTextField
+                                    key={'projectDescription'}
+                                    defaultValue={projectData.projectDescription}
+                                    fieldName={'projectDescription'}
+                                    onChange={(field, value, event) => {
+                                        handleFormChange(field, value);
+                                    }}
+                                    onReset={field => {
+                                        handleFormChange(field, '');
+                                    }}
+                                    label={'Description'}
+                                    error={!!errors.projectDescription}
+                                    helperMessage={errors.projectDescription}
+                                    textFieldProps={{
+                                        placeholder: 'Please describe the project in few words',
+                                        multiline: true,
+                                        type: 'text',
+                                        rowsMax: 4,
+                                        rows: 4,
+                                    }}
+                                />
+                            </div>
 
-                                    <TextField
-                                        id='filled-read-only-input'
-                                        variant='outlined'
-                                        defaultValue='English(es)'
-                                        helperText
-                                        InputProps={{
-                                            readOnly: true,
-                                        }}
-                                        style={{
-                                            width: '120px',
-                                        }}
-                                    />
+                            <Typography
+                                variant='h6'
+                                component='div'
+                                className='select-language-text'
+                            >
+                                Select languages
+                            </Typography>
+
+                            <div className='language-selection-section'>
+                                <div className='source-language'>
+                                    <p>
+                                        Source language: <b>set to English</b>
+                                    </p>
+
+                                    {projectData.sourceLanguage && (
+                                        <TextField
+                                            id='filled-read-only-input'
+                                            variant='outlined'
+                                            value={projectData.sourceLanguage.name}
+                                            InputProps={{
+                                                readOnly: true,
+                                            }}
+                                            style={{
+                                                width: '120px',
+                                            }}
+                                        />
+                                    )}
                                 </div>
 
-                                <div className='target-language-column'>
-                                    <a>Target languages</a>
-
-                                    <div className='selected-language-div'>
-                                        {selectedLanguages.map(data => {
-                                            return (
-                                                <Chip
-                                                    key={data.code}
-                                                    label={data.value}
-                                                    onDelete={handleDelete(data)}
-                                                    className='selected_chip'
-                                                    color='primary'
-                                                />
+                                <div className='remaining-languages'>
+                                    <p>Available Languages</p>
+                                    <div className='remaining-languages-container'>
+                                        {allLanguages.map(data => {
+                                            if (data.id === projectData.sourceLanguage.id) {
+                                                return null;
+                                            }
+                                            const index = projectData.targetLanguages.findIndex(
+                                                targetLang => targetLang.id === data.id,
                                             );
-                                        })}
-                                    </div>
-
-                                    <div className='target-language-div'>
-                                        {targetLanguages.map(data => {
+                                            if (index > -1) {
+                                                return null;
+                                            }
                                             return (
                                                 <Chip
                                                     key={data.code}
-                                                    label={data.value}
-                                                    onClick={handleAdd(data)}
+                                                    label={data.name}
+                                                    onClick={addTargetLanguage(data)}
                                                     className='chip_class'
                                                     style={{ margin: '4px' }}
                                                 />
                                             );
                                         })}
+                                        {projectData.targetLanguages.length ===
+                                            allLanguages.length - 1 && 'No more languages'}
+                                    </div>
+                                </div>
 
-                                        <a>
-                                            {targetLanguages.length > 0
-                                                ? ''
-                                                : 'No more target languages'}
-                                        </a>
+                                <div className='selected-target-languages'>
+                                    <p>Target languages</p>
+                                    <div className='selected-language-container'>
+                                        {allLanguages.map(lng => {
+                                            const index = projectData.targetLanguages.findIndex(
+                                                targetLang => targetLang.id === lng.id,
+                                            );
+                                            if (index === -1) {
+                                                return null;
+                                            }
+                                            return (
+                                                <Chip
+                                                    key={lng.code}
+                                                    label={lng.name}
+                                                    onDelete={deleteTargetLanguage(lng)}
+                                                    className='selected_chip'
+                                                    color='primary'
+                                                />
+                                            );
+                                        })}
+                                        {projectData.targetLanguages.length === 0 &&
+                                            'No target languages'}
                                     </div>
                                 </div>
                             </div>
-
                             <Button
                                 className='create-project-button'
                                 type='submit'
                                 variant='contained'
                                 color='primary'
                                 size='small'
-                                disabled={projectName.length > 0 ? false : true}
-                                onClick={createProject}
+                                onClick={submitForm}
                             >
                                 create
                             </Button>
                         </div>
-                    </div>
-                </Container>
+                    )}
+                </Formik>
             </div>
         </CreateProjectComponent>
     );
