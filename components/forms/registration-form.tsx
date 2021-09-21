@@ -2,7 +2,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { RegistrationSchema } from '../../utils/schemas';
+import { RegistrationSchema } from '../../utils/validation-schemas';
 import styled, { css } from 'styled-components';
 import { Button, Typography, useTheme } from '@material-ui/core';
 import GenericTextField from '../common/generic-text-field';
