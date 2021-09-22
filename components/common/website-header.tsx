@@ -7,26 +7,22 @@ const WebsiteHeaderComponent = styled.div`
     ${props =>
         props.theme &&
         css`
-            .add-project-header {
+            background-color: ${props.theme.grey[100]};
+            display: grid;
+            grid-gap: ${props.theme.spacing(6)}px;
+            align-items: center;
+            grid-template-columns: 50px 1fr;
+            padding: ${props.theme.spacing(4)}px ${props.theme.spacing(6)}px;
+            .my-circle {
                 display: flex;
-                background-color: ${props.theme.grey[100]};
-                height: 108px;
                 align-items: center;
-                justify-content: flex-start;
-                padding: ${props.theme.spacing(2)}px;
-                padding-left: ${props.theme.spacing(6)}px;
-                .add-circle-icon {
-                    font-size: 32px;
-                }
-                .my-circle {
-                    width: 2.5em;
-                    height: 2.5em;
-                    line-height: 2.5em;
-                    text-align: center;
-                    border-radius: 50%;
-                    background: plum;
-                    color: ${props.theme.contrastColor};
-                }
+                justify-content: center;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                border-radius: 50%;
+                background: plum;
+                color: ${props.theme.contrastColor};
             }
         `}
 `;
@@ -40,13 +36,16 @@ const WebsiteHeader = (props: Props) => {
     return (
         <>
             <WebsiteHeaderComponent theme={theme}>
-                <Typography variant='h5' component='div' className='add-project-header'>
-                    <p data-letters='MN' className='my-circle'>
-                        {props.title.substring(0, 2)}
-                    </p>
-                    <div style={{ paddingRight: '8px' }} />
-                    {props.title}
-                </Typography>
+                <div className='my-circle'>{props.title.substring(0, 2).toUpperCase()}</div>
+
+                <div>
+                    <Typography variant='h5' component='div'>
+                        {props.title}
+                    </Typography>
+                    <Typography variant='subtitle2' component='div'>
+                        {props.description}
+                    </Typography>
+                </div>
             </WebsiteHeaderComponent>
         </>
     );

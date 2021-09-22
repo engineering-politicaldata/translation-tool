@@ -153,11 +153,11 @@ export default function CreateProject() {
         if (!values.projectName) {
             errors['projectName'] = 'Required';
         } else if (values.projectName.length > 120) {
-            errors['projectName'] = 'Text should not be more than 120 chars';
+            errors['projectName'] = 'Must not be more than 120 chars';
         }
 
         if (values.projectDescription.length > 500) {
-            errors['projectDescription'] = 'Text should not be more than 500 chars';
+            errors['projectDescription'] = 'Must not be more than 500 chars';
         }
 
         if (values.sourceLanguage === null) {
