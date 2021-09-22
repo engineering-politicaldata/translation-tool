@@ -1,54 +1,37 @@
-import { Container, TextField, Typography, Button, useTheme } from '@material-ui/core';
-import React, { useState } from 'react';
+import { Button, CircularProgress, Typography, useTheme } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
+import { Formik } from 'formik';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../../components/common/generic-text-field';
-import { Form, Formik, FormikHelpers } from 'formik';
 import WebsiteHeader from '../../../components/common/website-header';
 
 const ProjectSettingsComponent = styled.div`
     ${props =>
         props.theme &&
         css`
-            height: 1000px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            background-color: ${props.theme.grey[200]};
+            padding-bottom: ${props.theme.spacing(8)}px;
             .project-settings-container {
-                background-color: ${props.theme.grey[200]};
-                height: 100%;
-                .container {
-                    background-color: #ffffff;
-                    padding: 0px;
-                    height: 100%;
-                }
+                background-color: ${props.theme.contrastColor};
+                width: 800px;
+
                 .project-settings-body {
-                    padding-left: 24px;
+                    padding: ${props.theme.spacing(8)}px;
                     .set-project-info {
-                        padding-top: ${props.theme.spacing(12)}px;
-                        margin-bottom: ${props.theme.spacing(8)}px;
+                        padding-bottom: ${props.theme.spacing(4)}px;
                     }
-                    .project-name-textfield {
-                        display: flex;
-                        flex-direction: column;
-                        .name-textfield {
-                            width: 80%;
-                            & .MuiInputBase-root {
-                                height: 100%;
-                                display: flex;
-                                align-items: start;
-                            }
-                        }
-                        .description-textfield {
-                            width: 80%;
-                            height: 120px;
-                            & .MuiInputBase-root {
-                                height: 100%;
-                                display: flex;
-                                align-items: start;
-                            }
-                        }
+                    .project-textfield {
+                        width: 50%;
+                        margin-bottom: ${props.theme.spacing(2)}px;
                     }
                     .create-project-button {
-                        margin-top: 48px;
-                        width: 120px;
-                        height: 32px;
+                        width: 100px;
+                        height: 40px;
                     }
                 }
             }
@@ -64,57 +47,112 @@ export default function ProjectSettingsPage(props: Props) {
         projectName: '',
         projectDescription: '',
     });
-
+    const [savedProjectData, updateSavedProjectData] = useState(null);
     const [spinnerState, setSpinnerState] = useState({
         inProgress: false,
         complete: false,
     });
+
+    const [isPageReady, setPageReadyState] = useState(false);
+    const router = useRouter();
+    const theme = useTheme();
+
+    const query = router.query;
+    const projectId = query['projectId'];
+
+    useEffect(() => {
+        // api call to fetch project details by id
+        const projectDetailsResponse = {
+            id: projectId,
+            name: 'Dummy Name',
+            description: 'Dummy Project Description',
+        };
+        setProjectDetails({
+            projectName: projectDetailsResponse.name,
+            projectDescription: projectDetailsResponse.description,
+        });
+        updateSavedProjectData(projectDetailsResponse);
+        setPageReadyState(true);
+    }, []);
+
     const handleFormChange = (fieldName: string, value: string) => {
-        if (spinnerState.complete) {
-            setSpinnerState({
-                inProgress: false,
-                complete: false,
-            });
-        }
         let newState: any = {};
         newState[fieldName] = value;
         setProjectDetails({ ...projectDetails, ...newState });
     };
-    const handleSettings = async (values: {
+
+    const updateProjectBasicDetails = async (values: {
         projectName: string;
         projectDescription: string;
-    }) => {};
+    }) => {
+        setSpinnerState({
+            inProgress: true,
+            complete: false,
+        });
 
-    const theme = useTheme();
+        const input = {
+            id: projectId,
+            name: values.projectName,
+            description: values.projectDescription,
+        };
+        //TODO:: use update project basic details api
+        // handle project name exists error
+        setTimeout(() => {
+            setSpinnerState({
+                inProgress: false,
+                complete: true,
+            });
+        }, 1000);
+
+        setTimeout(() => {
+            setSpinnerState({
+                inProgress: false,
+                complete: false,
+            });
+            updateSavedProjectData(input);
+        }, 3000);
+    };
 
     const validate = (values: any) => {
         const errors: any = {};
         if (!values.projectName) {
             errors['projectName'] = 'Required';
         } else if (values.projectName.length > 120) {
-            (errors['projectName'] = 'Project name should not exceed more than 120 chars'),
-                {
-                    COUNT: 120,
-                };
+            errors['projectName'] = 'Must not be more than 120 chars';
         }
+
+        if (values.projectDescription.length > 500) {
+            errors['projectDescription'] = 'Must not be more than 500 chars';
+        }
+
         return errors;
     };
 
+    if (!isPageReady) {
+        return (
+            <ProjectSettingsComponent theme={theme}>
+                <div className='project-settings-container'>
+                    <WebsiteHeader title='Loading...' description='' />
+                </div>
+            </ProjectSettingsComponent>
+        );
+    }
     return (
         <ProjectSettingsComponent theme={theme}>
             <div className='project-settings-container'>
                 <Formik
                     initialValues={projectDetails}
                     enableReinitialize={true}
-                    onSubmit={values => handleSettings(values)}
+                    onSubmit={values => updateProjectBasicDetails(values)}
                     validate={validate}
                 >
                     {({ errors, submitForm }) => {
-                        let messageHelperView: any = errors.projectName;
-
                         return (
-                            <Container fixed className='container'>
-                                <WebsiteHeader title='Project name here' description='' />
+                            <>
+                                <WebsiteHeader
+                                    title={savedProjectData.name}
+                                    description={savedProjectData.description}
+                                />
 
                                 <div className='project-settings-body'>
                                     <Typography
@@ -124,8 +162,8 @@ export default function ProjectSettingsPage(props: Props) {
                                     >
                                         Project Details
                                     </Typography>
-                                    <div className='project-name-textfield'>
-                                        <a>Name (required)</a>
+
+                                    <div className='project-textfield'>
                                         <GenericTextField
                                             key={'projectName'}
                                             defaultValue={projectDetails.projectName}
@@ -137,17 +175,15 @@ export default function ProjectSettingsPage(props: Props) {
                                                 handleFormChange(field, '');
                                             }}
                                             label={'Name'}
-                                            error={messageHelperView}
-                                            helperMessage={messageHelperView}
+                                            error={!!errors.projectName}
+                                            helperMessage={errors.projectName}
                                             textFieldProps={{
-                                                multiline: true,
                                                 type: 'text',
                                             }}
                                         />
                                     </div>
-                                    <div style={{ paddingTop: '32px' }} />
-                                    <div className='project-name-textfield'>
-                                        <a>Description</a>
+
+                                    <div className='project-textfield'>
                                         <GenericTextField
                                             key={'projectDescription'}
                                             defaultValue={projectDetails.projectDescription}
@@ -159,12 +195,19 @@ export default function ProjectSettingsPage(props: Props) {
                                                 handleFormChange(field, '');
                                             }}
                                             label={'Description'}
+                                            error={!!errors.projectDescription}
+                                            helperMessage={errors.projectDescription}
                                             textFieldProps={{
+                                                placeholder:
+                                                    'Please describe the project in few words',
                                                 multiline: true,
                                                 type: 'text',
+                                                rowsMax: 4,
+                                                rows: 4,
                                             }}
                                         />
                                     </div>
+
                                     <Button
                                         className='create-project-button'
                                         type='submit'
@@ -172,10 +215,21 @@ export default function ProjectSettingsPage(props: Props) {
                                         color='primary'
                                         onClick={submitForm}
                                     >
-                                        Save
+                                        {spinnerState.inProgress && (
+                                            <CircularProgress
+                                                color='inherit'
+                                                size={20}
+                                                thickness={3}
+                                                variant='indeterminate'
+                                            ></CircularProgress>
+                                        )}
+                                        {spinnerState.complete && <Check />}
+                                        {!spinnerState.inProgress &&
+                                            !spinnerState.complete &&
+                                            'Save'}
                                     </Button>
                                 </div>
-                            </Container>
+                            </>
                         );
                     }}
                 </Formik>
