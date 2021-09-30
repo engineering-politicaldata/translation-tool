@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../../components/common/generic-text-field';
 import WebsiteHeader from '../../../components/common/website-header';
+import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
 
 const ProjectSettingsComponent = styled.div`
     ${props =>
@@ -138,102 +139,104 @@ export default function ProjectSettingsPage(props: Props) {
         );
     }
     return (
-        <ProjectSettingsComponent theme={theme}>
-            <div className='project-settings-container'>
-                <Formik
-                    initialValues={projectDetails}
-                    enableReinitialize={true}
-                    onSubmit={values => updateProjectBasicDetails(values)}
-                    validate={validate}
-                >
-                    {({ errors, submitForm }) => {
-                        return (
-                            <>
-                                <WebsiteHeader
-                                    title={savedProjectData.name}
-                                    description={savedProjectData.description}
-                                />
+        <UserDashboardLayout>
+            <ProjectSettingsComponent theme={theme}>
+                <div className='project-settings-container'>
+                    <Formik
+                        initialValues={projectDetails}
+                        enableReinitialize={true}
+                        onSubmit={values => updateProjectBasicDetails(values)}
+                        validate={validate}
+                    >
+                        {({ errors, submitForm }) => {
+                            return (
+                                <>
+                                    <WebsiteHeader
+                                        title={savedProjectData.name}
+                                        description={savedProjectData.description}
+                                    />
 
-                                <div className='project-settings-body'>
-                                    <Typography
-                                        variant='h6'
-                                        component='div'
-                                        className='set-project-info'
-                                    >
-                                        Project Details
-                                    </Typography>
+                                    <div className='project-settings-body'>
+                                        <Typography
+                                            variant='h6'
+                                            component='div'
+                                            className='set-project-info'
+                                        >
+                                            Project Details
+                                        </Typography>
 
-                                    <div className='project-textfield'>
-                                        <GenericTextField
-                                            key={'projectName'}
-                                            defaultValue={projectDetails.projectName}
-                                            fieldName={'projectName'}
-                                            onChange={(field, value, event) => {
-                                                handleFormChange(field, value);
-                                            }}
-                                            onReset={field => {
-                                                handleFormChange(field, '');
-                                            }}
-                                            label={'Name'}
-                                            error={!!errors.projectName}
-                                            helperMessage={errors.projectName}
-                                            textFieldProps={{
-                                                type: 'text',
-                                            }}
-                                        />
+                                        <div className='project-textfield'>
+                                            <GenericTextField
+                                                key={'projectName'}
+                                                defaultValue={projectDetails.projectName}
+                                                fieldName={'projectName'}
+                                                onChange={(field, value, event) => {
+                                                    handleFormChange(field, value);
+                                                }}
+                                                onReset={field => {
+                                                    handleFormChange(field, '');
+                                                }}
+                                                label={'Name'}
+                                                error={!!errors.projectName}
+                                                helperMessage={errors.projectName}
+                                                textFieldProps={{
+                                                    type: 'text',
+                                                }}
+                                            />
+                                        </div>
+
+                                        <div className='project-textfield'>
+                                            <GenericTextField
+                                                key={'projectDescription'}
+                                                defaultValue={projectDetails.projectDescription}
+                                                fieldName={'projectDescription'}
+                                                onChange={(field, value, event) => {
+                                                    handleFormChange(field, value);
+                                                }}
+                                                onReset={field => {
+                                                    handleFormChange(field, '');
+                                                }}
+                                                label={'Description'}
+                                                error={!!errors.projectDescription}
+                                                helperMessage={errors.projectDescription}
+                                                textFieldProps={{
+                                                    placeholder:
+                                                        'Please describe the project in few words',
+                                                    multiline: true,
+                                                    type: 'text',
+                                                    rowsMax: 4,
+                                                    rows: 4,
+                                                }}
+                                            />
+                                        </div>
+
+                                        <Button
+                                            className='create-project-button'
+                                            type='submit'
+                                            variant='contained'
+                                            color='primary'
+                                            onClick={submitForm}
+                                        >
+                                            {spinnerState.inProgress && (
+                                                <CircularProgress
+                                                    color='inherit'
+                                                    size={20}
+                                                    thickness={3}
+                                                    variant='indeterminate'
+                                                ></CircularProgress>
+                                            )}
+                                            {spinnerState.complete && <Check />}
+                                            {!spinnerState.inProgress &&
+                                                !spinnerState.complete &&
+                                                'Save'}
+                                        </Button>
                                     </div>
-
-                                    <div className='project-textfield'>
-                                        <GenericTextField
-                                            key={'projectDescription'}
-                                            defaultValue={projectDetails.projectDescription}
-                                            fieldName={'projectDescription'}
-                                            onChange={(field, value, event) => {
-                                                handleFormChange(field, value);
-                                            }}
-                                            onReset={field => {
-                                                handleFormChange(field, '');
-                                            }}
-                                            label={'Description'}
-                                            error={!!errors.projectDescription}
-                                            helperMessage={errors.projectDescription}
-                                            textFieldProps={{
-                                                placeholder:
-                                                    'Please describe the project in few words',
-                                                multiline: true,
-                                                type: 'text',
-                                                rowsMax: 4,
-                                                rows: 4,
-                                            }}
-                                        />
-                                    </div>
-
-                                    <Button
-                                        className='create-project-button'
-                                        type='submit'
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={submitForm}
-                                    >
-                                        {spinnerState.inProgress && (
-                                            <CircularProgress
-                                                color='inherit'
-                                                size={20}
-                                                thickness={3}
-                                                variant='indeterminate'
-                                            ></CircularProgress>
-                                        )}
-                                        {spinnerState.complete && <Check />}
-                                        {!spinnerState.inProgress &&
-                                            !spinnerState.complete &&
-                                            'Save'}
-                                    </Button>
-                                </div>
-                            </>
-                        );
-                    }}
-                </Formik>
-            </div>
-        </ProjectSettingsComponent>
+                                </>
+                            );
+                        }}
+                    </Formik>
+                </div>
+            </ProjectSettingsComponent>
+        </UserDashboardLayout>
     );
 }
