@@ -45,6 +45,10 @@ export const createCustomTheme = (Theme: ThemeProps) => {
                                     minWidth: APP_MIN_WIDTH,
                                     margin: 'auto',
                                 },
+                                [theme.breakpoints.up('sm')]: {
+                                    maxWidth: APP_MAX_WIDTH,
+                                    margin: 'auto',
+                                },
                             },
                             main: {
                                 backgroundColor: 'white',

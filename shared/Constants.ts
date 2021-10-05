@@ -67,3 +67,9 @@ export const TARGET_LANGUAGES = [
     { code: 'fr', value: 'French' },
     { code: 'kn', value: 'Kannada' },
 ];
+
+export enum LoadingState {
+    initial,
+    loading,
+    success,
+}
