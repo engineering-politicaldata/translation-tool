@@ -1,9 +1,11 @@
-import { Button, Chip, TextField, Typography, useTheme } from '@material-ui/core';
+import { Button, Chip, FormHelperText, TextField, Typography, useTheme } from '@material-ui/core';
 import { Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../components/common/generic-text-field';
 import WebsiteHeader from '../../components/common/website-header';
+import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
 
 const CreateProjectComponent = styled.div`
     ${props =>
@@ -72,6 +74,7 @@ const CreateProjectComponent = styled.div`
         `}
 `;
 export default function CreateProject() {
+    const projectListContext = useContext(UserDashboardSummaryContext);
     const [projectData, setProjectData] = useState({
         projectName: '',
         projectDescription: '',
@@ -85,7 +88,7 @@ export default function CreateProject() {
             name: string;
         }[]
     >([]);
-
+    const router = useRouter();
     useEffect(() => {
         // TODO: API call to get languages
         const lanugageApiResponse = [
@@ -146,6 +149,12 @@ export default function CreateProject() {
         //TODO:: use create project api
         // handle project name exists error
         // redirect to project page
+        projectListContext.updateProjectList({
+            id: input.name + new Date().toString(),
+            projectName: input.name,
+            projectDescription: input.description,
+        });
+        router.replace('/');
     };
 
     const validate = (values: any) => {
@@ -164,6 +173,9 @@ export default function CreateProject() {
             errors['sourceLanguage'] = 'please select source language';
         }
 
+        if (values.targetLanguages === null || !values.targetLanguages.length) {
+            errors['targetLanguages'] = 'please select target language';
+        }
         return errors;
     };
     return (
@@ -306,6 +318,9 @@ export default function CreateProject() {
                                         {projectData.targetLanguages.length === 0 &&
                                             'No target languages'}
                                     </div>
+                                    <FormHelperText error={!!errors.targetLanguages}>
+                                        {errors.targetLanguages}
+                                    </FormHelperText>
                                 </div>
                             </div>
                             <Button
