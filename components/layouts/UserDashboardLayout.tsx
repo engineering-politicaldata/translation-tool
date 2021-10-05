@@ -148,6 +148,7 @@ const UserDashboardLayout = props => {
             //   then set the list data in context
             // else
             router.replace('/project/create');
+            return;
         }
 
         // const dummyProjectList = [
@@ -178,14 +179,7 @@ const UserDashboardLayout = props => {
             { title: 'Resources', route: 'resources' },
             { title: 'Settings', route: 'settings' },
         ];
-        // let menuItems = []
-        // const menuItems = dummyProjectList.map(project => {
-        //     return {
-        //         projectId: project.id,
-        //         title: project.projectName,
-        //         subMenus: [...subMenuList],
-        //     };
-        // });
+
         const menuItems = projectListContext.projectList.map(project => {
             return {
                 projectId: project.id,
@@ -258,25 +252,29 @@ const UserDashboardLayout = props => {
     };
     return (
         <LoggedInUserLayoutContainer>
-            <Drawer
-                className={classes.drawer}
-                variant='permanent'
-                classes={{
-                    paper: classes.drawerPaper,
-                }}
-                anchor='left'
-            >
-                {menuList ? getMenuList() : 'Loading'}
-                <Button
-                    className={classes.addProjectButtomRoot}
-                    variant='contained'
-                    fullWidth={true}
-                    color='secondary'
-                    onClick={addNewProject}
+            {!!projectListContext.projectList.length && (
+                <Drawer
+                    className={classes.drawer}
+                    variant='permanent'
+                    classes={{
+                        paper: classes.drawerPaper,
+                    }}
+                    anchor='left'
                 >
-                    Add New Project
-                </Button>
-            </Drawer>
+                    {menuList ? getMenuList() : 'Loading'}
+                    <Button
+                        className={classes.addProjectButtomRoot}
+                        variant='contained'
+                        fullWidth={true}
+                        color='secondary'
+                        onClick={addNewProject}
+                        disableElevation
+                        size='small'
+                    >
+                        Add New Project
+                    </Button>
+                </Drawer>
+            )}
             <div className={classes.content}>{props.children}</div>
         </LoggedInUserLayoutContainer>
     );
