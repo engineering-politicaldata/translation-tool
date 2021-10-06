@@ -9,11 +9,14 @@ export interface Project {
     id: string;
     projectName: string;
     projectDescription?: string;
+    totalSourceKeys?: number;
+    translatedKeysCount?: number;
+    totalSourceWords?: number;
 }
 
 export interface UserDashboardSummaryType {
     projectList: ProjectBasicInfo[];
-    activeProject?: ProjectBasicInfo;
+    activeProject?: Project;
     updateProjectList: (project: ProjectBasicInfo) => void;
     updateActiveProject: (project: Project) => void;
     clearContext: () => void;
@@ -34,11 +37,15 @@ const UserDashboardSummaryProvider = props => {
         setProjectList([...projectList, project]);
     };
     const updateActiveProject = (project: Project) => {
-        if (activeProject && project.id === activeProject.id) {
+        if (activeProject && project && project.id === activeProject.id) {
             setActiveProject({
                 ...activeProject,
                 ...project,
             });
+        } else if (project) {
+            setActiveProject(project);
+        } else {
+            setActiveProject(undefined);
         }
     };
     const clearContext = () => {
