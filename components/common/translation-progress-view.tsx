@@ -25,14 +25,17 @@ const TranslationProgressViewContainer = styled.div`
 `;
 
 interface Props {
-    totalSourceKeys: number;
-    translationPercentage: number;
-    untranslationPercentage: number;
-    totalSourceWords: number;
+    totalSourceKeys?: number;
+    translationPercentage?: number;
+    untranslationPercentage?: number;
+    totalSourceWords?: number;
 }
 
 const TranslationProgressView = (props: Props) => {
     const theme = useTheme();
+    if (!props.totalSourceKeys || !props.totalSourceWords) {
+        return null;
+    }
     return (
         <TranslationProgressViewContainer theme={theme}>
             <div className='stats'>
@@ -61,5 +64,4 @@ const TranslationProgressView = (props: Props) => {
         </TranslationProgressViewContainer>
     );
 };
-
 export default TranslationProgressView;

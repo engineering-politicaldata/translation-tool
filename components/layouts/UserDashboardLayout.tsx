@@ -132,11 +132,22 @@ const UserDashboardLayout = props => {
 
     useEffect(() => {
         if (!activeRouteID) {
+            projectListContext.updateActiveProject(undefined);
             return;
         }
-        setExpanded(router.query['projectId'] ? router.query['projectId'].toString() : false);
-        const routeSegments = router.asPath.split('/');
 
+        setExpanded(router.query['projectId'] ? router.query['projectId'].toString() : false);
+
+        if (!projectListContext.activeProject) {
+            // find project basic details to initialize project object
+            const projectBasicInfo = projectListContext.projectList.find(
+                project => project.id === router.query['projectId'],
+            );
+            projectListContext.updateActiveProject({
+                ...projectBasicInfo,
+            });
+        }
+        const routeSegments = router.asPath.split('/');
         setActiveSubRoute(routeSegments[3]);
     }, [activeRouteID]);
 
@@ -151,31 +162,9 @@ const UserDashboardLayout = props => {
             return;
         }
 
-        // const dummyProjectList = [
-        //     {
-        //         id: 'project_id_1',
-        //         projectName: 'Project Name 1',
-        //         // projectDescription: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-        //         // malesuada lacus ex, sit amet blandit leo lobortis eget. Lorem ipsum
-        //         // dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus
-        //         // ex, sit amet blandit leo lobortis eget.`
-        //     },
-        //     {
-        //         id: 'project_id_2',
-        //         projectName: 'Project Name 2',
-        //         // projectDescription: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-        //         // malesuada lacus ex, sit amet blandit leo lobortis eget.`
-        //     },
-        //     {
-        //         id: 'project_id_3',
-        //         projectName: 'Project Name 3',
-        //         // projectDescription: `Suspendisse malesuada lacus
-        //         // ex, sit amet blandit leo lobortis eget.`
-        //     },
-        // ];
         const subMenuList = [
             { title: 'Overview', route: 'overview' },
-            { title: 'Languages', route: 'languages' },
+            // { title: 'Languages', route: 'languages' },
             { title: 'Resources', route: 'resources' },
             { title: 'Settings', route: 'settings' },
         ];
@@ -192,7 +181,6 @@ const UserDashboardLayout = props => {
             title: 'All Projects',
             subMenus: [],
         });
-        console.log(menuItems);
         setMenuList(menuItems);
     }, []);
 
