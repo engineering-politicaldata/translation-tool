@@ -12,7 +12,7 @@ export interface ThemeProps {
     };
 }
 
-export interface customTheme extends Theme {
+export interface CustomTheme extends Theme {
     contrastColor: string;
     primary: ColorPartial;
     secondary: ColorPartial;
@@ -43,6 +43,10 @@ export const createCustomTheme = (Theme: ThemeProps) => {
                                 margin: 'auto',
                                 [theme.breakpoints.down('sm')]: {
                                     minWidth: APP_MIN_WIDTH,
+                                    margin: 'auto',
+                                },
+                                [theme.breakpoints.up('sm')]: {
+                                    maxWidth: APP_MAX_WIDTH,
                                     margin: 'auto',
                                 },
                             },

@@ -4,6 +4,7 @@ import App, { AppContext } from 'next/app';
 import { GRAY_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, TERTIARY_COLOR } from '../shared/Constants';
 import { createCustomTheme, ThemeProps } from '../styles/MuiTheme';
 import Head from 'next/head';
+import UserDashboardSummaryProvider from '../components/contexts/UserDashboardSummaryProvider';
 
 const themeConfig: ThemeProps = {
     colors: {
@@ -42,7 +43,9 @@ class MyApp extends App {
                 </Head>
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                 <CssBaseline />
-                <Component {...pageProps} />
+                <UserDashboardSummaryProvider>
+                    <Component {...pageProps} />
+                </UserDashboardSummaryProvider>
             </ThemeProvider>
         );
     }
