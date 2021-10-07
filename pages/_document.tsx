@@ -7,7 +7,7 @@ import { ServerStyleSheet } from 'styled-components';
 export default class MyDocument extends Document {
     render() {
         return (
-            <Html lang='en'>
+            <Html lang='en' style={{ backgroundColor: '#E9EBEF' }}>
                 <Head>
                     <meta charSet='utf-8' />
                     {/** this is for pre-connecting to Google fonts for faster font load */}

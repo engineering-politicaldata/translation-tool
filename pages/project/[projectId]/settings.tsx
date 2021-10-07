@@ -2,37 +2,34 @@ import { Button, CircularProgress, Typography, useTheme } from '@material-ui/cor
 import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../../components/common/generic-text-field';
 import WebsiteHeader from '../../../components/common/website-header';
+import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
+import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
 
 const ProjectSettingsComponent = styled.div`
     ${props =>
         props.theme &&
         css`
-            min-height: 100vh;
+            height: 100%;
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            background-color: ${props.theme.grey[200]};
-            padding-bottom: ${props.theme.spacing(8)}px;
-            .project-settings-container {
-                background-color: ${props.theme.contrastColor};
-                width: 800px;
-
-                .project-settings-body {
-                    padding: ${props.theme.spacing(8)}px;
-                    .set-project-info {
-                        padding-bottom: ${props.theme.spacing(4)}px;
-                    }
-                    .project-textfield {
-                        width: 50%;
-                        margin-bottom: ${props.theme.spacing(2)}px;
-                    }
-                    .create-project-button {
-                        width: 100px;
-                        height: 40px;
-                    }
+            .project-settings-body {
+                flex: 1;
+                padding: ${props.theme.spacing(8)}px;
+                .set-project-info {
+                    padding-bottom: ${props.theme.spacing(4)}px;
+                }
+                .project-textfield {
+                    width: 50%;
+                    margin-bottom: ${props.theme.spacing(2)}px;
+                }
+                .save-project-buttom {
+                    width: 100px;
+                    height: 40px;
                 }
             }
         `}
@@ -47,7 +44,6 @@ export default function ProjectSettingsPage(props: Props) {
         projectName: '',
         projectDescription: '',
     });
-    const [savedProjectData, updateSavedProjectData] = useState(null);
     const [spinnerState, setSpinnerState] = useState({
         inProgress: false,
         complete: false,
@@ -60,20 +56,21 @@ export default function ProjectSettingsPage(props: Props) {
     const query = router.query;
     const projectId = query['projectId'];
 
+    const projectListContext = useContext(UserDashboardSummaryContext);
+    const { activeProject } = projectListContext;
+
     useEffect(() => {
-        // api call to fetch project details by id
-        const projectDetailsResponse = {
-            id: projectId,
-            name: 'Dummy Name',
-            description: 'Dummy Project Description',
-        };
-        setProjectDetails({
-            projectName: projectDetailsResponse.name,
-            projectDescription: projectDetailsResponse.description,
-        });
-        updateSavedProjectData(projectDetailsResponse);
-        setPageReadyState(true);
-    }, []);
+        if (!activeProject) {
+            return;
+        }
+        if (!projectDetails.projectName) {
+            setProjectDetails({
+                projectName: activeProject.projectName,
+                projectDescription: activeProject.projectDescription,
+            });
+            setPageReadyState(true);
+        }
+    }, [activeProject]);
 
     const handleFormChange = (fieldName: string, value: string) => {
         let newState: any = {};
@@ -109,7 +106,11 @@ export default function ProjectSettingsPage(props: Props) {
                 inProgress: false,
                 complete: false,
             });
-            updateSavedProjectData(input);
+            projectListContext.updateActiveProject({
+                ...activeProject,
+                projectName: values.projectName,
+                projectDescription: values.projectDescription,
+            });
         }, 3000);
     };
 
@@ -128,18 +129,18 @@ export default function ProjectSettingsPage(props: Props) {
         return errors;
     };
 
-    if (!isPageReady) {
+    if (!activeProject || !isPageReady) {
         return (
-            <ProjectSettingsComponent theme={theme}>
-                <div className='project-settings-container'>
+            <UserDashboardLayout>
+                <ProjectSettingsComponent theme={theme}>
                     <WebsiteHeader title='Loading...' description='' />
-                </div>
-            </ProjectSettingsComponent>
+                </ProjectSettingsComponent>
+            </UserDashboardLayout>
         );
     }
     return (
-        <ProjectSettingsComponent theme={theme}>
-            <div className='project-settings-container'>
+        <UserDashboardLayout>
+            <ProjectSettingsComponent theme={theme}>
                 <Formik
                     initialValues={projectDetails}
                     enableReinitialize={true}
@@ -150,8 +151,8 @@ export default function ProjectSettingsPage(props: Props) {
                         return (
                             <>
                                 <WebsiteHeader
-                                    title={savedProjectData.name}
-                                    description={savedProjectData.description}
+                                    title={activeProject.projectName}
+                                    description={activeProject.projectDescription}
                                 />
 
                                 <div className='project-settings-body'>
@@ -209,11 +210,12 @@ export default function ProjectSettingsPage(props: Props) {
                                     </div>
 
                                     <Button
-                                        className='create-project-button'
+                                        className='save-project-buttom'
                                         type='submit'
                                         variant='contained'
                                         color='primary'
                                         onClick={submitForm}
+                                        disableElevation
                                     >
                                         {spinnerState.inProgress && (
                                             <CircularProgress
@@ -233,7 +235,7 @@ export default function ProjectSettingsPage(props: Props) {
                         );
                     }}
                 </Formik>
-            </div>
-        </ProjectSettingsComponent>
+            </ProjectSettingsComponent>
+        </UserDashboardLayout>
     );
 }

@@ -29,6 +29,7 @@ const WebsiteHeaderComponent = styled.div`
 type Props = {
     title: string;
     description: string;
+    highlight: 'title' | 'description';
 };
 const WebsiteHeader = (props: Props) => {
     const theme = useTheme();
@@ -37,17 +38,33 @@ const WebsiteHeader = (props: Props) => {
         <>
             <WebsiteHeaderComponent theme={theme}>
                 <div className='my-circle'>{props.title.substring(0, 2).toUpperCase()}</div>
-
-                <div>
-                    <Typography variant='h5' component='div'>
-                        {props.title}
-                    </Typography>
-                    <Typography variant='subtitle2' component='div'>
-                        {props.description}
-                    </Typography>
-                </div>
+                {props.highlight === 'title' ? (
+                    <div>
+                        <Typography variant='h5' component='div'>
+                            {props.title}
+                        </Typography>
+                        <Typography variant='subtitle2' component='div'>
+                            {props.description}
+                        </Typography>
+                    </div>
+                ) : (
+                    <div>
+                        <Typography variant='subtitle2' component='div'>
+                            {props.title}
+                        </Typography>
+                        <Typography variant='h5' component='div'>
+                            {props.description}
+                        </Typography>
+                    </div>
+                )}
             </WebsiteHeaderComponent>
         </>
     );
 };
+
+WebsiteHeader.defaultProps = {
+    highlight: 'title',
+    title: '',
+};
+
 export default WebsiteHeader;
