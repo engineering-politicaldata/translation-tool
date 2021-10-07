@@ -9,9 +9,19 @@ export interface Project {
     id: string;
     projectName: string;
     projectDescription?: string;
-    totalSourceKeys?: number;
-    translatedKeysCount?: number;
-    totalSourceWords?: number;
+    totalResourcesCount?: number; // Total number of resources added for project
+    totalSourceKeys?: number; // Total number of source keys in all the resources
+    totalSourceWords?: number; // Total number of words tobe translated in source JSON
+    translatedKeysCount?: number; // Total number of translated strings/keys
+    totalTranslatedWords?: number; // Total number of words in strings of translated keys
+    resources?: {
+        id: string;
+        createdDate: string;
+        sourceName: string;
+        totalSourceKeys: number;
+        translatedKeysCount: number;
+        totalSourceWords: number;
+    }[];
 }
 
 export interface UserDashboardSummaryType {
@@ -37,12 +47,7 @@ const UserDashboardSummaryProvider = props => {
         setProjectList([...projectList, project]);
     };
     const updateActiveProject = (project: Project) => {
-        if (activeProject && project && project.id === activeProject.id) {
-            setActiveProject({
-                ...activeProject,
-                ...project,
-            });
-        } else if (project) {
+        if (project) {
             setActiveProject(project);
         } else {
             setActiveProject(undefined);
