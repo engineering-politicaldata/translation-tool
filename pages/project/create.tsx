@@ -330,6 +330,7 @@ export default function CreateProject() {
                                 color='primary'
                                 size='small'
                                 onClick={submitForm}
+                                disableElevation
                             >
                                 create
                             </Button>
