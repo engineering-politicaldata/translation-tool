@@ -64,6 +64,7 @@ const WebsiteHeader = (props: Props) => {
 
 WebsiteHeader.defaultProps = {
     highlight: 'title',
+    title: '',
 };
 
 export default WebsiteHeader;
