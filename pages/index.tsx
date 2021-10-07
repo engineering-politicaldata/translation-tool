@@ -1,6 +1,7 @@
-import { Button, LinearProgress, Typography, useTheme } from '@material-ui/core';
+import { Button, Typography, useTheme } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
+import NoDataFoundPage from '../components/common/no-data-found-page';
 import TranslationProgressView from '../components/common/translation-progress-view';
 import WebsiteHeader from '../components/common/website-header';
 import UserDashboardLayout from '../components/layouts/UserDashboardLayout';
@@ -9,7 +10,7 @@ const AllProjectListPage = styled.div`
     ${props =>
         props.theme &&
         css`
-            min-height: 100vh;
+            height: 100%;
             display: flex;
             flex-direction: column;
             .all-project-list-body {
@@ -19,24 +20,6 @@ const AllProjectListPage = styled.div`
             .project-count {
                 display: flex;
                 align-items: center;
-            }
-
-            .no-project-present-container {
-                height: 100%;
-                padding: ${props.theme.spacing(8)}px;
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                .no-project-present {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    .message {
-                        opacity: 0.5;
-                        margin-bottom: ${props.theme.spacing(2)}px;
-                    }
-                }
             }
         `}
 `;
@@ -96,33 +79,22 @@ export default function Home() {
     const AllProjectsSummary = () => {
         if (!allProjectsSummary) {
             return (
-                <div className='no-project-present-container'>
-                    <div className='no-project-present'>
-                        <Typography variant='h6' className='message'>
-                            No Projects Found
-                        </Typography>
-                        <Typography variant='h6' className='message'>
-                            Please add project to manage translations
-                        </Typography>
-                        <Button size='small' variant='contained' disableElevation color='secondary'>
-                            Add New Project
-                        </Button>
-                    </div>
-                </div>
+                <NoDataFoundPage
+                    message={'No Projects Found'}
+                    subText={'Please add project to manage translations'}
+                >
+                    <Button size='small' variant='contained' disableElevation color='secondary'>
+                        Add Project
+                    </Button>
+                </NoDataFoundPage>
             );
         }
-        if (allProjectsSummary && allProjectsSummary.totalSourceWords === 0) {
+        if (allProjectsSummary && !allProjectsSummary.totalSourceWords) {
             return (
-                <div className='no-project-present-container'>
-                    <div className='no-project-present'>
-                        <Typography variant='h6' className='message'>
-                            No Resources Found
-                        </Typography>
-                        <Typography variant='subtitle2' className='message'>
-                            Please setup resources for your projects
-                        </Typography>
-                    </div>
-                </div>
+                <NoDataFoundPage
+                    message={'No Resources Found'}
+                    subText={'Please setup resources for your projects'}
+                />
             );
         }
         return (
