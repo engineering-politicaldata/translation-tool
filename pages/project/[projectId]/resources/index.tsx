@@ -386,7 +386,7 @@ export default function ResourcesPage() {
         <UserDashboardLayout>
             <ProjectResourcesPage theme={theme}>
                 <WebsiteHeader
-                    title={activeProject.projectName}
+                    title={activeProject.name}
                     description={'Resources'}
                     highlight='description'
                 />

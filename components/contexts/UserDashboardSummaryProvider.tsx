@@ -1,14 +1,9 @@
 import React, { createContext, useState, useEffect } from 'react';
-
-export interface ProjectBasicInfo {
-    id: string;
-    projectName: string;
-    projectDescription?: string;
-}
+import { ProjectListItemInfo } from '../../lib/model';
 export interface Project {
     id: string;
-    projectName: string;
-    projectDescription?: string;
+    name: string;
+    description?: string;
     totalResourcesCount?: number; // Total number of resources added for project
     totalSourceKeys?: number; // Total number of source keys in all the resources
     totalSourceWords?: number; // Total number of words tobe translated in source JSON
@@ -25,25 +20,27 @@ export interface Project {
 }
 
 export interface UserDashboardSummaryType {
-    projectList: ProjectBasicInfo[];
+    projectList: ProjectListItemInfo[];
     activeProject?: Project;
-    updateProjectList: (project: ProjectBasicInfo) => void;
+    updateProjectList: (project: ProjectListItemInfo) => void;
+    setProjectList: (projectList: ProjectListItemInfo[]) => void;
     updateActiveProject: (project: Project) => void;
     clearContext: () => void;
 }
 export const UserDashboardSummaryContext = createContext<UserDashboardSummaryType>({
     projectList: [],
-    updateProjectList: (project: ProjectBasicInfo) => {},
+    updateProjectList: (project: ProjectListItemInfo) => {},
+    setProjectList: (projectList: ProjectListItemInfo[]) => {},
     activeProject: undefined,
     updateActiveProject: (project: Project) => {},
     clearContext: () => {},
 });
 
 const UserDashboardSummaryProvider = props => {
-    const [projectList, setProjectList] = useState<ProjectBasicInfo[]>([]);
+    const [projectList, setProjectList] = useState<ProjectListItemInfo[]>([]);
     const [activeProject, setActiveProject] = useState<Project>(undefined);
 
-    const updateProjectList = (project: ProjectBasicInfo) => {
+    const updateProjectList = (project: ProjectListItemInfo) => {
         setProjectList([...projectList, project]);
     };
     const updateActiveProject = (project: Project) => {
@@ -62,6 +59,7 @@ const UserDashboardSummaryProvider = props => {
             value={{
                 projectList,
                 updateProjectList,
+                setProjectList,
                 activeProject,
                 updateActiveProject,
                 clearContext,

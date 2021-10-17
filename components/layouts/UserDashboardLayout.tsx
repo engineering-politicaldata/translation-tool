@@ -16,6 +16,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { GET_API_CONFIG } from '../../lib/backend.config';
+import { ProjectListItemInfo } from '../../lib/model';
 import { CustomTheme } from '../../styles/MuiTheme';
 import { UserDashboardSummaryContext } from '../contexts/UserDashboardSummaryProvider';
 
@@ -140,25 +142,34 @@ const UserDashboardLayout = props => {
 
         if (!projectListContext.activeProject) {
             // find project basic details to initialize project object
-            const projectBasicInfo = projectListContext.projectList.find(
+            const projectListItemInfo = projectListContext.projectList.find(
                 project => project.id === router.query['projectId'],
             );
             projectListContext.updateActiveProject({
-                ...projectBasicInfo,
+                ...projectListItemInfo,
             });
         }
         const routeSegments = router.asPath.split('/');
         setActiveSubRoute(routeSegments[3]);
     }, [activeRouteID]);
 
+    const getProjectList = async () => {
+        try {
+            const res = await fetch('/api/project/basic-info-list', GET_API_CONFIG);
+            const data: { projectList: ProjectListItemInfo[] } = await res.json();
+            if (!data.projectList || !data.projectList.length) {
+                router.replace('/project/create');
+            }
+            projectListContext.setProjectList([...data.projectList]);
+        } catch (error) {
+            // TODO redirect to error page
+        }
+    };
+
     useEffect(() => {
         // Check in the context
         if (!projectListContext.projectList.length) {
-            // TODO call get project list api
-            // if list received
-            //   then set the list data in context
-            // else
-            router.replace('/project/create');
+            getProjectList();
             return;
         }
 
@@ -172,7 +183,7 @@ const UserDashboardLayout = props => {
         const menuItems = projectListContext.projectList.map(project => {
             return {
                 projectId: project.id,
-                title: project.projectName,
+                title: project.name,
                 subMenus: [...subMenuList],
             };
         });
@@ -182,11 +193,12 @@ const UserDashboardLayout = props => {
             subMenus: [],
         });
         setMenuList(menuItems);
-    }, []);
+    }, [projectListContext.projectList]);
 
     function addNewProject(event) {
         router.push('/project/create');
     }
+
     const handleChange =
         (projectId: string) => (event: React.ChangeEvent<{}>, newExpanded: boolean) => {
             if (!projectId) {
@@ -194,6 +206,7 @@ const UserDashboardLayout = props => {
             }
             setExpanded(newExpanded ? projectId : false);
         };
+
     const getMenuList = () => {
         return menuList.map(menuItem => {
             return (

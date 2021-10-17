@@ -65,8 +65,8 @@ export default function ProjectSettingsPage(props: Props) {
         }
         if (!projectDetails.projectName) {
             setProjectDetails({
-                projectName: activeProject.projectName,
-                projectDescription: activeProject.projectDescription,
+                projectName: activeProject.name,
+                projectDescription: activeProject.description,
             });
             setPageReadyState(true);
         }
@@ -108,8 +108,8 @@ export default function ProjectSettingsPage(props: Props) {
             });
             projectListContext.updateActiveProject({
                 ...activeProject,
-                projectName: values.projectName,
-                projectDescription: values.projectDescription,
+                name: values.projectName,
+                description: values.projectDescription,
             });
         }, 3000);
     };
@@ -151,8 +151,8 @@ export default function ProjectSettingsPage(props: Props) {
                         return (
                             <>
                                 <WebsiteHeader
-                                    title={activeProject.projectName}
-                                    description={activeProject.projectDescription}
+                                    title={activeProject.name}
+                                    description={activeProject.description}
                                 />
 
                                 <div className='project-settings-body'>

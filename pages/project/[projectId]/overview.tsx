@@ -62,8 +62,8 @@ export default function OverviewPage() {
             <UserDashboardLayout>
                 <ProjectOverviewPage theme={theme}>
                     <WebsiteHeader
-                        title={activeProject.projectName}
-                        description={activeProject.projectDescription}
+                        title={activeProject.name}
+                        description={activeProject.description}
                     />
 
                     <NoDataFoundPage
@@ -85,10 +85,7 @@ export default function OverviewPage() {
     return (
         <UserDashboardLayout>
             <ProjectOverviewPage theme={theme}>
-                <WebsiteHeader
-                    title={activeProject.projectName}
-                    description={activeProject.projectDescription}
-                />
+                <WebsiteHeader title={activeProject.name} description={activeProject.description} />
 
                 <div className='project-overview-page-body'>
                     <TranslationProgressView
