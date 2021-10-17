@@ -1,11 +1,11 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/core/styles';
 import App, { AppContext } from 'next/app';
+import Head from 'next/head';
+import { SWRConfig } from 'swr';
+import UserDashboardSummaryProvider from '../components/contexts/UserDashboardSummaryProvider';
 import { GRAY_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, TERTIARY_COLOR } from '../shared/Constants';
 import { createCustomTheme, ThemeProps } from '../styles/MuiTheme';
-import Head from 'next/head';
-import UserDashboardSummaryProvider from '../components/contexts/UserDashboardSummaryProvider';
-
 const themeConfig: ThemeProps = {
     colors: {
         primary: PRIMARY_COLOR,
@@ -44,7 +44,15 @@ class MyApp extends App {
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                 <CssBaseline />
                 <UserDashboardSummaryProvider>
-                    <Component {...pageProps} />
+                    <SWRConfig
+                        value={{
+                            shouldRetryOnError: false,
+                            fetcher: (resource, init) =>
+                                fetch(resource, init).then(res => res.json()),
+                        }}
+                    >
+                        <Component {...pageProps} />
+                    </SWRConfig>
                 </UserDashboardSummaryProvider>
             </ThemeProvider>
         );
