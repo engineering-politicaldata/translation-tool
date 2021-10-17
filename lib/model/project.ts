@@ -28,3 +28,9 @@ export type ProjectBasicDetails = {
     description: string;
     targetLanguages: Language[];
 };
+
+export type ProjectListItemInfo = {
+    id: string;
+    name: string;
+    description?: string;
+};
