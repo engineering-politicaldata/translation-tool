@@ -16,6 +16,15 @@ export type UpdateProjectBasicDetailsInput = {
     description: string;
 };
 
+export type UploadResourcForProjectInput = {
+    sourceName: string;
+    projectId: string;
+    translationKeyValueList: {
+        key: string;
+        text: string;
+    }[];
+};
+
 export type Language = {
     id: string;
     code: string;

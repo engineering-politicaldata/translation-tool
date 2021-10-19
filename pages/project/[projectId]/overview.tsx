@@ -34,7 +34,7 @@ export default function OverviewPage() {
         if (!activeProject) {
             return;
         }
-        if (!activeProject.totalSourceWords) {
+        if (!activeProject.totalSourceKeys) {
             //TODO api call to get project translation summary
             // const dummyResponse = {
             //     totalSourceKeys: 100,
@@ -57,7 +57,7 @@ export default function OverviewPage() {
         );
     }
 
-    if (activeProject && !activeProject.totalSourceWords) {
+    if (activeProject && !activeProject.totalSourceKeys) {
         return (
             <UserDashboardLayout>
                 <ProjectOverviewPage theme={theme}>
