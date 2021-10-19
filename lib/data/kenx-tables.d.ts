@@ -9,8 +9,14 @@ declare module 'knex/types/tables' {
         updated: any;
     }
 
+    interface ProjectLanguage {
+        id_project: string;
+        id_language: string;
+        is_source_language: boolean;
+    }
     interface Tables {
         // This is same as specifying `knex<Project>('project')`
         project: Project;
+        project__language: ProjectLanguage;
     }
 }
