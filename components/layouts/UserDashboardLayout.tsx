@@ -116,7 +116,7 @@ const AccordionDetails = withStyles(theme => ({
 const UserDashboardLayout = props => {
     const classes = useStyles();
     const router = useRouter();
-    const { projectId: activeRouteID } = router.query;
+    const { projectId: activeProjectID } = router.query;
     const [expanded, setExpanded] = useState<string | false>(false);
     const [activeSubRoute, setActiveSubRoute] = useState('');
     const [menuList, setMenuList] = useState<
@@ -132,26 +132,36 @@ const UserDashboardLayout = props => {
     >(null);
     const projectListContext = useContext(UserDashboardSummaryContext);
 
+    async function getActiveProjectInfo(activeProjectID: string) {
+        if (
+            !projectListContext.activeProject ||
+            projectListContext.activeProject.id !== activeProjectID
+        ) {
+            try {
+                const res = await fetch(`/api/project/${activeProjectID}`, GET_API_CONFIG);
+                const projectBasicInfo: ProjectListItemInfo = await res.json();
+
+                projectListContext.updateActiveProject({
+                    ...projectBasicInfo,
+                });
+            } catch (error) {
+                // TODO redirect to error page
+                console.error(error);
+            }
+        }
+    }
     useEffect(() => {
-        if (!activeRouteID) {
+        if (!activeProjectID) {
             projectListContext.updateActiveProject(undefined);
             return;
         }
 
-        setExpanded(router.query['projectId'] ? router.query['projectId'].toString() : false);
+        getActiveProjectInfo(activeProjectID.toString());
+        setExpanded(activeProjectID.toString());
 
-        if (!projectListContext.activeProject) {
-            // find project basic details to initialize project object
-            const projectListItemInfo = projectListContext.projectList.find(
-                project => project.id === router.query['projectId'],
-            );
-            projectListContext.updateActiveProject({
-                ...projectListItemInfo,
-            });
-        }
         const routeSegments = router.asPath.split('/');
         setActiveSubRoute(routeSegments[3]);
-    }, [activeRouteID]);
+    }, [activeProjectID]);
 
     const getProjectList = async () => {
         try {
@@ -229,7 +239,7 @@ const UserDashboardLayout = props => {
                                         component='a'
                                         className={classes.listItemRoot}
                                         selected={
-                                            activeRouteID === menuItem.projectId &&
+                                            activeProjectID === menuItem.projectId &&
                                             activeSubRoute === submenu.route
                                         }
                                     >

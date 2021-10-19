@@ -266,8 +266,8 @@ export default function CreateProject() {
                                         placeholder: 'Please describe the project in few words',
                                         multiline: true,
                                         type: 'text',
-                                        rowsMax: 4,
-                                        rows: 4,
+                                        maxRows: 4,
+                                        minRows: 4,
                                     }}
                                 />
                             </div>

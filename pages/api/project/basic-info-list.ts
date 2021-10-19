@@ -1,22 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { runMiddleware } from '../../../lib/run-middleware';
-import Cors from 'cors';
-import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
 import { Project } from 'knex/types/tables';
-
-// Initializing the cors middleware
-const cors = Cors({
-    methods: ['GET'],
-    origin: true,
-});
+import { NextApiRequest, NextApiResponse } from 'next';
+import { corsForGet } from '../../../lib/backend.config';
+import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
+import { runMiddleware } from '../../../lib/run-middleware';
 
 async function getProjectsList() {
     const data: DataClient = await DataProvider.client();
-    return data.pg.select('id', 'name', 'description').from<Project>('project');
+    return data.pg.select('id', 'name', 'description').from<Project>('project').orderBy('created');
 }
 
-async function basicInfoList(req: NextApiRequest, res: NextApiResponse<any>) {
-    await runMiddleware(req, res, cors);
+async function basicInfoListHandler(req: NextApiRequest, res: NextApiResponse<any>) {
+    await runMiddleware(req, res, corsForGet);
 
     if (req.method !== 'GET') {
         return;
@@ -35,4 +29,4 @@ async function basicInfoList(req: NextApiRequest, res: NextApiResponse<any>) {
     }
 }
 
-export default basicInfoList;
+export default basicInfoListHandler;

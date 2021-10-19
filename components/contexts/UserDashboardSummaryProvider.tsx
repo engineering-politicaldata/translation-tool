@@ -1,24 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { ProjectListItemInfo } from '../../lib/model';
-export interface Project {
-    id: string;
-    name: string;
-    description?: string;
-    totalResourcesCount?: number; // Total number of resources added for project
-    totalSourceKeys?: number; // Total number of source keys in all the resources
-    totalSourceWords?: number; // Total number of words tobe translated in source JSON
-    translatedKeysCount?: number; // Total number of translated strings/keys
-    totalTranslatedWords?: number; // Total number of words in strings of translated keys
-    resources?: {
-        id: string;
-        createdDate: string;
-        sourceName: string;
-        totalSourceKeys: number;
-        translatedKeysCount: number;
-        totalSourceWords: number;
-    }[];
-}
-
+import { ProjectListItemInfo, Project } from '../../lib/model';
 export interface UserDashboardSummaryType {
     projectList: ProjectListItemInfo[];
     activeProject?: Project;
@@ -45,6 +26,22 @@ const UserDashboardSummaryProvider = props => {
     };
     const updateActiveProject = (project: Project) => {
         if (project) {
+            if (
+                activeProject &&
+                (activeProject.name !== project.name ||
+                    activeProject.description !== project.description)
+            ) {
+                const index = projectList.findIndex(item => item.id === project.id);
+                const newList = [...projectList];
+                newList.splice(index, 1, {
+                    id: project.id,
+                    name: project.name,
+                    description: project.description,
+                });
+
+                setProjectList(newList);
+            }
+
             setActiveProject(project);
         } else {
             setActiveProject(undefined);

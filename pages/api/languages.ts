@@ -1,15 +1,9 @@
-import Cors from 'cors';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { corsForGet } from '../../lib/backend.config';
 import DataProvider from '../../lib/data/DataProvider';
 import { Database } from '../../lib/data/PostgresProvider';
 import { Language } from '../../lib/model';
 import { runMiddleware } from '../../lib/run-middleware';
-
-// Initializing the cors middleware
-const cors = Cors({
-    methods: ['GET'],
-    origin: true,
-});
 
 async function getLanguages(): Promise<Language[]> {
     const client = await DataProvider.client();
@@ -18,8 +12,8 @@ async function getLanguages(): Promise<Language[]> {
     return rows;
 }
 
-async function supportingLanguages(req: NextApiRequest, res: NextApiResponse<any>) {
-    await runMiddleware(req, res, cors);
+async function supportingLanguagesHandler(req: NextApiRequest, res: NextApiResponse<any>) {
+    await runMiddleware(req, res, corsForGet);
 
     if (req.method !== 'GET') {
         return;
@@ -39,4 +33,4 @@ async function supportingLanguages(req: NextApiRequest, res: NextApiResponse<any
     }
 }
 
-export default supportingLanguages;
+export default supportingLanguagesHandler;

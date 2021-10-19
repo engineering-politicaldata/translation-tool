@@ -1,14 +1,8 @@
-import Cors from 'cors';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { Database } from '../../../lib/data/PostgresProvider';
-import { runMiddleware } from '../../../lib/run-middleware';
 import { CreateProjectInput } from '../../../lib/model';
-// Initializing the cors middleware
-const cors = Cors({
-    methods: ['POST'],
-    origin: true,
-});
+import { runMiddleware } from '../../../lib/run-middleware';
 
 async function createProjectWithDetails(input: CreateProjectInput) {
     const data: DataClient = await DataProvider.client();
@@ -47,11 +41,12 @@ async function createProjectWithDetails(input: CreateProjectInput) {
 }
 
 async function createProjectHandler(req: NextApiRequest, res: NextApiResponse<any>) {
-    await runMiddleware(req, res, cors);
+    await runMiddleware(req, res, corsForPost);
     if (req.method !== 'POST') {
         return;
     }
     try {
+        // TODO throw error if name already exists
         const projectId = await createProjectWithDetails({ ...req.body });
         res.status(200).json({
             id: projectId,

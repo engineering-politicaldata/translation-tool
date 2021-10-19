@@ -22,11 +22,20 @@ export type Language = {
     name: string;
 };
 
-export type ProjectBasicDetails = {
-    projectId: string;
+export type Project = {
+    id: string;
     name: string;
-    description: string;
-    targetLanguages: Language[];
+    description?: string;
+    totalResourcesCount?: number; // Total number of resources added for project
+    totalSourceKeys?: number; // Total number of source keys in all the resources
+    translatedKeysCount?: number; // Total number of translated strings/keys
+    resources?: {
+        id: string;
+        created: string;
+        sourceName: string;
+        totalSourceKeys: number;
+        translatedKeysCount: number;
+    }[];
 };
 
 export type ProjectListItemInfo = {
