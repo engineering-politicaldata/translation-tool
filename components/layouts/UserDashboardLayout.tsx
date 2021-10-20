@@ -18,6 +18,7 @@ import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { GET_API_CONFIG } from '../../lib/backend.config';
 import { ProjectListItemInfo } from '../../lib/model';
+import { apiRequest } from '../../shared/RequestHandler';
 import { CustomTheme } from '../../styles/MuiTheme';
 import { UserDashboardSummaryContext } from '../contexts/UserDashboardSummaryProvider';
 
@@ -138,7 +139,7 @@ const UserDashboardLayout = props => {
             projectListContext.activeProject.id !== activeProjectID
         ) {
             try {
-                const res = await fetch(`/api/project/${activeProjectID}`, GET_API_CONFIG);
+                const res = await apiRequest(`/api/project/${activeProjectID}`, GET_API_CONFIG);
                 const projectBasicInfo: ProjectListItemInfo = await res.json();
 
                 projectListContext.updateActiveProject({
@@ -165,7 +166,7 @@ const UserDashboardLayout = props => {
 
     const getProjectList = async () => {
         try {
-            const res = await fetch('/api/project/basic-info-list', GET_API_CONFIG);
+            const res = await apiRequest('/api/project/basic-info-list', GET_API_CONFIG);
             const data: { projectList: ProjectListItemInfo[] } = await res.json();
             if (!data.projectList || !data.projectList.length) {
                 router.replace('/project/create');
@@ -173,6 +174,7 @@ const UserDashboardLayout = props => {
             projectListContext.setProjectList([...data.projectList]);
         } catch (error) {
             // TODO redirect to error page
+            console.log(error);
         }
     };
 

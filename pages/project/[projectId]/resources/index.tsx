@@ -9,6 +9,7 @@ import UserDashboardLayout from '../../../../components/layouts/UserDashboardLay
 import { GET_API_CONFIG } from '../../../../lib/backend.config';
 import { UploadResourcForProjectInput } from '../../../../lib/model';
 import { LoadingState } from '../../../../shared/Constants';
+import { apiRequest } from '../../../../shared/RequestHandler';
 
 const ProjectResourcesPage = styled.div`
     ${props =>
@@ -141,7 +142,7 @@ export default function ResourcesPage() {
     const theme = useTheme();
 
     async function getProjectResourceSummary(projectId: string) {
-        const res = await fetch(`/api/project/${projectId}/resources`, GET_API_CONFIG);
+        const res = await apiRequest(`/api/project/${projectId}/resources`, GET_API_CONFIG);
         const resourceSummary = await res.json();
         projectListContext.updateActiveProject({
             ...activeProject,
@@ -232,7 +233,7 @@ export default function ResourcesPage() {
     async function uploadFileData(input: UploadResourcForProjectInput) {
         setFileUploadProgressState(LoadingState.loading);
         try {
-            const res = await fetch(`/api/project/${projectId}/resources/upload`, {
+            const res = await apiRequest(`/api/project/${projectId}/resources/upload`, {
                 method: 'POST',
                 body: JSON.stringify(input),
                 headers: {
@@ -265,8 +266,8 @@ export default function ResourcesPage() {
                 setFileUploadProgressState(LoadingState.initial);
             }, 1000);
         } catch (error) {
-            // TODO handler error correctly
-            console.error(error);
+            // TODO handler error correctly - Toast with - Resource Already exists. Go to resource for updating the content
+            console.log('error', error);
             setFileUploadProgressState(LoadingState.initial);
         }
     }
@@ -397,7 +398,7 @@ export default function ResourcesPage() {
                 </div>
 
                 <div className='upload-resource-button'>
-                    <UploadSourceButtom title={'Add resource'} />
+                    <UploadSourceButtom title={'Add Resource'} />
                 </div>
 
                 <div>{resourceListItems}</div>

@@ -1,13 +1,13 @@
 import { Button, CircularProgress, Typography, useTheme } from '@material-ui/core';
 import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
-import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../../components/common/generic-text-field';
 import WebsiteHeader from '../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
+import { apiRequest } from '../../../shared/RequestHandler';
 
 const ProjectSettingsComponent = styled.div`
     ${props =>
@@ -105,7 +105,7 @@ export default function ProjectSettingsPage(props: Props) {
                 description: values.projectDescription,
             };
 
-            await fetch('/api/project/update', {
+            await apiRequest('/api/project/update', {
                 method: 'POST',
                 body: JSON.stringify(input),
                 headers: {

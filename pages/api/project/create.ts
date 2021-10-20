@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { corsForPost } from '../../../lib/backend.config';
+import { CustomErrorHandler } from '../../../lib/backend.utils';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
 import { CreateProjectInput } from '../../../lib/model';
 import { runMiddleware } from '../../../lib/run-middleware';
@@ -35,8 +36,11 @@ async function createProjectWithDetails(input: CreateProjectInput) {
             await trx.rollback();
         }
     });
-    // create project
 
+    // create project
+    if (!projectId) {
+        throw Error('Error while creating project');
+    }
     return projectId;
 }
 
@@ -46,16 +50,13 @@ async function createProjectHandler(req: NextApiRequest, res: NextApiResponse<an
         return;
     }
     try {
-        // TODO throw error if name already exists
+        // TODO throw error name already exists or name is empty https://votercircle.atlassian.net/browse/TT-3
         const projectId = await createProjectWithDetails({ ...req.body });
         res.status(200).json({
             id: projectId,
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Error while creating project',
-        });
+        CustomErrorHandler(res, error, 'Error while creating project');
     }
 }
 

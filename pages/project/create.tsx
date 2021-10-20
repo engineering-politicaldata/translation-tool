@@ -17,6 +17,7 @@ import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
 import { GET_API_CONFIG } from '../../lib/backend.config';
 import { CreateProjectInput, Language } from '../../lib/model';
+import { apiRequest } from '../../shared/RequestHandler';
 
 const CreateProjectComponent = styled.div`
     ${props =>
@@ -173,7 +174,7 @@ export default function CreateProject() {
             targetLanguageIds: values.targetLanguages.map(lang => lang.id),
         };
         //TODO: handle project name exists error
-        const res = await fetch('/api/project/create', {
+        const res = await apiRequest('/api/project/create', {
             method: 'POST',
             body: JSON.stringify(input),
             headers: {

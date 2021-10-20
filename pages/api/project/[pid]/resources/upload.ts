@@ -1,6 +1,8 @@
 import { KeyRecordTranslation } from 'knex/types/tables';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { corsForPost } from '../../../../../lib/backend.config';
+import { ErrorCodes } from '../../../../../lib/backend.constants';
+import { CustomErrorHandler, CustomException } from '../../../../../lib/backend.utils';
 import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
 import { UploadResourcForProjectInput } from '../../../../../lib/model';
 import { runMiddleware } from '../../../../../lib/run-middleware';
@@ -58,6 +60,21 @@ async function saveResourceData(input: UploadResourcForProjectInput) {
     return resourceData;
 }
 
+async function verifyIfResourceAlreadyExists(input: UploadResourcForProjectInput) {
+    const data: DataClient = await DataProvider.client();
+    const existingResource = await data.pg
+        .select('id')
+        .from('resource')
+        .where({
+            id_project: input.projectId,
+            resource_name: input.sourceName,
+        })
+        .first();
+    if (existingResource) {
+        throw new CustomException('Resource Already Exits', ErrorCodes.RESOURCE_ALREADY_EXITS);
+    }
+}
+
 async function uploadResourceHandler(req: NextApiRequest, res: NextApiResponse<any>) {
     await runMiddleware(req, res, corsForPost);
     if (req.method !== 'POST') {
@@ -65,15 +82,13 @@ async function uploadResourceHandler(req: NextApiRequest, res: NextApiResponse<a
     }
 
     try {
+        await verifyIfResourceAlreadyExists({ ...req.body });
         const resourceData = await saveResourceData({ ...req.body });
         console.log(resourceData);
 
         res.status(200).json(resourceData);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Error while updating the project details',
-        });
+        CustomErrorHandler(res, error, 'Error while updating the project details');
     }
 }
 
