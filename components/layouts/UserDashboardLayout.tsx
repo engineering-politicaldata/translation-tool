@@ -139,8 +139,10 @@ const UserDashboardLayout = props => {
             projectListContext.activeProject.id !== activeProjectID
         ) {
             try {
-                const res = await apiRequest(`/api/project/${activeProjectID}`, GET_API_CONFIG);
-                const projectBasicInfo: ProjectListItemInfo = await res.json();
+                const projectBasicInfo: ProjectListItemInfo = await apiRequest(
+                    `/api/project/${activeProjectID}`,
+                    GET_API_CONFIG,
+                );
 
                 projectListContext.updateActiveProject({
                     ...projectBasicInfo,
@@ -166,8 +168,11 @@ const UserDashboardLayout = props => {
 
     const getProjectList = async () => {
         try {
-            const res = await apiRequest('/api/project/basic-info-list', GET_API_CONFIG);
-            const data: { projectList: ProjectListItemInfo[] } = await res.json();
+            const data: { projectList: ProjectListItemInfo[] } = await apiRequest(
+                '/api/project/basic-info-list',
+                GET_API_CONFIG,
+            );
+
             if (!data.projectList || !data.projectList.length) {
                 router.replace('/project/create');
             }

@@ -142,8 +142,11 @@ export default function ResourcesPage() {
     const theme = useTheme();
 
     async function getProjectResourceSummary(projectId: string) {
-        const res = await apiRequest(`/api/project/${projectId}/resources`, GET_API_CONFIG);
-        const resourceSummary = await res.json();
+        const resourceSummary = await apiRequest(
+            `/api/project/${projectId}/resources`,
+            GET_API_CONFIG,
+        );
+
         projectListContext.updateActiveProject({
             ...activeProject,
             ...resourceSummary,
@@ -233,16 +236,16 @@ export default function ResourcesPage() {
     async function uploadFileData(input: UploadResourcForProjectInput) {
         setFileUploadProgressState(LoadingState.loading);
         try {
-            const res = await apiRequest(`/api/project/${projectId}/resources/upload`, {
-                method: 'POST',
-                body: JSON.stringify(input),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
+            const data: { id: string; created: string } = await apiRequest(
+                `/api/project/${projectId}/resources/upload`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify(input),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
                 },
-            });
-            console.log(res);
-
-            const data: { id: string; created: string } = await res.json();
+            );
 
             // Make api call and save the source object
             const resourceSummary = {

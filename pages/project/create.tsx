@@ -174,14 +174,13 @@ export default function CreateProject() {
             targetLanguageIds: values.targetLanguages.map(lang => lang.id),
         };
         //TODO: handle project name exists error
-        const res = await apiRequest('/api/project/create', {
+        const data: { id: string } = await apiRequest('/api/project/create', {
             method: 'POST',
             body: JSON.stringify(input),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
             },
         });
-        const data: { id: string } = await res.json();
 
         // redirect to project page
         projectListContext.updateProjectList({
