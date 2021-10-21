@@ -194,7 +194,7 @@ export default function CreateProject() {
     const validate = (values: any) => {
         const errors: any = {};
         if (!values.projectName) {
-            errors['projectName'] = 'Required';
+            errors['projectName'] = 'Project Name is Mandatory';
         } else if (values.projectName.length > 120) {
             errors['projectName'] = 'Must not be more than 120 chars';
         }
