@@ -25,6 +25,9 @@ import { UserDashboardSummaryContext } from '../contexts/UserDashboardSummaryPro
 const LoggedInUserLayoutContainer = styled.div`
     display: flex;
     position: relative;
+    .accordion-container {
+        flex: 1;
+    }
 `;
 
 const drawerWidth = 240;
@@ -61,7 +64,6 @@ const useStyles = makeStyles((theme: CustomTheme) =>
             color: theme.contrastColor,
         },
         addProjectButtomRoot: {
-            position: 'absolute',
             bottom: '16px',
         },
     }),
@@ -279,7 +281,9 @@ const UserDashboardLayout = props => {
                     }}
                     anchor='left'
                 >
-                    {menuList ? getMenuList() : 'Loading'}
+                    <div className={'accordion-container'}>
+                        {menuList ? getMenuList() : 'Loading'}
+                    </div>
                     <Button
                         className={classes.addProjectButtomRoot}
                         variant='contained'

@@ -98,7 +98,7 @@ const ResourceListItemView = styled.div`
         props.theme &&
         css`
             cursor: pointer;
-            padding: ${props.theme.spacing(2)}px ${props.theme.spacing(1)}px;
+            padding: ${props.theme.spacing(3)}px ${props.theme.spacing(1)}px;
             &:hover {
                 background-color: ${props.theme.grey[200]};
             }
@@ -118,6 +118,7 @@ const ResourceListItemView = styled.div`
                     }
                 }
                 .section-2 {
+                    margin-right: ${props.theme.spacing(4)}px;
                 }
                 .section-3 {
                     display: grid;
@@ -152,6 +153,7 @@ export default function ResourcesPage() {
             ...resourceSummary,
         });
     }
+
     useEffect(() => {
         if (!activeProject) {
             return;
@@ -324,7 +326,7 @@ export default function ResourcesPage() {
                 >
                     <div className='resource-item-stats'>
                         <div className='section-1'>
-                            <div className='source-name'>
+                            <Typography variant='subtitle1'>
                                 <Chip
                                     label='Source'
                                     variant='outlined'
@@ -333,13 +335,13 @@ export default function ResourcesPage() {
                                     size='small'
                                 />
                                 {resource.sourceName}
-                            </div>
+                            </Typography>
                             <Typography variant='caption' color='inherit'>
                                 {Math.floor(translationPercentage)}% translated{' '}
                             </Typography>
                         </div>
                         <div className='section-2'>
-                            <Typography variant='caption' color='inherit'>
+                            <Typography variant='subtitle2' color='inherit'>
                                 {' '}
                                 {resource.totalSourceKeys} keys
                             </Typography>
