@@ -9,7 +9,8 @@ import TranslationProgressView from '../../../components/common/translation-prog
 import WebsiteHeader from '../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
-import { GET_API_CONFIG } from '../../../lib/backend.config';
+import { GET_API_CONFIG } from '../../../shared/apiService';
+import { privateRoute } from '../../../shared/guard';
 import { apiRequest } from '../../../shared/RequestHandler';
 const ProjectOverviewPage = styled.div`
     ${props =>
@@ -24,7 +25,7 @@ const ProjectOverviewPage = styled.div`
             }
         `}
 `;
-export default function OverviewPage() {
+function OverviewPage() {
     const router = useRouter();
     const projectId = router.query.projectId;
     const theme = useTheme();
@@ -116,3 +117,5 @@ export default function OverviewPage() {
         </UserDashboardLayout>
     );
 }
+
+export default privateRoute(OverviewPage);

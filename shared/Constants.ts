@@ -59,6 +59,12 @@ export const TERTIARY_COLOR = {
     contrastDefaultColor: 'light',
 };
 
+export const APP_ROUTES = {
+    LANDING: '/',
+    LOGIN: '/auth/login',
+    SIGNUP: '/auth/sign-up',
+};
+
 export const EMAIL_VALIDATION_REGEX =
     /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 

@@ -15,8 +15,8 @@ import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
 import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
-import { GET_API_CONFIG } from '../../lib/backend.config';
 import { CreateProjectInput, Language } from '../../lib/model';
+import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/apiService';
 import { apiRequest } from '../../shared/RequestHandler';
 
 const CreateProjectComponent = styled.div`
@@ -175,11 +175,8 @@ export default function CreateProject() {
         };
         //TODO: handle project name exists error
         const data: { id: string } = await apiRequest('/api/project/create', {
-            method: 'POST',
+            ...POST_API_CONFIG,
             body: JSON.stringify(input),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
         });
 
         // redirect to project page

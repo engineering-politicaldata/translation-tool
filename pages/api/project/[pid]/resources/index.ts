@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { authGuard, CustomErrorHandler } from '../../../../../lib';
 import { corsForGet } from '../../../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
 import { Database } from '../../../../../lib/data/PostgresProvider';
@@ -48,7 +49,7 @@ async function getResourcesList(projectId: string) {
 
     return {
         totalResourcesCount: resourceIds.length,
-        totalSourceKeys: Number(totalSourceKeys[0]?.count) || 0,
+        totalSourceKeys: Number((totalSourceKeys[0] as any)?.count) || 0,
         translatedKeysCount: Number(totalTranslatedKeys.rows[0]?.count) || 0, // Total number of translated strings/keys
         resources: resources.rows?.map(resource => ({
             id: resource.id,
@@ -70,13 +71,11 @@ export default async function resourcesSummarythandler(
     }
 
     try {
+        await authGuard(req);
         const { pid } = req.query;
         const resourceSummary = await getResourcesList(pid.toString());
         res.status(200).json(resourceSummary);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Error while getting project resource list',
-        });
+        CustomErrorHandler(res, error, 'Error while getting project resource list');
     }
 }

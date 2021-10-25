@@ -6,8 +6,8 @@ import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../../components/layouts/UserDashboardLayout';
-import { GET_API_CONFIG } from '../../../../lib/backend.config';
 import { UploadResourcForProjectInput } from '../../../../lib/model';
+import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/apiService';
 import { LoadingState } from '../../../../shared/Constants';
 import { apiRequest } from '../../../../shared/RequestHandler';
 
@@ -241,11 +241,8 @@ export default function ResourcesPage() {
             const data: { id: string; created: string } = await apiRequest(
                 `/api/project/${projectId}/resources/upload`,
                 {
-                    method: 'POST',
+                    ...POST_API_CONFIG,
                     body: JSON.stringify(input),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
                 },
             );
 

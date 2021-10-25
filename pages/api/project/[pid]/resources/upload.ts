@@ -1,5 +1,6 @@
 import { KeyRecordTranslation } from 'knex/types/tables';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { authGuard } from '../../../../../lib';
 import { corsForPost } from '../../../../../lib/backend.config';
 import { ErrorCodes } from '../../../../../lib/backend.constants';
 import { CustomErrorHandler, CustomException } from '../../../../../lib/backend.utils';
@@ -13,21 +14,21 @@ async function saveResourceData(input: UploadResourcForProjectInput) {
     await data.pg.transaction(async trx => {
         try {
             // create resource
-            const newResource: {
+            const createResourceResult: {
                 id: string;
                 created: string;
             }[] = await trx('resource').returning(['id', 'created']).insert({
                 resource_name: input.sourceName,
                 id_project: input.projectId,
             });
-            const resourceId = newResource[0].id;
+            const resourceId = createResourceResult[0].id;
 
             // insert into key_record
             const resourceKeys = input.translationKeyValueList.map(item => ({
                 id_resource: resourceId,
                 key: item.key,
             }));
-            const keyRecordList = await trx.insert(resourceKeys, '*').into('key_record');
+            const keyRecordListResult = await trx.insert(resourceKeys, '*').into('key_record');
 
             // insert translation into key_record__translation
             const sourceLanguage = await trx.select('id_language').from('project__language').where({
@@ -35,19 +36,21 @@ async function saveResourceData(input: UploadResourcForProjectInput) {
                 is_source_language: true,
             });
 
-            const keyRecordTranslationList: KeyRecordTranslation[] = keyRecordList.map(item => {
-                const keyValueObject = input.translationKeyValueList.find(
-                    keyValItem => keyValItem.key == item.key,
-                );
-                return {
-                    id_key_record: item.id,
-                    id_language: sourceLanguage[0].id_language,
-                    value: keyValueObject.text,
-                };
-            });
+            const keyRecordTranslationList: KeyRecordTranslation[] = keyRecordListResult.map(
+                item => {
+                    const keyValueObject = input.translationKeyValueList.find(
+                        keyValItem => keyValItem.key == item.key,
+                    );
+                    return {
+                        id_key_record: item.id,
+                        id_language: sourceLanguage[0].id_language,
+                        value: keyValueObject.text,
+                    };
+                },
+            );
             await trx.insert(keyRecordTranslationList).into('key_record__translation');
 
-            resourceData = newResource[0];
+            resourceData = createResourceResult[0];
 
             trx();
             await trx.commit();
@@ -82,6 +85,7 @@ async function uploadResourceHandler(req: NextApiRequest, res: NextApiResponse<a
     }
 
     try {
+        await authGuard(req);
         await verifyIfResourceAlreadyExists({ ...req.body });
         const resourceData = await saveResourceData({ ...req.body });
         console.log(resourceData);

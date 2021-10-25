@@ -1,5 +1,4 @@
 module.exports = {
-    target: 'serverless',
     env: {
         DB_SCHEMA: process.env.DB_SCHEMA,
         DB_NAME: process.env.DB_NAME,
@@ -10,6 +9,7 @@ module.exports = {
         DATABASE_POOL_MIN: process.env.DATABASE_POOL_MIN,
         DATABASE_POOL_MAX: process.env.DATABASE_POOL_MAX,
         DATABASE_POOL_IDLE: process.env.DATABASE_POOL_IDLE,
+        JWT_SECRET: process.env.JWT_SECRET,
         NEXT_PUBLIC_IMG_URL_PREFIX: process.env.NEXT_PUBLIC_IMG_URL_PREFIX,
     },
     async redirects() {
@@ -20,5 +20,19 @@ module.exports = {
                 permanent: true,
             },
         ];
+    },
+    webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+        if (isServer) {
+            config.externals.push('knex');
+            config.externals.push('pg');
+            config.externals.push('cookie');
+            config.externals.push('@mapbox/node-pre-gyp');
+        }
+        if (!isServer) {
+            config.node = {
+                fs: 'empty',
+            };
+        }
+        return config;
     },
 };

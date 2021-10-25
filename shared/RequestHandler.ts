@@ -7,8 +7,8 @@ export async function apiRequest(input: RequestInfo, init?: RequestInit) {
         }
         return data;
     }
-    if (res.status == 500) {
-        const error = await res.json();
-        throw error;
+    if (res.status == 403) {
     }
+    const error = await res.json();
+    throw error;
 }

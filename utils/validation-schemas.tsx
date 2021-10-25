@@ -19,7 +19,7 @@ export const RegistrationSchema = Yup.object().shape({
         .matches(EMAIL_VALIDATION_REGEX, 'Invalid email address'),
     password: Yup.string()
         .required('Password is required')
-        .min(6, 'Should be at least 6 characters'),
+        .min(5, 'Should be at least 5 characters'),
     confirmPassword: Yup.string()
         .required('You need to confirm your password')
         .oneOf([Yup.ref('password'), null], 'Both password should match'),

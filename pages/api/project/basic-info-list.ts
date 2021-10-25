@@ -1,5 +1,6 @@
 import { Project } from 'knex/types/tables';
 import { NextApiRequest, NextApiResponse } from 'next';
+import { authGuard, CustomErrorHandler } from '../../../lib';
 import { corsForGet } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
 import { runMiddleware } from '../../../lib/run-middleware';
@@ -17,15 +18,13 @@ async function basicInfoListHandler(req: NextApiRequest, res: NextApiResponse<an
     }
 
     try {
+        await authGuard(req);
         const projectList = await getProjectsList();
         res.status(200).json({
             projectList,
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Error while getting project list',
-        });
+        CustomErrorHandler(res, error, 'Error while getting project list');
     }
 }
 

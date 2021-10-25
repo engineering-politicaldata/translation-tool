@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { authGuard } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import { CustomErrorHandler } from '../../../lib/backend.utils';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
@@ -11,11 +12,11 @@ async function createProjectWithDetails(input: CreateProjectInput) {
     await data.pg.transaction(async trx => {
         try {
             // FIXME move table name to mapper function
-            const newProject = await trx('project').returning('id').insert({
+            const result = await trx('project').returning('id').insert({
                 name: input.name,
                 description: input.description,
             });
-            projectId = newProject[0];
+            projectId = result[0];
             // update project source language
             await trx('project__language').insert({
                 id_project: projectId,
@@ -50,6 +51,7 @@ async function createProjectHandler(req: NextApiRequest, res: NextApiResponse<an
         return;
     }
     try {
+        await authGuard(req);
         // TODO throw error name already exists or name is empty https://votercircle.atlassian.net/browse/TT-3
         const projectId = await createProjectWithDetails({ ...req.body });
         res.status(200).json({

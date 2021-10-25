@@ -1,21 +1,35 @@
+import { useTheme } from '@material-ui/core';
 import React from 'react';
+import styled, { css } from 'styled-components';
 import { LoginForm } from '../../components/forms/login-form';
 
+const LoginComponent = styled.div`
+    ${props =>
+        props.theme &&
+        css`
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: ${props.theme.grey[200]};
+            padding-bottom: ${props.theme.spacing(8)}px;
+
+            .login-form {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: ${props.theme.contrastColor};
+                padding: ${props.theme.spacing(10)}px;
+            }
+        `}
+`;
 export default function Login() {
+    const theme = useTheme();
     return (
-        <React.Fragment>
-            <div
-                className='login-container'
-                style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <div className='login-form'>
-                    <LoginForm />
-                </div>
+        <LoginComponent theme={theme}>
+            <div className='login-form'>
+                <LoginForm />
             </div>
-        </React.Fragment>
+        </LoginComponent>
     );
 }
