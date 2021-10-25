@@ -12,9 +12,7 @@ async function createProjectWithDetails(input: CreateProjectInput) {
     const projectAlreadyExists = await data.pg
         .select('id')
         .from('project')
-        .where({
-            name: input.name,
-        })
+        .where('name ILIKE input.name')
         .first();
 
     if (projectAlreadyExists) {
