@@ -1,11 +1,10 @@
-import * as bcrypt from 'bcrypt';
 import { NextApiRequest, NextApiResponse } from 'next';
-import * as sha256 from 'sha256';
 import {
     authGuard,
     CustomErrorHandler,
     CustomException,
     ErrorCodes,
+    generateEncrypedPassword,
     superAdminAuthorizationGuard,
 } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
@@ -13,10 +12,6 @@ import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
 import { CreateAdminInput } from '../../../lib/model';
 import { runMiddleware } from '../../../lib/run-middleware';
 import { isEmailValid, isPasswordValid } from '../../../lib/validations';
-
-function generateEncrypedPassword(password: string) {
-    return bcrypt.hash(sha256(password), 10);
-}
 
 function validateCreateAdminInput(email: string, password: string) {
     if (!isEmailValid(email)) {

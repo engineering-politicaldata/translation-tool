@@ -88,7 +88,6 @@ async function uploadResourceHandler(req: NextApiRequest, res: NextApiResponse<a
         await authGuard(req);
         await verifyIfResourceAlreadyExists({ ...req.body });
         const resourceData = await saveResourceData({ ...req.body });
-        console.log(resourceData);
 
         res.status(200).json(resourceData);
     } catch (error) {

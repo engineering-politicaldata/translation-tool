@@ -1,15 +1,15 @@
+import { Button, CircularProgress, Typography, useTheme } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { Button, Typography, useTheme } from '@material-ui/core';
-import GenericTextField from '../common/generic-text-field';
 import styled, { css } from 'styled-components';
-import { LoginSchema } from '../../utils/validation-schemas';
+import { User, UserLoginInput } from '../../lib/model';
+import { POST_API_CONFIG } from '../../shared/apiService';
 import { APP_ROUTES, LoadingState } from '../../shared/Constants';
 import { apiRequest } from '../../shared/RequestHandler';
-import { POST_API_CONFIG } from '../../shared/apiService';
-import { User, UserLoginInput } from '../../lib/model';
-import { useRouter } from 'next/router';
+import { LoginSchema } from '../../utils/validation-schemas';
+import GenericTextField from '../common/generic-text-field';
 
 const SignInComponent = styled.div`
     ${props =>
@@ -30,6 +30,11 @@ const SignInComponent = styled.div`
                     align-items: center;
                     padding-bottom: 10px;
                 }
+
+                .login-button {
+                    color: #fff;
+                    height: 40px;
+                }
             }
         `}
 `;
@@ -43,8 +48,6 @@ export const LoginForm = () => {
     const router = useRouter();
 
     const handleLogin = async (values: { email: string; password: string }) => {
-        console.log(values);
-        //TODo:: implement sign-in
         setLoadingState(LoadingState.loading);
         try {
             const input: UserLoginInput = values;
@@ -135,13 +138,24 @@ export const LoginForm = () => {
                         />
                         <div style={{ padding: 10 }} />
                         <Button
+                            className='login-button'
                             type='submit'
                             variant='contained'
                             color='primary'
                             onClick={submitForm}
                             fullWidth
+                            disableElevation
                         >
-                            Login
+                            {loadingState === LoadingState.loading && (
+                                <CircularProgress
+                                    color='inherit'
+                                    size={20}
+                                    thickness={3}
+                                    variant='indeterminate'
+                                ></CircularProgress>
+                            )}
+                            {loadingState === LoadingState.success && <Check />}
+                            {loadingState === LoadingState.initial && 'Login'}
                         </Button>
 
                         {/* <div className='sign-up-text'>

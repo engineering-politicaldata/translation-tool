@@ -22,12 +22,6 @@ module.exports = {
         ];
     },
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-        if (isServer) {
-            config.externals.push('knex');
-            config.externals.push('pg');
-            config.externals.push('cookie');
-            config.externals.push('@mapbox/node-pre-gyp');
-        }
         if (!isServer) {
             config.node = {
                 fs: 'empty',

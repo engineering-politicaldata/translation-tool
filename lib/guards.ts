@@ -3,7 +3,6 @@ import { CustomExceptionWithStatus, decodeToken, ErrorCodes, USER_TOKEN } from '
 import DataProvider, { DataClient } from './data/DataProvider';
 
 export async function authGuard(req: NextApiRequest) {
-    console.log(req.cookies);
     const userId = decodeToken(req.cookies[USER_TOKEN]);
     if (!userId) {
         throw new CustomExceptionWithStatus(

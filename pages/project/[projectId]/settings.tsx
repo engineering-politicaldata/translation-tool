@@ -36,7 +36,7 @@ const ProjectSettingsComponent = styled.div`
                     width: 50%;
                     margin-bottom: ${props.theme.spacing(2)}px;
                 }
-                .save-project-buttom {
+                .save-project-button {
                     width: 100px;
                     height: 40px;
                 }
@@ -241,7 +241,7 @@ export default function ProjectSettingsPage(props: Props) {
                                     </div>
 
                                     <Button
-                                        className='save-project-buttom'
+                                        className='save-project-button'
                                         type='submit'
                                         variant='contained'
                                         color='primary'

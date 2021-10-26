@@ -1,7 +1,6 @@
-import * as bcrypt from 'bcrypt';
 import { NextApiRequest, NextApiResponse } from 'next';
-import * as sha256 from 'sha256';
 import {
+    comparePassword,
     CustomErrorHandler,
     CustomException,
     ErrorCodes,
@@ -15,13 +14,6 @@ import { runMiddleware } from '../../../lib/run-middleware';
 import { isEmailValid, isPasswordValid } from '../../../lib/validations';
 import { setCookie } from './../../../lib/cookies.utils';
 
-function comparePassword(passwordInput: string, dbPassword: string) {
-    return new Promise((resolve, reject) => {
-        bcrypt.compare(sha256(passwordInput), dbPassword, (_, res) => {
-            resolve(res);
-        });
-    });
-}
 function validateAdminLoginInput(email: string, password: string) {
     if (!isEmailValid(email)) {
         throw new CustomException('Invalid user email', ErrorCodes.INVALID_PASSWORD);
