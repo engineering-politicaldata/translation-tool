@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { ProjectListItemInfo, Project } from '../../lib/model';
+import { ProjectListItemInfo, Project } from '../../model';
 export interface UserDashboardSummaryType {
     projectList: ProjectListItemInfo[];
     activeProject?: Project;

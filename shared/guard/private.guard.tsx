@@ -1,6 +1,6 @@
 import { NextPageContext } from 'next';
 import React, { Component } from 'react';
-import { USER_TOKEN } from '../../lib';
+import { KEY_TOKEN } from '../Constants';
 import Store from '../Store';
 import { cookiesHelper, redirectToLogin } from './guardUtils';
 
@@ -29,9 +29,8 @@ export function privateRoute(WrappedComponent: any) {
             const { req, query } = ctx;
             let token = ctx['token'];
             if (!token && req) {
-                token = cookiesHelper(req.headers.cookie)[USER_TOKEN];
+                token = cookiesHelper(req.headers.cookie)[KEY_TOKEN];
             }
-            console.log(req.headers.cookie);
 
             if (!token) {
                 token = Store.getToken();

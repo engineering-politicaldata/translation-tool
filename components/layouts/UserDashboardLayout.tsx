@@ -16,7 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ProjectListItemInfo } from '../../lib/model';
+import { ProjectListItemInfo } from '../../model';
 import { GET_API_CONFIG } from '../../shared/apiService';
 import { apiRequest } from '../../shared/RequestHandler';
 import { CustomTheme } from '../../styles/MuiTheme';

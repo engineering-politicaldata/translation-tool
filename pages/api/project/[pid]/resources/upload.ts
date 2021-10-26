@@ -5,7 +5,7 @@ import { corsForPost } from '../../../../../lib/backend.config';
 import { ErrorCodes } from '../../../../../lib/backend.constants';
 import { CustomErrorHandler, CustomException } from '../../../../../lib/backend.utils';
 import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
-import { UploadResourcForProjectInput } from '../../../../../lib/model';
+import { UploadResourcForProjectInput } from '../../../../../model';
 import { runMiddleware } from '../../../../../lib/run-middleware';
 
 async function saveResourceData(input: UploadResourcForProjectInput) {

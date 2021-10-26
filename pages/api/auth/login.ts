@@ -9,7 +9,7 @@ import {
 } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { User, UserLoginInput } from '../../../lib/model';
+import { User, UserLoginInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 import { isEmailValid, isPasswordValid } from '../../../lib/validations';
 import { setCookie } from './../../../lib/cookies.utils';

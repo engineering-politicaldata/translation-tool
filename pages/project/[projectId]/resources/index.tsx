@@ -6,7 +6,7 @@ import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../../components/layouts/UserDashboardLayout';
-import { UploadResourcForProjectInput } from '../../../../lib/model';
+import { UploadResourcForProjectInput } from '../../../../model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/apiService';
 import { LoadingState } from '../../../../shared/Constants';
 import { apiRequest } from '../../../../shared/RequestHandler';
@@ -212,6 +212,7 @@ export default function ResourcesPage() {
                 resource => resource.sourceName === fileName,
             );
             console.log('existing resource with same name found');
+            // TODO go to resource page for updating the translation
         }
 
         const obj: { [key: string]: string } = JSON.parse(event.target.result);

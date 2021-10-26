@@ -15,7 +15,7 @@ import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
 import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
-import { CreateProjectInput, Language } from '../../lib/model';
+import { CreateProjectInput, Language } from '../../model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/apiService';
 import { apiRequest } from '../../shared/RequestHandler';
 

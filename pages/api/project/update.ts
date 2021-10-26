@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { authGuard, CustomErrorHandler } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { UpdateProjectBasicDetailsInput } from '../../../lib/model';
+import { UpdateProjectBasicDetailsInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 
 async function updateProjectDetails(input: UpdateProjectBasicDetailsInput) {

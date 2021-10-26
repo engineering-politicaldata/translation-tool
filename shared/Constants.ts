@@ -1,3 +1,5 @@
+export const KEY_TOKEN = '__tt_token';
+
 // Defaults color palette
 export const PRIMARY_COLOR = {
     50: '#e0f7ee',

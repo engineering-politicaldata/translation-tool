@@ -3,7 +3,7 @@ import { authGuard } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import { CustomErrorHandler } from '../../../lib/backend.utils';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { CreateProjectInput } from '../../../lib/model';
+import { CreateProjectInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 
 async function createProjectWithDetails(input: CreateProjectInput) {

@@ -4,7 +4,7 @@ import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
-import { User, UserLoginInput } from '../../lib/model';
+import { User, UserLoginInput } from '../../model';
 import { POST_API_CONFIG } from '../../shared/apiService';
 import { APP_ROUTES, LoadingState } from '../../shared/Constants';
 import { apiRequest } from '../../shared/RequestHandler';

@@ -9,7 +9,7 @@ import {
 } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { CreateAdminInput } from '../../../lib/model';
+import { CreateAdminInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 import { isEmailValid, isPasswordValid } from '../../../lib/validations';
 

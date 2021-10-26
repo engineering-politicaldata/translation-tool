@@ -9,7 +9,7 @@ import {
 } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { AssginProjectsToAdminInput } from '../../../lib/model';
+import { AssginProjectsToAdminInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 
 async function assignProjectsToAdmin(input: AssginProjectsToAdminInput) {
