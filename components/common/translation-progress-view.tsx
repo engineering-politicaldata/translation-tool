@@ -7,7 +7,7 @@ const TranslationProgressViewContainer = styled.div`
         css`
             .stats {
                 display: flex;
-                margin-bottom: ${props.theme.spacing(2)}px;
+                margin-bottom: ${props.theme.spacing(3)}px;
                 margin-top: ${props.theme.spacing(4)}px;
                 .first-section {
                 }
@@ -28,35 +28,37 @@ interface Props {
     totalSourceKeys?: number;
     translationPercentage?: number;
     untranslationPercentage?: number;
-    totalSourceWords?: number;
+    totalResourcesCount?: number;
 }
 
 const TranslationProgressView = (props: Props) => {
     const theme = useTheme();
-    if (!props.totalSourceKeys || !props.totalSourceWords) {
+    if (!props.totalSourceKeys || !props.totalResourcesCount) {
         return null;
     }
     return (
         <TranslationProgressViewContainer theme={theme}>
             <div className='stats'>
                 <div className='first-section'>
-                    <Typography variant='h4'>{props.totalSourceKeys}</Typography>
+                    <Typography variant='h3'>{props.totalSourceKeys}</Typography>
                     <Typography>Total Source keys</Typography>
                 </div>
                 <div className='middle-section'>
-                    <Typography color='secondary'>
+                    <Typography variant='subtitle2' color='secondary'>
                         {props.translationPercentage}% Translated{' '}
                     </Typography>
                     &nbsp; &nbsp;
-                    <Typography>{props.untranslationPercentage}% UnTranslated </Typography>
+                    <Typography variant='subtitle2'>
+                        {props.untranslationPercentage}% UnTranslated{' '}
+                    </Typography>
                 </div>
                 <div className='last-section'>
-                    <Typography variant='h4'>{props.totalSourceWords}</Typography>
-                    <Typography> Source words</Typography>
+                    <Typography variant='h3'>{props.totalResourcesCount}</Typography>
+                    <Typography> Total Resources</Typography>
                 </div>
             </div>
             <LinearProgress
-                style={{ height: '12px' }}
+                style={{ height: '10px' }}
                 variant='determinate'
                 color='secondary'
                 value={props.translationPercentage}

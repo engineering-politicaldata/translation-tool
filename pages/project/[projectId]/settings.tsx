@@ -1,13 +1,13 @@
 import { Button, CircularProgress, Typography, useTheme } from '@material-ui/core';
 import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
-import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../../components/common/generic-text-field';
 import WebsiteHeader from '../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
+import { apiRequest } from '../../../shared/RequestHandler';
 
 const ProjectSettingsComponent = styled.div`
     ${props =>
@@ -20,6 +20,14 @@ const ProjectSettingsComponent = styled.div`
             .project-settings-body {
                 flex: 1;
                 padding: ${props.theme.spacing(8)}px;
+
+                .progress {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
                 .set-project-info {
                     padding-bottom: ${props.theme.spacing(4)}px;
                 }
@@ -41,6 +49,7 @@ type Props = {
 };
 export default function ProjectSettingsPage(props: Props) {
     const [projectDetails, setProjectDetails] = useState({
+        id: null,
         projectName: '',
         projectDescription: '',
     });
@@ -50,11 +59,7 @@ export default function ProjectSettingsPage(props: Props) {
     });
 
     const [isPageReady, setPageReadyState] = useState(false);
-    const router = useRouter();
     const theme = useTheme();
-
-    const query = router.query;
-    const projectId = query['projectId'];
 
     const projectListContext = useContext(UserDashboardSummaryContext);
     const { activeProject } = projectListContext;
@@ -63,12 +68,17 @@ export default function ProjectSettingsPage(props: Props) {
         if (!activeProject) {
             return;
         }
-        if (!projectDetails.projectName) {
-            setProjectDetails({
-                projectName: activeProject.projectName,
-                projectDescription: activeProject.projectDescription,
-            });
-            setPageReadyState(true);
+
+        if (activeProject.id !== projectDetails.id) {
+            setPageReadyState(false);
+            setTimeout(() => {
+                setProjectDetails({
+                    id: activeProject.id,
+                    projectName: activeProject.name,
+                    projectDescription: activeProject.description,
+                });
+                setPageReadyState(true);
+            }, 500);
         }
     }, [activeProject]);
 
@@ -87,31 +97,49 @@ export default function ProjectSettingsPage(props: Props) {
             complete: false,
         });
 
-        const input = {
-            id: projectId,
-            name: values.projectName,
-            description: values.projectDescription,
-        };
-        //TODO:: use update project basic details api
-        // handle project name exists error
-        setTimeout(() => {
-            setSpinnerState({
-                inProgress: false,
-                complete: true,
-            });
-        }, 1000);
+        // TODO verify if name is not already exists
+        try {
+            const input = {
+                id: activeProject.id,
+                name: values.projectName,
+                description: values.projectDescription,
+            };
 
-        setTimeout(() => {
-            setSpinnerState({
-                inProgress: false,
-                complete: false,
+            await apiRequest('/api/project/update', {
+                method: 'POST',
+                body: JSON.stringify(input),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
             });
-            projectListContext.updateActiveProject({
-                ...activeProject,
-                projectName: values.projectName,
-                projectDescription: values.projectDescription,
+
+            setTimeout(() => {
+                setSpinnerState({
+                    inProgress: false,
+                    complete: true,
+                });
+            }, 1000);
+
+            setTimeout(() => {
+                setSpinnerState({
+                    inProgress: false,
+                    complete: false,
+                });
+                projectListContext.updateActiveProject({
+                    ...activeProject,
+                    name: values.projectName,
+                    description: values.projectDescription,
+                });
+            }, 3000);
+        } catch (error) {
+            // handle project name exists error
+            setTimeout(() => {
+                setSpinnerState({
+                    inProgress: false,
+                    complete: false,
+                });
             });
-        }, 3000);
+        }
     };
 
     const validate = (values: any) => {
@@ -134,6 +162,11 @@ export default function ProjectSettingsPage(props: Props) {
             <UserDashboardLayout>
                 <ProjectSettingsComponent theme={theme}>
                     <WebsiteHeader title='Loading...' description='' />
+                    <div className='project-settings-body'>
+                        <div className='progress'>
+                            <CircularProgress size={'80px'} />
+                        </div>
+                    </div>
                 </ProjectSettingsComponent>
             </UserDashboardLayout>
         );
@@ -151,8 +184,8 @@ export default function ProjectSettingsPage(props: Props) {
                         return (
                             <>
                                 <WebsiteHeader
-                                    title={activeProject.projectName}
-                                    description={activeProject.projectDescription}
+                                    title={activeProject.name}
+                                    description={activeProject.description}
                                 />
 
                                 <div className='project-settings-body'>
@@ -203,8 +236,8 @@ export default function ProjectSettingsPage(props: Props) {
                                                     'Please describe the project in few words',
                                                 multiline: true,
                                                 type: 'text',
-                                                rowsMax: 4,
-                                                rows: 4,
+                                                maxRows: 4,
+                                                minRows: 4,
                                             }}
                                         />
                                     </div>

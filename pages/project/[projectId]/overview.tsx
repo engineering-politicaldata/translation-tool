@@ -9,6 +9,8 @@ import TranslationProgressView from '../../../components/common/translation-prog
 import WebsiteHeader from '../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
+import { GET_API_CONFIG } from '../../../lib/backend.config';
+import { apiRequest } from '../../../shared/RequestHandler';
 const ProjectOverviewPage = styled.div`
     ${props =>
         props.theme &&
@@ -30,20 +32,36 @@ export default function OverviewPage() {
     const projectListContext = useContext(UserDashboardSummaryContext);
     const { activeProject } = projectListContext;
 
+    async function getProjectResourceSummary(projectId: string) {
+        try {
+            const resourceSummary = await apiRequest(
+                `/api/project/${projectId}/resources`,
+                GET_API_CONFIG,
+            );
+
+            projectListContext.updateActiveProject({
+                ...activeProject,
+                ...resourceSummary,
+            });
+        } catch (error) {
+            console.log(error);
+            // TODO handle error correctly
+        }
+    }
+
     useEffect(() => {
         if (!activeProject) {
             return;
         }
-        if (!activeProject.totalSourceWords) {
-            //TODO api call to get project translation summary
-            // const dummyResponse = {
-            //     totalSourceKeys: 100,
-            //     translatedKeysCount: 50,
-            //     totalSourceWords: 200,
-            // };
-            //update active project in context
+
+        if (activeProject.resources === undefined) {
+            getProjectResourceSummary(activeProject.id);
         }
-        // If totalSourceWords are already there then we can safely assume that its up to date
+        // if (!activeProject.totalSourceKeys) {
+        //     //TODO api call to get project translation summary
+
+        //     //update active project in context
+        // }
     }, [activeProject]);
 
     if (!activeProject) {
@@ -57,13 +75,13 @@ export default function OverviewPage() {
         );
     }
 
-    if (activeProject && !activeProject.totalSourceWords) {
+    if (activeProject && !activeProject.totalSourceKeys) {
         return (
             <UserDashboardLayout>
                 <ProjectOverviewPage theme={theme}>
                     <WebsiteHeader
-                        title={activeProject.projectName}
-                        description={activeProject.projectDescription}
+                        title={activeProject.name}
+                        description={activeProject.description}
                     />
 
                     <NoDataFoundPage
@@ -85,10 +103,7 @@ export default function OverviewPage() {
     return (
         <UserDashboardLayout>
             <ProjectOverviewPage theme={theme}>
-                <WebsiteHeader
-                    title={activeProject.projectName}
-                    description={activeProject.projectDescription}
-                />
+                <WebsiteHeader title={activeProject.name} description={activeProject.description} />
 
                 <div className='project-overview-page-body'>
                     <TranslationProgressView

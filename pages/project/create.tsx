@@ -1,24 +1,44 @@
-import { Button, Chip, FormHelperText, TextField, Typography, useTheme } from '@material-ui/core';
+import {
+    Button,
+    Chip,
+    CircularProgress,
+    FormHelperText,
+    TextField,
+    Typography,
+    useTheme,
+} from '@material-ui/core';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
+import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
 import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
+import { GET_API_CONFIG } from '../../lib/backend.config';
+import { CreateProjectInput, Language } from '../../lib/model';
+import { apiRequest } from '../../shared/RequestHandler';
 
 const CreateProjectComponent = styled.div`
     ${props =>
         props.theme &&
         css`
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             background-color: ${props.theme.grey[200]};
             padding-bottom: ${props.theme.spacing(8)}px;
+
             .create-project-container {
                 background-color: ${props.theme.contrastColor};
                 width: 800px;
 
+                .progress {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
                 .create-project-body {
                     padding: ${props.theme.spacing(8)}px;
                     .set-project-info {
@@ -73,6 +93,7 @@ const CreateProjectComponent = styled.div`
             }
         `}
 `;
+
 export default function CreateProject() {
     const projectListContext = useContext(UserDashboardSummaryContext);
     const [projectData, setProjectData] = useState({
@@ -81,42 +102,49 @@ export default function CreateProject() {
         sourceLanguage: null,
         targetLanguages: [],
     });
-    const [allLanguages, setAllLanguages] = useState<
-        {
-            id: string;
-            code: string;
-            name: string;
-        }[]
-    >([]);
+
     const router = useRouter();
-    useEffect(() => {
-        // TODO: API call to get languages
-        const lanugageApiResponse = [
-            {
-                id: '1',
-                code: 'en',
-                name: 'English',
-            },
-            {
-                id: '2',
-                code: 'es',
-                name: 'Spanish',
-            },
-            {
-                id: '3',
-                code: 'fr',
-                name: 'French',
-            },
-        ];
-        setAllLanguages(lanugageApiResponse);
-        const sourceLanguage = lanugageApiResponse.find(item => (item.code = 'en'));
+    const theme = useTheme();
+
+    const { data, error } = useSWR<{ languages: Language[] }>(['/api/languages', GET_API_CONFIG]);
+
+    if (error)
+        return (
+            <CreateProjectComponent theme={theme}>
+                <div className='create-project-container'>
+                    <WebsiteHeader title={'Add new project'} description={''} />
+                    <div className='progress'>
+                        <div>failed to load languages</div>
+                    </div>
+                </div>
+            </CreateProjectComponent>
+        );
+
+    if (!data) {
+        return (
+            <CreateProjectComponent theme={theme}>
+                <div className='create-project-container'>
+                    <WebsiteHeader title={'Add new project'} description={''} />
+                    <div className='progress'>
+                        <CircularProgress size={'80px'} />
+                    </div>
+                </div>
+            </CreateProjectComponent>
+        );
+    }
+    let allLanguages = data.languages;
+
+    const initializeSourceLanguage = () => {
+        const sourceLanguage = allLanguages.find(item => (item.code = 'en'));
         setProjectData({
             ...projectData,
             sourceLanguage,
         });
-    }, []);
+    };
 
-    const theme = useTheme();
+    if (!projectData.sourceLanguage) {
+        initializeSourceLanguage();
+    }
     const addTargetLanguage = lang => () => {
         setProjectData({
             ...projectData,
@@ -138,21 +166,27 @@ export default function CreateProject() {
     };
 
     const createProject = async (values: any) => {
-        const input = {
-            userId: 'default_user_id',
+        const input: CreateProjectInput = {
+            // userId: 'default_user_id', // TODO add user id
             name: values.projectName,
             description: values.projectDescription,
             sourceLanguageId: values.sourceLanguage.id,
             targetLanguageIds: values.targetLanguages.map(lang => lang.id),
         };
-        console.log(input);
-        //TODO:: use create project api
-        // handle project name exists error
+        //TODO: handle project name exists error
+        const data: { id: string } = await apiRequest('/api/project/create', {
+            method: 'POST',
+            body: JSON.stringify(input),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        });
+
         // redirect to project page
         projectListContext.updateProjectList({
-            id: input.name + new Date().toString(),
-            projectName: input.name,
-            projectDescription: input.description,
+            id: data.id,
+            name: input.name,
+            description: input.description,
         });
         router.replace('/');
     };
@@ -232,8 +266,8 @@ export default function CreateProject() {
                                         placeholder: 'Please describe the project in few words',
                                         multiline: true,
                                         type: 'text',
-                                        rowsMax: 4,
-                                        rows: 4,
+                                        maxRows: 4,
+                                        minRows: 4,
                                     }}
                                 />
                             </div>

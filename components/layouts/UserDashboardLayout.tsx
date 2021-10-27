@@ -16,12 +16,18 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { GET_API_CONFIG } from '../../lib/backend.config';
+import { ProjectListItemInfo } from '../../lib/model';
+import { apiRequest } from '../../shared/RequestHandler';
 import { CustomTheme } from '../../styles/MuiTheme';
 import { UserDashboardSummaryContext } from '../contexts/UserDashboardSummaryProvider';
 
 const LoggedInUserLayoutContainer = styled.div`
     display: flex;
     position: relative;
+    .accordion-container {
+        flex: 1;
+    }
 `;
 
 const drawerWidth = 240;
@@ -58,7 +64,6 @@ const useStyles = makeStyles((theme: CustomTheme) =>
             color: theme.contrastColor,
         },
         addProjectButtomRoot: {
-            position: 'absolute',
             bottom: '16px',
         },
     }),
@@ -114,7 +119,7 @@ const AccordionDetails = withStyles(theme => ({
 const UserDashboardLayout = props => {
     const classes = useStyles();
     const router = useRouter();
-    const { projectId: activeRouteID } = router.query;
+    const { projectId: activeProjectID } = router.query;
     const [expanded, setExpanded] = useState<string | false>(false);
     const [activeSubRoute, setActiveSubRoute] = useState('');
     const [menuList, setMenuList] = useState<
@@ -130,35 +135,60 @@ const UserDashboardLayout = props => {
     >(null);
     const projectListContext = useContext(UserDashboardSummaryContext);
 
+    async function getActiveProjectInfo(activeProjectID: string) {
+        if (
+            !projectListContext.activeProject ||
+            projectListContext.activeProject.id !== activeProjectID
+        ) {
+            try {
+                const projectBasicInfo: ProjectListItemInfo = await apiRequest(
+                    `/api/project/${activeProjectID}`,
+                    GET_API_CONFIG,
+                );
+
+                projectListContext.updateActiveProject({
+                    ...projectBasicInfo,
+                });
+            } catch (error) {
+                // TODO redirect to error page
+                console.error(error);
+            }
+        }
+    }
     useEffect(() => {
-        if (!activeRouteID) {
+        if (!activeProjectID) {
             projectListContext.updateActiveProject(undefined);
             return;
         }
 
-        setExpanded(router.query['projectId'] ? router.query['projectId'].toString() : false);
+        getActiveProjectInfo(activeProjectID.toString());
+        setExpanded(activeProjectID.toString());
 
-        if (!projectListContext.activeProject) {
-            // find project basic details to initialize project object
-            const projectBasicInfo = projectListContext.projectList.find(
-                project => project.id === router.query['projectId'],
-            );
-            projectListContext.updateActiveProject({
-                ...projectBasicInfo,
-            });
-        }
         const routeSegments = router.asPath.split('/');
         setActiveSubRoute(routeSegments[3]);
-    }, [activeRouteID]);
+    }, [activeProjectID]);
+
+    const getProjectList = async () => {
+        try {
+            const data: { projectList: ProjectListItemInfo[] } = await apiRequest(
+                '/api/project/basic-info-list',
+                GET_API_CONFIG,
+            );
+
+            if (!data.projectList || !data.projectList.length) {
+                router.replace('/project/create');
+            }
+            projectListContext.setProjectList([...data.projectList]);
+        } catch (error) {
+            // TODO redirect to error page
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         // Check in the context
         if (!projectListContext.projectList.length) {
-            // TODO call get project list api
-            // if list received
-            //   then set the list data in context
-            // else
-            router.replace('/project/create');
+            getProjectList();
             return;
         }
 
@@ -172,7 +202,7 @@ const UserDashboardLayout = props => {
         const menuItems = projectListContext.projectList.map(project => {
             return {
                 projectId: project.id,
-                title: project.projectName,
+                title: project.name,
                 subMenus: [...subMenuList],
             };
         });
@@ -182,11 +212,12 @@ const UserDashboardLayout = props => {
             subMenus: [],
         });
         setMenuList(menuItems);
-    }, []);
+    }, [projectListContext.projectList]);
 
     function addNewProject(event) {
         router.push('/project/create');
     }
+
     const handleChange =
         (projectId: string) => (event: React.ChangeEvent<{}>, newExpanded: boolean) => {
             if (!projectId) {
@@ -194,6 +225,7 @@ const UserDashboardLayout = props => {
             }
             setExpanded(newExpanded ? projectId : false);
         };
+
     const getMenuList = () => {
         return menuList.map(menuItem => {
             return (
@@ -216,7 +248,7 @@ const UserDashboardLayout = props => {
                                         component='a'
                                         className={classes.listItemRoot}
                                         selected={
-                                            activeRouteID === menuItem.projectId &&
+                                            activeProjectID === menuItem.projectId &&
                                             activeSubRoute === submenu.route
                                         }
                                     >
@@ -249,7 +281,9 @@ const UserDashboardLayout = props => {
                     }}
                     anchor='left'
                 >
-                    {menuList ? getMenuList() : 'Loading'}
+                    <div className={'accordion-container'}>
+                        {menuList ? getMenuList() : 'Loading'}
+                    </div>
                     <Button
                         className={classes.addProjectButtomRoot}
                         variant='contained'

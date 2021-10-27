@@ -1,4 +1,4 @@
-import { Chip, LinearProgress, Typography, useTheme } from '@material-ui/core';
+import { Chip, CircularProgress, LinearProgress, Typography, useTheme } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -6,7 +6,10 @@ import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../../components/layouts/UserDashboardLayout';
+import { GET_API_CONFIG } from '../../../../lib/backend.config';
+import { UploadResourcForProjectInput } from '../../../../lib/model';
 import { LoadingState } from '../../../../shared/Constants';
+import { apiRequest } from '../../../../shared/RequestHandler';
 
 const ProjectResourcesPage = styled.div`
     ${props =>
@@ -95,7 +98,7 @@ const ResourceListItemView = styled.div`
         props.theme &&
         css`
             cursor: pointer;
-            padding: ${props.theme.spacing(2)}px ${props.theme.spacing(1)}px;
+            padding: ${props.theme.spacing(3)}px ${props.theme.spacing(1)}px;
             &:hover {
                 background-color: ${props.theme.grey[200]};
             }
@@ -115,6 +118,7 @@ const ResourceListItemView = styled.div`
                     }
                 }
                 .section-2 {
+                    margin-right: ${props.theme.spacing(4)}px;
                 }
                 .section-3 {
                     display: grid;
@@ -129,6 +133,7 @@ export default function ResourcesPage() {
     const router = useRouter();
     const projectId = router.query.projectId;
 
+    const [isPageReady, setPageReadyState] = useState(false);
     const [fileUploadProgressState, setFileUploadProgressState] = useState<LoadingState>(
         LoadingState.initial,
     );
@@ -137,27 +142,40 @@ export default function ResourcesPage() {
     const { activeProject } = projectListContext;
     const theme = useTheme();
 
+    async function getProjectResourceSummary(projectId: string) {
+        const resourceSummary = await apiRequest(
+            `/api/project/${projectId}/resources`,
+            GET_API_CONFIG,
+        );
+
+        projectListContext.updateActiveProject({
+            ...activeProject,
+            ...resourceSummary,
+        });
+    }
+
     useEffect(() => {
         if (!activeProject) {
             return;
         }
 
-        if (activeProject.totalSourceWords === undefined || activeProject.resources === undefined) {
-            // TODO API to get project information with all resources summary
-            const dummayResposne1 = {
-                totalResourcesCount: 0,
-                totalSourceKeys: 0,
-                totalSourceWords: 0,
-                totalTranslatedWords: 0,
-                translatedKeysCount: 0,
-                resources: [],
-            };
-            projectListContext.updateActiveProject({
-                ...activeProject,
-                ...dummayResposne1,
-            });
+        if (activeProject.resources === undefined) {
+            getProjectResourceSummary(activeProject.id);
         }
     }, [activeProject]);
+
+    if (!activeProject && !isPageReady) {
+        return (
+            <UserDashboardLayout>
+                <NoDataFoundPage
+                    message={'Loading project information '}
+                    subText={'please wait...'}
+                >
+                    <CircularProgress size={'80px'} />
+                </NoDataFoundPage>
+            </UserDashboardLayout>
+        );
+    }
 
     if (!activeProject) {
         return (
@@ -171,7 +189,6 @@ export default function ResourcesPage() {
     }
 
     const handleFileSelected = event => {
-        setFileUploadProgressState(LoadingState.loading);
         try {
             let files = event.target.files;
             if (!files.length) {
@@ -186,66 +203,78 @@ export default function ResourcesPage() {
             reader.readAsText(file);
         } catch (err) {
             console.error(err);
-            setFileUploadProgressState(LoadingState.initial);
         }
     };
 
-    function onReaderLoad(event: any, fileName: string) {
+    async function onReaderLoad(event: any, fileName: string) {
         if (activeProject.resources) {
             const existingResource = activeProject.resources.find(
                 resource => resource.sourceName === fileName,
             );
             console.log('existing resource with same name found');
         }
+
         const obj: { [key: string]: string } = JSON.parse(event.target.result);
 
         const input = {
             sourceName: fileName,
-            projectId,
+            projectId: projectId.toString(),
             translationKeyValueList: [],
-            totalWordCount: 0,
         };
-
+        // extract and populate key value object
         for (const [key, value] of Object.entries(obj)) {
             if (!value || !value.trim()) {
                 continue;
             }
-            const wordCount = value
-                .trim()
-                .split(' ')
-                .filter(word => !!word).length;
+
             input.translationKeyValueList.push({
                 key,
                 text: value,
-                wordCount,
             });
-            input.totalWordCount = input.totalWordCount + wordCount;
         }
+        await uploadFileData(input);
+    }
 
-        console.log(input); // TODO remove after api is implemented
+    async function uploadFileData(input: UploadResourcForProjectInput) {
+        setFileUploadProgressState(LoadingState.loading);
+        try {
+            const data: { id: string; created: string } = await apiRequest(
+                `/api/project/${projectId}/resources/upload`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify(input),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                },
+            );
 
-        // Make api call and save the source object
-        const resourceSummary = {
-            id: input.sourceName + new Date().toString(), // This will come from response,
-            createdDate: new Date().toString(),
-            sourceName: input.sourceName,
-            totalSourceKeys: input.translationKeyValueList.length,
-            translatedKeysCount: 0,
-            totalSourceWords: input.totalWordCount,
-        };
+            // Make api call and save the source object
+            const resourceSummary = {
+                id: data.id, // This will come from response,
+                created: data.created,
+                sourceName: input.sourceName,
+                totalSourceKeys: input.translationKeyValueList.length,
+                translatedKeysCount: 0,
+            };
 
-        projectListContext.updateActiveProject({
-            ...activeProject,
-            totalResourcesCount: activeProject.totalResourcesCount + 1,
-            totalSourceKeys: activeProject.totalSourceKeys + input.translationKeyValueList.length,
-            totalSourceWords: activeProject.totalSourceWords + input.totalWordCount,
-            resources: [resourceSummary, ...activeProject.resources],
-        });
+            projectListContext.updateActiveProject({
+                ...activeProject,
+                totalResourcesCount: activeProject.totalResourcesCount + 1,
+                totalSourceKeys:
+                    activeProject.totalSourceKeys + input.translationKeyValueList.length,
+                resources: [resourceSummary, ...activeProject.resources],
+            });
 
-        setFileUploadProgressState(LoadingState.success);
-        setTimeout(() => {
+            setFileUploadProgressState(LoadingState.success);
+            setTimeout(() => {
+                setFileUploadProgressState(LoadingState.initial);
+            }, 1000);
+        } catch (error) {
+            // TODO handler error correctly - Toast with - Resource Already exists. Go to resource for updating the content
+            console.log('error', error);
             setFileUploadProgressState(LoadingState.initial);
-        }, 1000);
+        }
     }
 
     const handleResourceItemClick = (resourceId: string) => {
@@ -297,7 +326,7 @@ export default function ResourcesPage() {
                 >
                     <div className='resource-item-stats'>
                         <div className='section-1'>
-                            <div className='source-name'>
+                            <Typography variant='subtitle1'>
                                 <Chip
                                     label='Source'
                                     variant='outlined'
@@ -306,15 +335,15 @@ export default function ResourcesPage() {
                                     size='small'
                                 />
                                 {resource.sourceName}
-                            </div>
+                            </Typography>
                             <Typography variant='caption' color='inherit'>
                                 {Math.floor(translationPercentage)}% translated{' '}
                             </Typography>
                         </div>
                         <div className='section-2'>
-                            <Typography variant='caption' color='inherit'>
+                            <Typography variant='subtitle2' color='inherit'>
                                 {' '}
-                                {resource.totalSourceKeys} keys / {resource.totalSourceWords} words{' '}
+                                {resource.totalSourceKeys} keys
                             </Typography>
                         </div>
                         <div className='section-3'>
@@ -322,7 +351,7 @@ export default function ResourcesPage() {
                                 Updated On:
                             </Typography>
                             <Typography variant='caption' color='textPrimary'>
-                                {new Date(resource.createdDate).toLocaleString()}
+                                {new Date(resource.created).toLocaleString()}
                             </Typography>
                         </div>
                     </div>
@@ -348,33 +377,33 @@ export default function ResourcesPage() {
                             <Typography color='inherit'>Resources</Typography>
                         </div>
                         <div className='word-count'>
-                            <Typography variant='h5'> {activeProject.totalSourceWords} </Typography>{' '}
+                            <Typography variant='h5'> {activeProject.totalSourceKeys} </Typography>{' '}
                             <Typography variant='subtitle2' color='inherit'>
-                                Total Words
+                                Total Source Keys
                             </Typography>
                         </div>
                     </div>
                     <div className='section-2'>
                         <Typography variant='h5'>
-                            {activeProject.totalSourceWords - activeProject.totalTranslatedWords}
+                            {activeProject.totalSourceKeys - activeProject.translatedKeysCount}
                         </Typography>
                         <Typography variant='subtitle2' color='inherit'>
-                            Untranslated words{' '}
+                            Untranslated Keys{' '}
                         </Typography>
                     </div>
                     <div className='section-3'>
                         <Typography variant='h5'>/ </Typography>
                     </div>
                     <div className='section-4'>
-                        <Typography variant='h5'>{activeProject.totalTranslatedWords}</Typography>
+                        <Typography variant='h5'>{activeProject.translatedKeysCount}</Typography>
                         <Typography variant='subtitle2' color='inherit'>
-                            Translated words
+                            Translated Keys
                         </Typography>
                     </div>
                 </div>
 
                 <div className='upload-resource-button'>
-                    <UploadSourceButtom title={'Add resource'} />
+                    <UploadSourceButtom title={'Add Resource'} />
                 </div>
 
                 <div>{resourceListItems}</div>
@@ -386,7 +415,7 @@ export default function ResourcesPage() {
         <UserDashboardLayout>
             <ProjectResourcesPage theme={theme}>
                 <WebsiteHeader
-                    title={activeProject.projectName}
+                    title={activeProject.name}
                     description={'Resources'}
                     highlight='description'
                 />

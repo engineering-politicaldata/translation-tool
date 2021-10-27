@@ -1,4 +1,4 @@
-import { createMuiTheme, Theme, responsiveFontSizes } from '@material-ui/core/styles';
+import { createTheme, Theme, responsiveFontSizes } from '@material-ui/core/styles';
 import { ColorPartial } from '@material-ui/core/styles/createPalette';
 
 const APP_MIN_WIDTH = '360px';
@@ -20,12 +20,12 @@ export interface CustomTheme extends Theme {
     grey: ColorPartial;
 }
 
-const theme = createMuiTheme({});
+const theme = createTheme({});
 export const createCustomTheme = (Theme: ThemeProps) => {
     return Object.assign(
         {},
         responsiveFontSizes(
-            createMuiTheme({
+            createTheme({
                 breakpoints: {
                     values: {
                         xs: 450,
