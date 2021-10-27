@@ -4,6 +4,7 @@ import { corsForGet } from '../../../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
 import { Database } from '../../../../../lib/data/PostgresProvider';
 import { runMiddleware } from '../../../../../lib/run-middleware';
+import { validateAdminAccessToProject } from '../../../../../lib/validations';
 
 async function getResourcesList(projectId: string) {
     const data: DataClient = await DataProvider.client();
@@ -71,8 +72,9 @@ export default async function resourcesSummarythandler(
     }
 
     try {
-        await authGuard(req);
+        const { userId, isSuperAdmin } = await authGuard(req);
         const { pid } = req.query;
+        await validateAdminAccessToProject(userId, pid.toString(), isSuperAdmin);
         const resourceSummary = await getResourcesList(pid.toString());
         res.status(200).json(resourceSummary);
     } catch (error) {

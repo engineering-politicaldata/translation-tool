@@ -4,9 +4,11 @@ import { authGuard, CustomErrorHandler } from '../../../../lib';
 import { corsForGet } from '../../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../../lib/data/DataProvider';
 import { runMiddleware } from '../../../../lib/run-middleware';
+import { validateAdminAccessToProject } from '../../../../lib/validations';
 
 async function getProjectBasicInfo(projectId: string) {
     const data: DataClient = await DataProvider.client();
+
     const project = data.pg
         .select('id', 'name', 'description')
         .from<Project>('project')
@@ -25,8 +27,9 @@ async function basicInfoHandler(req: NextApiRequest, res: NextApiResponse<any>) 
     }
 
     try {
-        await authGuard(req);
+        const { userId, isSuperAdmin } = await authGuard(req);
         const { pid } = req.query;
+        await validateAdminAccessToProject(userId, pid.toString(), isSuperAdmin);
         const project = await getProjectBasicInfo(pid.toString());
         res.status(200).json(project);
     } catch (error) {

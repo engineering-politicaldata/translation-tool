@@ -7,6 +7,7 @@ import { CustomErrorHandler, CustomException } from '../../../../../lib/backend.
 import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
 import { UploadResourcForProjectInput } from '../../../../../model';
 import { runMiddleware } from '../../../../../lib/run-middleware';
+import { validateAdminAccessToProject } from '../../../../../lib/validations';
 
 async function saveResourceData(input: UploadResourcForProjectInput) {
     const data: DataClient = await DataProvider.client();
@@ -52,7 +53,6 @@ async function saveResourceData(input: UploadResourcForProjectInput) {
 
             resourceData = createResourceResult[0];
 
-            trx();
             await trx.commit();
         } catch (e) {
             console.error(e);
@@ -85,7 +85,8 @@ async function uploadResourceHandler(req: NextApiRequest, res: NextApiResponse<a
     }
 
     try {
-        await authGuard(req);
+        const { userId, isSuperAdmin } = await authGuard(req);
+        await validateAdminAccessToProject(userId, req.body.projectId, isSuperAdmin);
         await verifyIfResourceAlreadyExists({ ...req.body });
         const resourceData = await saveResourceData({ ...req.body });
 
