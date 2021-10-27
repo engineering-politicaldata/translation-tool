@@ -1,16 +1,15 @@
-import { UserProject } from 'knex/types/tables';
 import { NextApiRequest, NextApiResponse } from 'next';
 import {
     authGuard,
     CustomErrorHandler,
     CustomException,
+    CustomExceptionWithStatus,
     ErrorCodes,
-    superAdminAuthorizationGuard,
 } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { AssginProjectsToAdminInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
+import { AssginProjectsToAdminInput } from '../../../model';
 
 async function assignProjectsToAdmin(input: AssginProjectsToAdminInput) {
     if (!input.adminEmail || !input.projectIds?.length) {
@@ -43,8 +42,14 @@ async function assignProjectsToAdminHandler(req: NextApiRequest, res: NextApiRes
     }
 
     try {
-        const userId = await authGuard(req);
-        await superAdminAuthorizationGuard(req, userId);
+        const { userId, isSuperAdmin } = await authGuard(req);
+        if (!isSuperAdmin) {
+            throw new CustomExceptionWithStatus(
+                'Permission denied',
+                ErrorCodes.PERMISSION_DENIED,
+                403,
+            );
+        }
 
         await assignProjectsToAdmin({ ...req.body });
         res.status(200).send(true);

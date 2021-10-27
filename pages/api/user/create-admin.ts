@@ -3,15 +3,15 @@ import {
     authGuard,
     CustomErrorHandler,
     CustomException,
+    CustomExceptionWithStatus,
     ErrorCodes,
     generateEncrypedPassword,
-    superAdminAuthorizationGuard,
 } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { CreateAdminInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 import { isEmailValid, isPasswordValid } from '../../../lib/validations';
+import { CreateAdminInput } from '../../../model';
 
 function validateCreateAdminInput(email: string, password: string) {
     if (!isEmailValid(email)) {
@@ -49,8 +49,14 @@ async function createAdminHandler(req: NextApiRequest, res: NextApiResponse<any>
     }
 
     try {
-        const userId = await authGuard(req);
-        await superAdminAuthorizationGuard(req, userId);
+        const { userId, isSuperAdmin } = await authGuard(req);
+        if (!isSuperAdmin) {
+            throw new CustomExceptionWithStatus(
+                'Permission denied',
+                ErrorCodes.PERMISSION_DENIED,
+                403,
+            );
+        }
 
         const newAdmin = await createAdminWithDetails({ ...req.body });
 

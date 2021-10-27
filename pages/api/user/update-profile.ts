@@ -13,7 +13,7 @@ async function userProfileHandler(req: NextApiRequest, res: NextApiResponse<any>
     }
 
     try {
-        const userId = await authGuard(req);
+        const { userId, isSuperAdmin } = await authGuard(req);
 
         await saveUserProfile({ ...req.body });
         res.status(200).send(true);
