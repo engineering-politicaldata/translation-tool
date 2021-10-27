@@ -1,6 +1,6 @@
-import Head from 'next/head';
 import React from 'react';
 import RegistrationForm from '../../components/forms/registration-form';
+import { anonRoute } from '../../shared/guard';
 
 const SignUpPage = () => {
     return (
@@ -20,4 +20,4 @@ const SignUpPage = () => {
         </>
     );
 };
-export default SignUpPage;
+export default anonRoute(SignUpPage);

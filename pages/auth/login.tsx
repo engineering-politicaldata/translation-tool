@@ -2,6 +2,7 @@ import { useTheme } from '@material-ui/core';
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { LoginForm } from '../../components/forms/login-form';
+import { anonRoute } from '../../shared/guard';
 
 const LoginComponent = styled.div`
     ${props =>
@@ -23,7 +24,7 @@ const LoginComponent = styled.div`
             }
         `}
 `;
-export default function Login() {
+function Login() {
     const theme = useTheme();
     return (
         <LoginComponent theme={theme}>
@@ -33,3 +34,5 @@ export default function Login() {
         </LoginComponent>
     );
 }
+
+export default anonRoute(Login);

@@ -50,6 +50,7 @@ declare module 'knex/types/tables' {
         id_project: string;
         created: any;
     }
+
     interface Tables {
         // This is same as specifying `knex<Project>('project')`
         project: Project;

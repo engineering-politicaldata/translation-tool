@@ -17,6 +17,7 @@ import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
 import { CreateProjectInput, Language } from '../../model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/apiService';
+import { privateRoute } from '../../shared/guard';
 import { apiRequest } from '../../shared/RequestHandler';
 
 const CreateProjectComponent = styled.div`
@@ -94,7 +95,7 @@ const CreateProjectComponent = styled.div`
         `}
 `;
 
-export default function CreateProject() {
+function CreateProject() {
     const projectListContext = useContext(UserDashboardSummaryContext);
     const [projectData, setProjectData] = useState({
         projectName: '',
@@ -372,3 +373,5 @@ export default function CreateProject() {
         </CreateProjectComponent>
     );
 }
+
+export default privateRoute(CreateProject);

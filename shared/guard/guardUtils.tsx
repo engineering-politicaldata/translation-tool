@@ -43,3 +43,24 @@ export function cookiesHelper(cookies?: String): any {
         };
     }, {});
 }
+
+/**
+ * redirect user to home page for trying to access anon urls
+ * @param ctx Page Context, if null, client side routing will be used
+ */
+export const redirectToHome = (ctx: NextPageContext) => {
+    // redirect URL
+    const homeUrl = APP_ROUTES.LANDING;
+    const server = ctx.res;
+    if (server) {
+        // @see https://github.com/zeit/next.js/wiki/Redirecting-in-%60getInitialProps%60
+        // server rendered pages need to do a server redirect
+        server.writeHead(302, {
+            Location: homeUrl,
+        });
+        server.end();
+    } else {
+        // only client side pages have access to next/router
+        Router.push(homeUrl);
+    }
+};

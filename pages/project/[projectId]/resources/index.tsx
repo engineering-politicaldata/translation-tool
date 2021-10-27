@@ -9,6 +9,7 @@ import UserDashboardLayout from '../../../../components/layouts/UserDashboardLay
 import { UploadResourcForProjectInput } from '../../../../model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/apiService';
 import { LoadingState } from '../../../../shared/Constants';
+import { privateRoute } from '../../../../shared/guard';
 import { apiRequest } from '../../../../shared/RequestHandler';
 
 const ProjectResourcesPage = styled.div`
@@ -129,7 +130,7 @@ const ResourceListItemView = styled.div`
             }
         `}
 `;
-export default function ResourcesPage() {
+function ResourcesPage() {
     const router = useRouter();
     const projectId = router.query.projectId;
 
@@ -422,3 +423,5 @@ export default function ResourcesPage() {
         </UserDashboardLayout>
     );
 }
+
+export default privateRoute(ResourcesPage);

@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import UserDashboardLayout from '../../../../components/layouts/UserDashboardLayout';
+import { privateRoute } from '../../../../shared/guard';
 
-export default function ResourcePage() {
+function ResourcePage() {
     const router = useRouter();
     const projectId = router.query.projectId;
     return (
@@ -10,3 +11,5 @@ export default function ResourcePage() {
         </UserDashboardLayout>
     );
 }
+
+export default privateRoute(ResourcePage);
