@@ -45,7 +45,6 @@ const CreateProjectComponent = styled.div`
                         padding-bottom: ${props.theme.spacing(4)}px;
                     }
                     .project-textfield {
-                        width: 50%;
                         margin-bottom: ${props.theme.spacing(2)}px;
                     }
                     .select-language-text {
@@ -112,7 +111,7 @@ export default function CreateProject() {
         return (
             <CreateProjectComponent theme={theme}>
                 <div className='create-project-container'>
-                    <WebsiteHeader title={'Add new project'} description={''} />
+                    <WebsiteHeader title={'Add New Project'} description={''} />
                     <div className='progress'>
                         <div>failed to load languages</div>
                     </div>
@@ -124,7 +123,7 @@ export default function CreateProject() {
         return (
             <CreateProjectComponent theme={theme}>
                 <div className='create-project-container'>
-                    <WebsiteHeader title={'Add new project'} description={''} />
+                    <WebsiteHeader title={'Add New Project'} description={''} />
                     <div className='progress'>
                         <CircularProgress size={'80px'} />
                     </div>
@@ -215,7 +214,7 @@ export default function CreateProject() {
     return (
         <CreateProjectComponent theme={theme}>
             <div className='create-project-container'>
-                <WebsiteHeader title={'Add new project'} description={''} />
+                <WebsiteHeader title={'Add New Project'} description={''} />
                 <Formik
                     initialValues={projectData}
                     enableReinitialize={true}
@@ -225,7 +224,7 @@ export default function CreateProject() {
                     {({ errors, submitForm }) => (
                         <div className='create-project-body'>
                             <Typography variant='h6' component='div' className='set-project-info'>
-                                Set project information
+                                Set Project Information
                             </Typography>
 
                             <div className='project-textfield'>
@@ -263,7 +262,7 @@ export default function CreateProject() {
                                     error={!!errors.projectDescription}
                                     helperMessage={errors.projectDescription}
                                     textFieldProps={{
-                                        placeholder: 'Please describe the project in few words',
+                                        placeholder: 'Please describe the Project in few words',
                                         multiline: true,
                                         type: 'text',
                                         maxRows: 4,
@@ -277,13 +276,13 @@ export default function CreateProject() {
                                 component='div'
                                 className='select-language-text'
                             >
-                                Select languages
+                                Select Target Languages
                             </Typography>
 
                             <div className='language-selection-section'>
                                 <div className='source-language'>
                                     <p>
-                                        Source language: <b>set to English</b>
+                                        Source language: <b>Set to English</b>
                                     </p>
 
                                     {projectData.sourceLanguage && (
@@ -330,7 +329,7 @@ export default function CreateProject() {
                                 </div>
 
                                 <div className='selected-target-languages'>
-                                    <p>Target languages</p>
+                                    <p>Target Languages</p>
                                     <div className='selected-language-container'>
                                         {allLanguages.map(lng => {
                                             const index = projectData.targetLanguages.findIndex(
@@ -361,12 +360,14 @@ export default function CreateProject() {
                                 className='create-project-button'
                                 type='submit'
                                 variant='contained'
-                                color='primary'
+                                color='secondary'
                                 size='small'
                                 onClick={submitForm}
                                 disableElevation
                             >
-                                create
+                                <Typography color={'inherit'}>
+                                    <div>create</div>
+                                </Typography>
                             </Button>
                         </div>
                     )}
