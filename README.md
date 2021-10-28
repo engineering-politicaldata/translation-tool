@@ -18,6 +18,41 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Guidelines
+<br>
 
-### lib folder is created for managing backend. Please do not use it in frontend code. It can cause unexpected errors
+# Guidelines
+
+## `Note:` Lib folder is created for managing backend. Please do not use it in frontend code. It can cause unexpected errors
+
+<br>
+
+---
+
+<br>
+
+### Pre Commit Hook
+
+This is to put the branch name (which is usually the JIRA ticket number) into the commit message automatically
+
+```
+yarn init-prepare-commit-message
+```
+
+## Coding practice
+
+### `Frontend:`
+
+1. All the page/route files will follow smallcase with hypen separated
+2. All the components follow smallcase with hypen separated.
+3. Remaining typescript file will follow camel case
+
+<br>
+
+---
+
+<br>
+
+### `Backend:` - code is spread across lib, model, api folders
+
+1. All the api routes also follow smallcase with hypen separated.
+2. Remaining typescript files in backend will follow smallcase

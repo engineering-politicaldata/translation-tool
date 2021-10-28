@@ -20,7 +20,7 @@ import { ProjectListItemInfo } from '../../model';
 import { GET_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
 import { CustomTheme } from '../../styles/MuiTheme';
-import { UserDashboardSummaryContext } from '../contexts/UserDashboardSummaryProvider';
+import { UserDashboardSummaryContext } from '../contexts/user-dashboard-summary-provider';
 
 const LoggedInUserLayoutContainer = styled.div`
     display: flex;

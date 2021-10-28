@@ -14,7 +14,7 @@ import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
 import WebsiteHeader from '../../components/common/website-header';
-import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
+import { UserDashboardSummaryContext } from '../../components/contexts/user-dashboard-summary-provider';
 import { CreateProjectInput, Language } from '../../model';
 import { privateRoute } from '../../guard';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/ApiConfig';

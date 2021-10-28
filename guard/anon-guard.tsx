@@ -1,46 +1,40 @@
 import { NextPageContext } from 'next';
 import React, { Component } from 'react';
+import { AuthProps } from '.';
 import { KEY_TOKEN } from '../shared/Constants';
 import Store from '../shared/Store';
-import { cookiesHelper, redirectToLogin } from './guardUtils';
-
-export type AuthProps = {
-    token: string;
-};
-
-export interface AppContextWithAuthToken extends NextPageContext {
-    token: string;
-}
+import { cookiesHelper, redirectToHome } from './GuardUtils';
+import { AppContextWithAuthToken } from './private-guard';
 
 /**
- * Wraps the component as private component. If user
- * is not logged in, then redirects the user to login
- * or auth page with current url as redirect URL.
- * @param WrappedComponent Component to be made private
+ * Wraps the component as public-only component. If user is
+ * logged in, then redirect user to home page
+ * ie. landing page, login page
+ * @param WrappedComponent Component to be made public-only
  */
-export function privateRoute(WrappedComponent: any) {
+export function anonRoute(WrappedComponent: any) {
     return class extends Component<AuthProps> {
         /**
          * for checking user login status and redicting to
          * auth page if required
          * @param ctx Page Context, will be null in case of client-side rendering
          */
-        static async getInitialProps(ctx: AppContextWithAuthToken) {
-            const { req, query } = ctx;
-            let token = ctx['token'];
-            if (!token && req) {
+        static async getInitialProps(ctx: NextPageContext) {
+            let req = ctx.req;
+            let token;
+
+            if (req) {
                 token = cookiesHelper(req.headers.cookie)[KEY_TOKEN];
             }
-
             if (!token) {
                 token = Store.getToken();
             }
 
             const initialProps = { token };
-            // if the token does not exists, or if it is empty, then redirect to
-            // login page
-            if (!token) {
-                redirectToLogin(ctx);
+
+            // if the token exists, then redirect to home page
+            if (token) {
+                redirectToHome(ctx);
             }
 
             // if not, then call the wrapped components getInitialProps
@@ -49,15 +43,15 @@ export function privateRoute(WrappedComponent: any) {
                 const Context: AppContextWithAuthToken = { ...ctx, ...initialProps };
                 const wrappedProps = await WrappedComponent.getInitialProps(Context);
                 // make sure our token is always returned
-                return { ...wrappedProps, ...initialProps };
+                return { ...wrappedProps };
             }
             return initialProps;
         }
 
         render() {
             // return the wrappedComponent as child
-            const { token, ...propsWithoutAuth } = this.props;
-            return <WrappedComponent token={token} {...propsWithoutAuth} />;
+            const { ...propsWithoutAuth } = this.props;
+            return <WrappedComponent token={null} {...propsWithoutAuth} />;
         }
     };
 }

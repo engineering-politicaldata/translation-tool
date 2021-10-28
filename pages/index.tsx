@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../components/common/no-data-found-page';
 import TranslationProgressView from '../components/common/translation-progress-view';
 import WebsiteHeader from '../components/common/website-header';
-import UserDashboardLayout from '../components/layouts/UserDashboardLayout';
+import UserDashboardLayout from '../components/layouts/user-dashboard-layout';
 import { privateRoute } from '../guard';
 
 const AllProjectListPage = styled.div`
