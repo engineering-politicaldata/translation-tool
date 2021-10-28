@@ -19,6 +19,7 @@ import React, { useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
+import SnackBarCustom from '../../components/common/SnackBarCustom';
 import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
 import { GET_API_CONFIG } from '../../lib/backend.config';
@@ -129,6 +130,12 @@ export default function CreateProject() {
         projectDescription: '',
         sourceLanguage: null,
         targetLanguages: [],
+        errorMessage: '',
+    });
+
+    const [snackBarData, openSnackbar] = useState({
+        isSnackBarOpen: false,
+        errorMessage: '',
     });
 
     const router = useRouter();
@@ -169,7 +176,6 @@ export default function CreateProject() {
         );
     }
     let allLanguages = data.languages;
-
     const initializeSourceLanguage = () => {
         const sourceLanguage = allLanguages.find(item => (item.code = 'en'));
         setProjectData({
@@ -201,6 +207,13 @@ export default function CreateProject() {
         setProjectData({ ...projectData, ...newState });
     };
 
+    const onSnackbarClose = () => {
+        openSnackbar({
+            ...snackBarData,
+            isSnackBarOpen: false,
+        });
+    };
+
     const createProject = async (values: any) => {
         const input: CreateProjectInput = {
             // userId: 'default_user_id', // TODO add user id
@@ -209,22 +222,29 @@ export default function CreateProject() {
             sourceLanguageId: values.sourceLanguage.id,
             targetLanguageIds: values.targetLanguages.map(lang => lang.id),
         };
-        //TODO: handle project name exists error
-        const data: { id: string } = await apiRequest('/api/project/create', {
-            method: 'POST',
-            body: JSON.stringify(input),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        });
+        try {
+            //TODO: handle project name exists error
+            const data: { id: string } = await apiRequest('/api/project/create', {
+                method: 'POST',
+                body: JSON.stringify(input),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            });
 
-        // redirect to project page
-        projectListContext.updateProjectList({
-            id: data.id,
-            name: input.name,
-            description: input.description,
-        });
-        router.replace('/');
+            // redirect to project page
+            projectListContext.updateProjectList({
+                id: data.id,
+                name: input.name,
+                description: input.description,
+            });
+            router.replace('/');
+        } catch (err) {
+            openSnackbar({
+                errorMessage: err.backendError.message,
+                isSnackBarOpen: true,
+            });
+        }
     };
 
     const validate = (values: any) => {
@@ -405,6 +425,14 @@ export default function CreateProject() {
                         </div>
                     )}
                 </Formik>
+                <SnackBarCustom
+                    message={snackBarData.errorMessage}
+                    snackbarProps={{
+                        open: snackBarData.isSnackBarOpen,
+                        autoHideDuration: 2000,
+                        onClose: onSnackbarClose,
+                    }}
+                />
             </div>
         </CreateProjectComponent>
     );
