@@ -1,4 +1,8 @@
-module.exports = {
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+});
+
+module.exports = withBundleAnalyzer({
     env: {
         DB_SCHEMA: process.env.DB_SCHEMA,
         DB_NAME: process.env.DB_NAME,
@@ -29,4 +33,4 @@ module.exports = {
         }
         return config;
     },
-};
+});
