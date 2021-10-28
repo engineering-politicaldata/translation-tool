@@ -3,7 +3,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import App, { AppContext } from 'next/app';
 import Head from 'next/head';
 import { SWRConfig } from 'swr';
-import UserDashboardSummaryProvider from '../components/contexts/UserDashboardSummaryProvider';
+import UserDashboardSummaryProvider from '../components/contexts/user-dashboard-summary-provider';
 import { GRAY_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, TERTIARY_COLOR } from '../shared/Constants';
 import { createCustomTheme, ThemeProps } from '../styles/MuiTheme';
 const themeConfig: ThemeProps = {
