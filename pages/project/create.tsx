@@ -76,9 +76,6 @@ const CreateProjectComponent = styled.div`
                     .create-project-button {
                         width: 120px;
                     }
-                    .MuiSelect-select.MuiSelect-select {
-                        padding-right: 0px;
-                    }
                 }
             }
         `}
@@ -88,19 +85,22 @@ const useStyles = makeStyles(theme => ({
     formControl: {
         margin: theme.spacing(1),
         width: 300,
-        background: 'white',
     },
     chips: {
         display: 'flex',
         flexWrap: 'wrap',
-        background: 'white',
     },
     chip: {
         margin: 6,
-        background: 'white',
     },
     noLabel: {
         marginTop: theme.spacing(3),
+    },
+    selectRoot: {
+        minHeight: 40,
+    },
+    selectRootInput: {
+        minHeight: 40,
     },
 }));
 
@@ -330,12 +330,19 @@ export default function CreateProject() {
                                         Target Languages
                                     </InputLabel>
                                     <Select
+                                        className={classes.selectRoot}
                                         labelId='demo-multiple-chip-label'
                                         id='demo-multiple-chip'
                                         multiple
                                         value={projectData.targetLanguages}
                                         onChange={handleChange}
-                                        input={<Input id='select-multiple-chip' />}
+                                        style={{ minHeight: '40px' }}
+                                        input={
+                                            <Input
+                                                id='select-multiple-chip'
+                                                className={classes.selectRootInput}
+                                            />
+                                        }
                                         renderValue={selected => (
                                             <div className={classes.chips}>
                                                 {selected.map(languageId => {

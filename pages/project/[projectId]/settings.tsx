@@ -38,7 +38,7 @@ const ProjectSettingsComponent = styled.div`
                 .save-btn {
                     display: flex;
                     justify-content: right;
-                    padding-right: 100px;
+                    width: 50%;
                 }
                 .save-project-button {
                     width: 100px;
