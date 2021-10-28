@@ -9,10 +9,10 @@ import { runMiddleware } from '../../../lib/run-middleware';
 async function createProjectWithDetails(input: CreateProjectInput) {
     const data: DataClient = await DataProvider.client();
 
-    const projectAlreadyExists = await data.pg.select('id').from('project').where({
-        name: input.name,
-    });
-
+    const projectAlreadyExists = await data.pg
+        .select('id')
+        .from('project')
+        .where('name', 'ilike', `%${input.name}%`);
     if (projectAlreadyExists.length !== 0) {
         throw new CustomException(
             'A Project with the given name already exists',
