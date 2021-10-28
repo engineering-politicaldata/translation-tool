@@ -3,10 +3,16 @@ import {
     Chip,
     CircularProgress,
     FormHelperText,
-    TextField,
     Typography,
     useTheme,
+    Input,
+    InputLabel,
+    MenuItem,
+    FormControl,
+    Select,
+    makeStyles,
 } from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
@@ -51,47 +57,70 @@ const CreateProjectComponent = styled.div`
                         margin-top: ${props.theme.spacing(4)}px;
                         margin-bottom: ${props.theme.spacing(2)}px;
                     }
+                    .source-language-icon {
+                        font-size: 19px;
+                        margin-top: ${props.theme.spacing(4)}px;
+                        margin-bottom: -${props.theme.spacing(1)}px;
+                    }
+                    .source-language-text {
+                        font-size: 12px;
+                        color: #777777;
+                    }
                     .language-selection-section {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr 1fr;
                         margin-bottom: ${props.theme.spacing(16)}px;
-                        grid-gap: ${props.theme.spacing(8)}px;
-                        .source-language {
-                            display: grid;
-                            grid-template-rows: auto 1fr;
-                            grid-gap: ${props.theme.spacing(2)}px;
-                        }
-                        .selected-target-languages {
-                            display: grid;
-                            grid-template-rows: auto 1fr;
-                            grid-gap: ${props.theme.spacing(2)}px;
-                            .selected_chip {
-                                margin: ${props.theme.spacing(1)}px;
-                            }
-                            .selected-language-container {
-                                padding: ${props.theme.spacing(2)}px;
-                                border: 1px solid ${props.theme.black};
-                            }
-                        }
-                        .remaining-languages {
-                            display: grid;
-                            grid-template-rows: auto 1fr;
-                            grid-gap: ${props.theme.spacing(2)}px;
-                            .remaining-languages-container {
-                                background-color: ${props.theme.grey[100]};
-                                min-height: 32px;
-                                padding: ${props.theme.spacing(2)}px;
-                                border: 1px solid ${props.theme.black};
-                            }
-                        }
+                    }
+                    .create-btn {
+                        display: flex;
+                        justify-content: right;
                     }
                     .create-project-button {
                         width: 120px;
+                    }
+                    .MuiSelect-select.MuiSelect-select {
+                        padding-right: 0px;
                     }
                 }
             }
         `}
 `;
+
+const useStyles = makeStyles(theme => ({
+    formControl: {
+        margin: theme.spacing(1),
+        width: 300,
+        background: 'white',
+    },
+    chips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        background: 'white',
+    },
+    chip: {
+        margin: 6,
+        background: 'white',
+    },
+    noLabel: {
+        marginTop: theme.spacing(3),
+    },
+}));
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 0;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+            paddingRight: 0,
+        },
+    },
+};
+
+const getStyles = (id, languangeIdArray, theme) => {
+    return {
+        fontWeight: languangeIdArray.indexOf(id) === -1 ? 500 : 600,
+    };
+};
 
 export default function CreateProject() {
     const projectListContext = useContext(UserDashboardSummaryContext);
@@ -104,6 +133,14 @@ export default function CreateProject() {
 
     const router = useRouter();
     const theme = useTheme();
+    const classes = useStyles();
+
+    const handleChange = event => {
+        setProjectData({
+            ...projectData,
+            targetLanguages: event.target.value,
+        });
+    };
 
     const { data, error } = useSWR<{ languages: Language[] }>(['/api/languages', GET_API_CONFIG]);
 
@@ -276,99 +313,88 @@ export default function CreateProject() {
                                 component='div'
                                 className='select-language-text'
                             >
-                                Select Target Languages
+                                Select Target Languages{' '}
+                                <span className='source-language-text'>
+                                    {' '}
+                                    <InfoOutlinedIcon
+                                        className='source-language-icon'
+                                        color='secondary'
+                                    />{' '}
+                                    Source language is set to English by default{' '}
+                                </span>
                             </Typography>
 
                             <div className='language-selection-section'>
-                                <div className='source-language'>
-                                    <p>
-                                        Source language: <b>Set to English</b>
-                                    </p>
-
-                                    {projectData.sourceLanguage && (
-                                        <TextField
-                                            id='filled-read-only-input'
-                                            variant='outlined'
-                                            value={projectData.sourceLanguage.name}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                            style={{
-                                                width: '120px',
-                                            }}
-                                        />
-                                    )}
-                                </div>
-
-                                <div className='remaining-languages'>
-                                    <p>Available Languages</p>
-                                    <div className='remaining-languages-container'>
+                                <FormControl className={classes.formControl}>
+                                    <InputLabel id='demo-multiple-chip-label'>
+                                        Target Languages
+                                    </InputLabel>
+                                    <Select
+                                        labelId='demo-multiple-chip-label'
+                                        id='demo-multiple-chip'
+                                        multiple
+                                        value={projectData.targetLanguages}
+                                        onChange={handleChange}
+                                        input={<Input id='select-multiple-chip' />}
+                                        renderValue={selected => (
+                                            <div className={classes.chips}>
+                                                {selected.map(languageId => {
+                                                    const selectedLanguage = allLanguages.find(
+                                                        language => language.id === languageId,
+                                                    );
+                                                    return (
+                                                        <Chip
+                                                            key={languageId}
+                                                            label={selectedLanguage.name}
+                                                            className={classes.chip}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                        MenuProps={MenuProps}
+                                    >
                                         {allLanguages.map(data => {
                                             if (data.id === projectData.sourceLanguage.id) {
                                                 return null;
                                             }
-                                            const index = projectData.targetLanguages.findIndex(
-                                                targetLang => targetLang.id === data.id,
-                                            );
-                                            if (index > -1) {
-                                                return null;
-                                            }
-                                            return (
-                                                <Chip
-                                                    key={data.code}
-                                                    label={data.name}
-                                                    onClick={addTargetLanguage(data)}
-                                                    className='chip_class'
-                                                    style={{ margin: '4px' }}
-                                                />
-                                            );
-                                        })}
-                                        {projectData.targetLanguages.length ===
-                                            allLanguages.length - 1 && 'No more languages'}
-                                    </div>
-                                </div>
 
-                                <div className='selected-target-languages'>
-                                    <p>Target Languages</p>
-                                    <div className='selected-language-container'>
-                                        {allLanguages.map(lng => {
-                                            const index = projectData.targetLanguages.findIndex(
-                                                targetLang => targetLang.id === lng.id,
-                                            );
-                                            if (index === -1) {
-                                                return null;
-                                            }
                                             return (
-                                                <Chip
-                                                    key={lng.code}
-                                                    label={lng.name}
-                                                    onDelete={deleteTargetLanguage(lng)}
-                                                    className='selected_chip'
-                                                    color='primary'
-                                                />
+                                                <MenuItem
+                                                    key={data.id}
+                                                    value={data.id}
+                                                    style={getStyles(
+                                                        data.id,
+                                                        projectData.targetLanguages,
+                                                        theme,
+                                                    )}
+                                                >
+                                                    {data.name}
+                                                </MenuItem>
                                             );
                                         })}
-                                        {projectData.targetLanguages.length === 0 &&
-                                            'No target languages'}
-                                    </div>
-                                    <FormHelperText error={!!errors.targetLanguages}>
-                                        {errors.targetLanguages}
-                                    </FormHelperText>
-                                </div>
+                                    </Select>
+                                </FormControl>
+
+                                <FormHelperText error={!!errors.targetLanguages}>
+                                    {errors.targetLanguages}
+                                </FormHelperText>
                             </div>
-                            <Button
-                                className='create-project-button'
-                                type='submit'
-                                variant='contained'
-                                color='secondary'
-                                size='small'
-                                onClick={submitForm}
-                                disableElevation
-                            >
-                                <Typography color={'inherit'}>
-                                    <div>create</div>
-                                </Typography>
-                            </Button>
+                            <div className='create-btn'>
+                                <Button
+                                    className='create-project-button'
+                                    type='submit'
+                                    variant='contained'
+                                    color='secondary'
+                                    size='small'
+                                    onClick={submitForm}
+                                    disableElevation
+                                >
+                                    <Typography color={'inherit'}>
+                                        <div>create</div>
+                                    </Typography>
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </Formik>
