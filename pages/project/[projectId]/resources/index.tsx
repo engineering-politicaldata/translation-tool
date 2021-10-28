@@ -7,10 +7,10 @@ import WebsiteHeader from '../../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../../components/layouts/UserDashboardLayout';
 import { UploadResourcForProjectInput } from '../../../../model';
-import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/apiService';
 import { LoadingState } from '../../../../shared/Constants';
-import { privateRoute } from '../../../../shared/guard';
+import { privateRoute } from '../../../../guard';
 import { apiRequest } from '../../../../shared/RequestHandler';
+import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/ApiConfig';
 
 const ProjectResourcesPage = styled.div`
     ${props =>

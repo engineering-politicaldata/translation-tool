@@ -1,6 +1,6 @@
 import { NextPageContext } from 'next';
 import Router from 'next/router';
-import { APP_ROUTES } from '../Constants';
+import { APP_ROUTES } from '../shared/Constants';
 
 /**
  * redirect user to login page

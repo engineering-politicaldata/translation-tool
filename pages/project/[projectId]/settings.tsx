@@ -7,8 +7,8 @@ import GenericTextField from '../../../components/common/generic-text-field';
 import WebsiteHeader from '../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
-import { POST_API_CONFIG } from '../../../shared/apiService';
-import { privateRoute } from '../../../shared/guard';
+import { privateRoute } from '../../../guard';
+import { POST_API_CONFIG } from '../../../shared/ApiConfig';
 import { apiRequest } from '../../../shared/RequestHandler';
 
 const ProjectSettingsComponent = styled.div`

@@ -5,7 +5,7 @@ import NoDataFoundPage from '../components/common/no-data-found-page';
 import TranslationProgressView from '../components/common/translation-progress-view';
 import WebsiteHeader from '../components/common/website-header';
 import UserDashboardLayout from '../components/layouts/UserDashboardLayout';
-import { privateRoute } from '../shared/guard';
+import { privateRoute } from '../guard';
 
 const AllProjectListPage = styled.div`
     ${props =>

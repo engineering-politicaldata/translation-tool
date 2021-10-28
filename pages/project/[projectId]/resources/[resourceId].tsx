@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import UserDashboardLayout from '../../../../components/layouts/UserDashboardLayout';
-import { privateRoute } from '../../../../shared/guard';
+import { privateRoute } from '../../../../guard';
 
 function ResourcePage() {
     const router = useRouter();

@@ -9,8 +9,8 @@ import TranslationProgressView from '../../../components/common/translation-prog
 import WebsiteHeader from '../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
 import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
-import { GET_API_CONFIG } from '../../../shared/apiService';
-import { privateRoute } from '../../../shared/guard';
+import { privateRoute } from '../../../guard';
+import { GET_API_CONFIG } from '../../../shared/ApiConfig';
 import { apiRequest } from '../../../shared/RequestHandler';
 const ProjectOverviewPage = styled.div`
     ${props =>

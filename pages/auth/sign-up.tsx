@@ -1,6 +1,6 @@
 import React from 'react';
 import RegistrationForm from '../../components/forms/registration-form';
-import { anonRoute } from '../../shared/guard';
+import { anonRoute } from '../../guard';
 
 const SignUpPage = () => {
     return (

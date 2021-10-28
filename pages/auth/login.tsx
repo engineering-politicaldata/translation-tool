@@ -2,7 +2,7 @@ import { useTheme } from '@material-ui/core';
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { LoginForm } from '../../components/forms/login-form';
-import { anonRoute } from '../../shared/guard';
+import { anonRoute } from '../../guard';
 
 const LoginComponent = styled.div`
     ${props =>
