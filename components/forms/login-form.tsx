@@ -20,10 +20,7 @@ const SignInComponent = styled.div`
                 align-items: center;
                 flex-direction: column;
                 min-width: 450px;
-                .sign-up-text {
-                    padding-top: 20px;
-                    flex-direction: row;
-                }
+
                 .sign-in-heading {
                     display: flex;
                     justify-content: center;
@@ -157,13 +154,6 @@ export const LoginForm = () => {
                             {loadingState === LoadingState.success && <Check />}
                             {loadingState === LoadingState.initial && 'Login'}
                         </Button>
-
-                        {/* <div className='sign-up-text'>
-                            <a>Don't have an account? </a>
-                            <Link href='/auth/sign-up'>
-                                <a>Sign up</a>
-                            </Link>
-                        </div> */}
                     </div>
                 )}
             </Formik>
