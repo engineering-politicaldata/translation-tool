@@ -212,7 +212,6 @@ function ResourcesPage() {
             const existingResource = activeProject.resources.find(
                 resource => resource.sourceName === fileName,
             );
-            console.log('existing resource with same name found');
             // TODO go to resource page for updating the translation
         }
 

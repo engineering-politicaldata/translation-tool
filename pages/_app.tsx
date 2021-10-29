@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { SWRConfig } from 'swr';
 import UserDashboardSummaryProvider from '../components/contexts/user-dashboard-summary-provider';
 import { GRAY_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, TERTIARY_COLOR } from '../shared/Constants';
+import { apiRequest } from '../shared/RequestHandler';
 import { createCustomTheme, ThemeProps } from '../styles/MuiTheme';
 const themeConfig: ThemeProps = {
     colors: {
@@ -47,8 +48,7 @@ class MyApp extends App {
                     <SWRConfig
                         value={{
                             shouldRetryOnError: false,
-                            fetcher: (resource, init) =>
-                                fetch(resource, init).then(res => res.json()),
+                            fetcher: (resource, init) => apiRequest(resource, init),
                         }}
                     >
                         <Component {...pageProps} />
