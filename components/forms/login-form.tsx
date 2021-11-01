@@ -55,13 +55,18 @@ export const LoginForm = () => {
             setLoadingState(LoadingState.success);
             setTimeout(() => {
                 const { query } = router;
-                if (query['redirectUri']) {
-                    window.location.replace(String(query['redirectUri']));
-                } else {
-                    router.replace({
-                        pathname: APP_ROUTES.LANDING,
-                    });
-                }
+                // if (query['redirectUri']) {
+                //     window.location.replace(String(query['redirectUri']));
+                // } else {
+                //     router.replace({
+                //         pathname: APP_ROUTES.LANDING,
+                //     });
+                // }
+
+                // TODO use above code and remove following line after adding error handling for 403
+                router.replace({
+                    pathname: APP_ROUTES.LANDING,
+                });
             }, 500);
         } catch (error) {
             console.log(error);
