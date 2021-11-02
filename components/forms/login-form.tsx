@@ -31,6 +31,7 @@ const SignInComponent = styled.div`
                 .login-button {
                     color: #fff;
                     height: 40px;
+                    background: #008caa;
                 }
             }
         `}
@@ -96,7 +97,7 @@ export const LoginForm = () => {
                 {({ errors, submitForm }) => (
                     <div className='form-container'>
                         <div className='sign-in-heading'>
-                            <Typography variant='h4' color='primary'>
+                            <Typography variant='h4' color='secondary'>
                                 Translation Tool
                             </Typography>
                         </div>
