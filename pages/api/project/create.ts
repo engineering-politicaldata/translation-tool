@@ -1,12 +1,25 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { corsForPost } from '../../../lib/backend.config';
-import { CustomErrorHandler } from '../../../lib/backend.utils';
+import { CustomErrorHandler, CustomException } from '../../../lib/backend.utils';
+import { ErrorCodes } from '../../../lib/backend.constants';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
 import { CreateProjectInput } from '../../../lib/model';
 import { runMiddleware } from '../../../lib/run-middleware';
 
 async function createProjectWithDetails(input: CreateProjectInput) {
     const data: DataClient = await DataProvider.client();
+
+    const projectAlreadyExists = await data.pg
+        .select('id')
+        .from('project')
+        .where('name', 'ilike', `%${input.name}%`);
+    if (projectAlreadyExists.length !== 0) {
+        throw new CustomException(
+            'A Project with the given name already exists',
+            ErrorCodes.PROJECT_ALREADY_EXISTS,
+        );
+    }
+
     let projectId = null;
     await data.pg.transaction(async trx => {
         try {
