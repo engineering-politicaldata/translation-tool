@@ -65,7 +65,7 @@ const CreateProjectComponent = styled.div`
                     }
                     .source-language-text {
                         font-size: 12px;
-                        color: #777777;
+                        color: ${props.theme.grey[500]};
                     }
                     .language-selection-section {
                         margin-bottom: ${props.theme.spacing(16)}px;
@@ -223,7 +223,6 @@ export default function CreateProject() {
             targetLanguageIds: values.targetLanguages.map(lang => lang.id),
         };
         try {
-            //TODO: handle project name exists error
             const data: { id: string } = await apiRequest('/api/project/create', {
                 method: 'POST',
                 body: JSON.stringify(input),

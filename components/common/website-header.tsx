@@ -12,17 +12,6 @@ const WebsiteHeaderComponent = styled.div`
             grid-gap: ${props.theme.spacing(6)}px;
             align-items: center;
             padding: ${props.theme.spacing(4)}px ${props.theme.spacing(6)}px;
-            .my-circle {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 50px;
-                height: 50px;
-                font-size: 24px;
-                border-radius: 50%;
-                background: plum;
-                color: ${props.theme.contrastColor};
-            }
         `}
 `;
 type Props = {
