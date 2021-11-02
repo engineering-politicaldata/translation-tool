@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: CustomTheme) =>
         listRoot: {
             width: '100%',
             padding: 0,
-            backgroundColor: theme.palette.secondary.main,
+            backgroundColor: theme.contrastColor,
         },
         listItemRoot: {
             paddingTop: 0,
@@ -61,10 +61,14 @@ const useStyles = makeStyles((theme: CustomTheme) =>
         listItemTextRoot: {
             paddingTop: '8px',
             paddingBottom: '8px',
-            color: theme.contrastColor,
+            color: theme.palette.secondary.main,
         },
         addProjectButtomRoot: {
             bottom: '16px',
+            font: '12px',
+        },
+        addNewProjectText: {
+            color: theme.contrastColor,
         },
     }),
 );
@@ -72,7 +76,6 @@ const useStyles = makeStyles((theme: CustomTheme) =>
 const Accordion = withStyles((theme: CustomTheme) => {
     return {
         root: {
-            border: '1px solid rgba(0, 0, 0, .125)',
             backgroundColor: theme.palette.secondary.main,
             boxShadow: 'none',
             '&:not(:last-child)': {
@@ -293,7 +296,9 @@ const UserDashboardLayout = props => {
                         disableElevation
                         size='small'
                     >
-                        Add New Project
+                        <Typography variant='subtitle2' className={classes.addNewProjectText}>
+                            Add New Project
+                        </Typography>
                     </Button>
                 </Drawer>
             )}
