@@ -229,13 +229,14 @@ function CreateProject() {
                 body: JSON.stringify(input),
             });
 
-            // redirect to project page
             projectListContext.updateProjectList({
                 id: data.id,
                 name: input.name,
                 description: input.description,
             });
-            router.replace('/');
+
+            // redirect to project page
+            router.replace(`/project/${data.id}/resources`);
         } catch (err) {
             openSnackbar({
                 errorMessage: err.backendError.message,
