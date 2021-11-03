@@ -3,16 +3,23 @@ import {
     Chip,
     CircularProgress,
     FormHelperText,
-    TextField,
     Typography,
     useTheme,
+    Input,
+    InputLabel,
+    MenuItem,
+    FormControl,
+    Select,
+    makeStyles,
 } from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
+import SnackBarCustom from '../../components/common/SnackBarCustom';
 import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/user-dashboard-summary-provider';
 import { CreateProjectInput, Language } from '../../model';
@@ -46,46 +53,27 @@ const CreateProjectComponent = styled.div`
                         padding-bottom: ${props.theme.spacing(4)}px;
                     }
                     .project-textfield {
-                        width: 50%;
                         margin-bottom: ${props.theme.spacing(2)}px;
                     }
                     .select-language-text {
                         margin-top: ${props.theme.spacing(4)}px;
                         margin-bottom: ${props.theme.spacing(2)}px;
                     }
+                    .source-language-icon {
+                        font-size: 19px;
+                        margin-top: ${props.theme.spacing(4)}px;
+                        margin-bottom: -${props.theme.spacing(1)}px;
+                    }
+                    .source-language-text {
+                        font-size: 12px;
+                        color: ${props.theme.grey[500]};
+                    }
                     .language-selection-section {
-                        display: grid;
-                        grid-template-columns: 1fr 1fr 1fr;
                         margin-bottom: ${props.theme.spacing(16)}px;
-                        grid-gap: ${props.theme.spacing(8)}px;
-                        .source-language {
-                            display: grid;
-                            grid-template-rows: auto 1fr;
-                            grid-gap: ${props.theme.spacing(2)}px;
-                        }
-                        .selected-target-languages {
-                            display: grid;
-                            grid-template-rows: auto 1fr;
-                            grid-gap: ${props.theme.spacing(2)}px;
-                            .selected_chip {
-                                margin: ${props.theme.spacing(1)}px;
-                            }
-                            .selected-language-container {
-                                padding: ${props.theme.spacing(2)}px;
-                                border: 1px solid ${props.theme.black};
-                            }
-                        }
-                        .remaining-languages {
-                            display: grid;
-                            grid-template-rows: auto 1fr;
-                            grid-gap: ${props.theme.spacing(2)}px;
-                            .remaining-languages-container {
-                                background-color: ${props.theme.grey[100]};
-                                min-height: 32px;
-                                padding: ${props.theme.spacing(2)}px;
-                                border: 1px solid ${props.theme.black};
-                            }
-                        }
+                    }
+                    .create-btn {
+                        display: flex;
+                        justify-content: right;
                     }
                     .create-project-button {
                         width: 120px;
@@ -95,17 +83,72 @@ const CreateProjectComponent = styled.div`
         `}
 `;
 
-function CreateProject() {
+const useStyles = makeStyles(theme => ({
+    formControl: {
+        margin: theme.spacing(1),
+        width: 300,
+    },
+    chips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+    },
+    chip: {
+        margin: 6,
+    },
+    noLabel: {
+        marginTop: theme.spacing(3),
+    },
+    selectRoot: {
+        minHeight: 40,
+    },
+    selectRootInput: {
+        minHeight: 40,
+    },
+}));
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 0;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+            paddingRight: 0,
+        },
+    },
+};
+
+const getStyles = (id, languangeIdArray, theme) => {
+    return {
+        fontWeight: languangeIdArray.indexOf(id) === -1 ? 500 : 600,
+    };
+};
+
+export default function CreateProject() {
     const projectListContext = useContext(UserDashboardSummaryContext);
     const [projectData, setProjectData] = useState({
         projectName: '',
         projectDescription: '',
         sourceLanguage: null,
         targetLanguages: [],
+        errorMessage: '',
+    });
+
+    const [snackBarData, openSnackbar] = useState({
+        isSnackBarOpen: false,
+        errorMessage: '',
     });
 
     const router = useRouter();
     const theme = useTheme();
+    const classes = useStyles();
+
+    const handleChange = event => {
+        setProjectData({
+            ...projectData,
+            targetLanguages: event.target.value,
+        });
+    };
 
     const { data, error } = useSWR<{ languages: Language[] }>(['/api/languages', GET_API_CONFIG]);
 
@@ -113,7 +156,7 @@ function CreateProject() {
         return (
             <CreateProjectComponent theme={theme}>
                 <div className='create-project-container'>
-                    <WebsiteHeader title={'Add new project'} description={''} />
+                    <WebsiteHeader title={'Add New Project'} description={''} />
                     <div className='progress'>
                         <div>failed to load languages</div>
                     </div>
@@ -125,7 +168,7 @@ function CreateProject() {
         return (
             <CreateProjectComponent theme={theme}>
                 <div className='create-project-container'>
-                    <WebsiteHeader title={'Add new project'} description={''} />
+                    <WebsiteHeader title={'Add New Project'} description={''} />
                     <div className='progress'>
                         <CircularProgress size={'80px'} />
                     </div>
@@ -134,7 +177,6 @@ function CreateProject() {
         );
     }
     let allLanguages = data.languages;
-
     const initializeSourceLanguage = () => {
         const sourceLanguage = allLanguages.find(item => (item.code = 'en'));
         setProjectData({
@@ -166,6 +208,13 @@ function CreateProject() {
         setProjectData({ ...projectData, ...newState });
     };
 
+    const onSnackbarClose = () => {
+        openSnackbar({
+            ...snackBarData,
+            isSnackBarOpen: false,
+        });
+    };
+
     const createProject = async (values: any) => {
         const input: CreateProjectInput = {
             // userId: 'default_user_id', // TODO add user id
@@ -174,25 +223,34 @@ function CreateProject() {
             sourceLanguageId: values.sourceLanguage.id,
             targetLanguageIds: values.targetLanguages.map(lang => lang.id),
         };
-        //TODO: handle project name exists error
-        const data: { id: string } = await apiRequest('/api/project/create', {
-            ...POST_API_CONFIG,
-            body: JSON.stringify(input),
-        });
+        try {
+            const data: { id: string } = await apiRequest('/api/project/create', {
+                method: 'POST',
+                body: JSON.stringify(input),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            });
 
-        // redirect to project page
-        projectListContext.updateProjectList({
-            id: data.id,
-            name: input.name,
-            description: input.description,
-        });
-        router.replace('/');
+            // redirect to project page
+            projectListContext.updateProjectList({
+                id: data.id,
+                name: input.name,
+                description: input.description,
+            });
+            router.replace('/');
+        } catch (err) {
+            openSnackbar({
+                errorMessage: err.backendError.message,
+                isSnackBarOpen: true,
+            });
+        }
     };
 
     const validate = (values: any) => {
         const errors: any = {};
         if (!values.projectName) {
-            errors['projectName'] = 'Required';
+            errors['projectName'] = 'Project Name is Mandatory';
         } else if (values.projectName.length > 120) {
             errors['projectName'] = 'Must not be more than 120 chars';
         }
@@ -213,7 +271,7 @@ function CreateProject() {
     return (
         <CreateProjectComponent theme={theme}>
             <div className='create-project-container'>
-                <WebsiteHeader title={'Add new project'} description={''} />
+                <WebsiteHeader title={'Add New Project'} description={''} />
                 <Formik
                     initialValues={projectData}
                     enableReinitialize={true}
@@ -223,7 +281,7 @@ function CreateProject() {
                     {({ errors, submitForm }) => (
                         <div className='create-project-body'>
                             <Typography variant='h6' component='div' className='set-project-info'>
-                                Set project information
+                                Set Project Information
                             </Typography>
 
                             <div className='project-textfield'>
@@ -261,7 +319,7 @@ function CreateProject() {
                                     error={!!errors.projectDescription}
                                     helperMessage={errors.projectDescription}
                                     textFieldProps={{
-                                        placeholder: 'Please describe the project in few words',
+                                        placeholder: 'Please describe the Project in few words',
                                         multiline: true,
                                         type: 'text',
                                         maxRows: 4,
@@ -275,103 +333,107 @@ function CreateProject() {
                                 component='div'
                                 className='select-language-text'
                             >
-                                Select languages
+                                Select Target Languages{' '}
+                                <span className='source-language-text'>
+                                    {' '}
+                                    <InfoOutlinedIcon
+                                        className='source-language-icon'
+                                        color='secondary'
+                                    />{' '}
+                                    Source language is set to English by default{' '}
+                                </span>
                             </Typography>
 
                             <div className='language-selection-section'>
-                                <div className='source-language'>
-                                    <p>
-                                        Source language: <b>set to English</b>
-                                    </p>
-
-                                    {projectData.sourceLanguage && (
-                                        <TextField
-                                            id='filled-read-only-input'
-                                            variant='outlined'
-                                            value={projectData.sourceLanguage.name}
-                                            InputProps={{
-                                                readOnly: true,
-                                            }}
-                                            style={{
-                                                width: '120px',
-                                            }}
-                                        />
-                                    )}
-                                </div>
-
-                                <div className='remaining-languages'>
-                                    <p>Available Languages</p>
-                                    <div className='remaining-languages-container'>
+                                <FormControl className={classes.formControl}>
+                                    <InputLabel id='demo-multiple-chip-label'>
+                                        Target Languages
+                                    </InputLabel>
+                                    <Select
+                                        className={classes.selectRoot}
+                                        labelId='demo-multiple-chip-label'
+                                        id='demo-multiple-chip'
+                                        multiple
+                                        value={projectData.targetLanguages}
+                                        onChange={handleChange}
+                                        style={{ minHeight: '40px' }}
+                                        input={
+                                            <Input
+                                                id='select-multiple-chip'
+                                                className={classes.selectRootInput}
+                                            />
+                                        }
+                                        renderValue={selected => (
+                                            <div className={classes.chips}>
+                                                {selected.map(languageId => {
+                                                    const selectedLanguage = allLanguages.find(
+                                                        language => language.id === languageId,
+                                                    );
+                                                    return (
+                                                        <Chip
+                                                            key={languageId}
+                                                            label={selectedLanguage.name}
+                                                            className={classes.chip}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                        MenuProps={MenuProps}
+                                    >
                                         {allLanguages.map(data => {
                                             if (data.id === projectData.sourceLanguage.id) {
                                                 return null;
                                             }
-                                            const index = projectData.targetLanguages.findIndex(
-                                                targetLang => targetLang.id === data.id,
-                                            );
-                                            if (index > -1) {
-                                                return null;
-                                            }
-                                            return (
-                                                <Chip
-                                                    key={data.code}
-                                                    label={data.name}
-                                                    onClick={addTargetLanguage(data)}
-                                                    className='chip_class'
-                                                    style={{ margin: '4px' }}
-                                                />
-                                            );
-                                        })}
-                                        {projectData.targetLanguages.length ===
-                                            allLanguages.length - 1 && 'No more languages'}
-                                    </div>
-                                </div>
 
-                                <div className='selected-target-languages'>
-                                    <p>Target languages</p>
-                                    <div className='selected-language-container'>
-                                        {allLanguages.map(lng => {
-                                            const index = projectData.targetLanguages.findIndex(
-                                                targetLang => targetLang.id === lng.id,
-                                            );
-                                            if (index === -1) {
-                                                return null;
-                                            }
                                             return (
-                                                <Chip
-                                                    key={lng.code}
-                                                    label={lng.name}
-                                                    onDelete={deleteTargetLanguage(lng)}
-                                                    className='selected_chip'
-                                                    color='primary'
-                                                />
+                                                <MenuItem
+                                                    key={data.id}
+                                                    value={data.id}
+                                                    style={getStyles(
+                                                        data.id,
+                                                        projectData.targetLanguages,
+                                                        theme,
+                                                    )}
+                                                >
+                                                    {data.name}
+                                                </MenuItem>
                                             );
                                         })}
-                                        {projectData.targetLanguages.length === 0 &&
-                                            'No target languages'}
-                                    </div>
-                                    <FormHelperText error={!!errors.targetLanguages}>
-                                        {errors.targetLanguages}
-                                    </FormHelperText>
-                                </div>
+                                    </Select>
+                                </FormControl>
+
+                                <FormHelperText error={!!errors.targetLanguages}>
+                                    {errors.targetLanguages}
+                                </FormHelperText>
                             </div>
-                            <Button
-                                className='create-project-button'
-                                type='submit'
-                                variant='contained'
-                                color='primary'
-                                size='small'
-                                onClick={submitForm}
-                                disableElevation
-                            >
-                                create
-                            </Button>
+                            <div className='create-btn'>
+                                <Button
+                                    className='create-project-button'
+                                    type='submit'
+                                    variant='contained'
+                                    color='secondary'
+                                    size='small'
+                                    onClick={submitForm}
+                                    disableElevation
+                                >
+                                    <Typography color={'inherit'}>
+                                        <div>create</div>
+                                    </Typography>
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </Formik>
+                <SnackBarCustom
+                    message={snackBarData.errorMessage}
+                    snackbarProps={{
+                        open: snackBarData.isSnackBarOpen,
+                        autoHideDuration: 2000,
+                        onClose: onSnackbarClose,
+                    }}
+                />
             </div>
         </CreateProjectComponent>
     );
 }
-
-export default privateRoute(CreateProject);

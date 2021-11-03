@@ -66,7 +66,7 @@ export const createCustomTheme = (Theme: ThemeProps) => {
                     MuiButton: {
                         root: {
                             textTransform: 'capitalize',
-                            fontWeight: 600,
+                            fontWeight: 500,
                             fontSize: '1rem !important',
                             [theme.breakpoints.up('xs')]: {
                                 fontSize: '1.12rem  !important',

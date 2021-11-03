@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: CustomTheme) => ({
             left: '3px',
         },
         '& .MuiFilledInput-root': {
-            background: theme.secondary[50],
+            background: theme.contrastColor,
             '&.Mui-focused': {
                 background: theme.contrastColor,
             },
