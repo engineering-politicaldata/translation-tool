@@ -10,6 +10,8 @@ import {
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import FolderIcon from '@material-ui/icons/Folder';
+import PermMediaIcon from '@material-ui/icons/PermMedia';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from 'next/link';
@@ -239,6 +241,11 @@ const UserDashboardLayout = props => {
                     onChange={handleChange(menuItem.projectId)}
                 >
                     <AccordionSummary id='accordion-summary'>
+                        {menuItem.title === 'All Projects' ? (
+                            <PermMediaIcon style={{ paddingRight: 5, fontSize: 30 }} />
+                        ) : (
+                            <FolderIcon style={{ paddingRight: 5, fontSize: 30 }} />
+                        )}
                         <Typography color='inherit'>{menuItem.title}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>

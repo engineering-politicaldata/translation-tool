@@ -18,7 +18,7 @@ const TranslationProgressViewContainer = styled.div`
                     align-items: flex-end;
                 }
                 .last-section {
-                    text-align: right;
+                    padding: 0 ${props.theme.spacing(4)}px;
                 }
             }
         `}
@@ -43,6 +43,20 @@ const TranslationProgressView = (props: Props) => {
                     <Typography variant='h3'>{props.totalSourceKeys}</Typography>
                     <Typography>Total Source keys</Typography>
                 </div>
+
+                <div className='last-section'>
+                    <Typography variant='h3'>{props.totalResourcesCount}</Typography>
+                    <Typography> Total Resources</Typography>
+                </div>
+            </div>
+
+            <LinearProgress
+                style={{ height: '10px' }}
+                variant='determinate'
+                color='secondary'
+                value={props.translationPercentage}
+            />
+            <div className='stats'>
                 <div className='middle-section'>
                     <Typography variant='subtitle2' color='secondary'>
                         {props.translationPercentage}% Translated{' '}
@@ -52,17 +66,7 @@ const TranslationProgressView = (props: Props) => {
                         {props.untranslationPercentage}% UnTranslated{' '}
                     </Typography>
                 </div>
-                <div className='last-section'>
-                    <Typography variant='h3'>{props.totalResourcesCount}</Typography>
-                    <Typography> Total Resources</Typography>
-                </div>
             </div>
-            <LinearProgress
-                style={{ height: '10px' }}
-                variant='determinate'
-                color='secondary'
-                value={props.translationPercentage}
-            />
         </TranslationProgressViewContainer>
     );
 };
