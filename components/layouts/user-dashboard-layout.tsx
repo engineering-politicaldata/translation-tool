@@ -99,7 +99,7 @@ const AccordionSummary = withStyles((theme: CustomTheme) => {
         root: {
             color: theme.contrastColor,
             backgroundColor: 'rgba(0, 0, 0, .03)',
-            borderBottom: '1px solid rgba(0, 0, 0, .125)',
+            borderBottom: '2px solid rgba(255,255,255)',
             marginBottom: -1,
             minHeight: 56,
             '&$expanded': {
