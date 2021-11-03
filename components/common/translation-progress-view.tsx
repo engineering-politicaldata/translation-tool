@@ -63,7 +63,7 @@ const TranslationProgressView = (props: Props) => {
                     </Typography>
                     &nbsp; &nbsp;
                     <Typography variant='subtitle2'>
-                        {props.untranslationPercentage}% UnTranslated{' '}
+                        {props.untranslationPercentage}% Untranslated{' '}
                     </Typography>
                 </div>
             </div>
