@@ -37,9 +37,14 @@ const ProjectSettingsComponent = styled.div`
                     width: 50%;
                     margin-bottom: ${props.theme.spacing(2)}px;
                 }
+                .save-btn {
+                    display: flex;
+                    justify-content: right;
+                    width: 50%;
+                }
                 .save-project-button {
                     width: 100px;
-                    height: 40px;
+                    height: 32px;
                 }
             }
         `}
@@ -241,27 +246,32 @@ function ProjectSettingsPage(props: Props) {
                                         />
                                     </div>
 
-                                    <Button
-                                        className='save-project-button'
-                                        type='submit'
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={submitForm}
-                                        disableElevation
-                                    >
-                                        {spinnerState.inProgress && (
-                                            <CircularProgress
-                                                color='inherit'
-                                                size={20}
-                                                thickness={3}
-                                                variant='indeterminate'
-                                            ></CircularProgress>
-                                        )}
-                                        {spinnerState.complete && <Check />}
-                                        {!spinnerState.inProgress &&
-                                            !spinnerState.complete &&
-                                            'Save'}
-                                    </Button>
+                                    <div className='save-btn'>
+                                        <Button
+                                            className='save-project-button'
+                                            type='submit'
+                                            variant='contained'
+                                            color='secondary'
+                                            size='small'
+                                            onClick={submitForm}
+                                            disableElevation
+                                        >
+                                            {spinnerState.inProgress && (
+                                                <CircularProgress
+                                                    color='inherit'
+                                                    size={20}
+                                                    thickness={3}
+                                                    variant='indeterminate'
+                                                ></CircularProgress>
+                                            )}
+                                            {spinnerState.complete && <Check />}
+                                            {!spinnerState.inProgress && !spinnerState.complete && (
+                                                <Typography color={'inherit'}>
+                                                    <div>Save</div>
+                                                </Typography>
+                                            )}
+                                        </Button>
+                                    </div>
                                 </div>
                             </>
                         );
