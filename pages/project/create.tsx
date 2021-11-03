@@ -124,7 +124,7 @@ const getStyles = (id, languangeIdArray, theme) => {
     };
 };
 
-export default function CreateProject() {
+function CreateProject() {
     const projectListContext = useContext(UserDashboardSummaryContext);
     const [projectData, setProjectData] = useState({
         projectName: '',
@@ -225,11 +225,8 @@ export default function CreateProject() {
         };
         try {
             const data: { id: string } = await apiRequest('/api/project/create', {
-                method: 'POST',
+                ...POST_API_CONFIG,
                 body: JSON.stringify(input),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
             });
 
             // redirect to project page
@@ -437,3 +434,5 @@ export default function CreateProject() {
         </CreateProjectComponent>
     );
 }
+
+export default privateRoute(CreateProject);
