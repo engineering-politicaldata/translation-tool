@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: CustomTheme) =>
         },
         addProjectButtomRoot: {
             bottom: '16px',
-            font: '12px',
+            font: '14px',
         },
         addNewProjectText: {
             color: theme.contrastColor,
@@ -301,7 +301,7 @@ const UserDashboardLayout = props => {
                         color='secondary'
                         onClick={addNewProject}
                         disableElevation
-                        size='small'
+                        size='medium'
                     >
                         <Typography variant='subtitle2' className={classes.addNewProjectText}>
                             Add New Project
