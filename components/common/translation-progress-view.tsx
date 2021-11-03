@@ -12,7 +12,6 @@ const TranslationProgressViewContainer = styled.div`
                 .first-section {
                 }
                 .middle-section {
-                    padding: 0 ${props.theme.spacing(4)}px;
                     flex: 1;
                     display: flex;
                     align-items: flex-end;
