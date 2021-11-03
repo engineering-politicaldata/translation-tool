@@ -154,7 +154,7 @@ export const LoginForm = () => {
                                         position: 'absolute',
                                         top: '20px',
                                         right: '8px',
-                                        fontSize: '20px',
+                                        fontSize: '30px',
                                     }}
                                     onClick={handleClickShowPassword}
                                 />
