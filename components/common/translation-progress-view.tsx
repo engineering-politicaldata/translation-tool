@@ -9,6 +9,7 @@ const TranslationProgressViewContainer = styled.div`
                 display: flex;
                 margin-bottom: ${props.theme.spacing(3)}px;
                 margin-top: ${props.theme.spacing(4)}px;
+                justify-content: space-between;
                 .first-section {
                 }
                 .middle-section {
@@ -18,6 +19,8 @@ const TranslationProgressViewContainer = styled.div`
                 }
                 .last-section {
                     padding: 0 ${props.theme.spacing(4)}px;
+                    align-items: end;
+                    text-align: right;
                 }
             }
         `}
