@@ -412,11 +412,7 @@ function ResourcesPage() {
     return (
         <UserDashboardLayout>
             <ProjectResourcesPage theme={theme}>
-                <WebsiteHeader
-                    title={activeProject.name}
-                    description={'Resources'}
-                    highlight='description'
-                />
+                <WebsiteHeader title={activeProject.name} description={'Resources'} />
                 <ResourceListView />
             </ProjectResourcesPage>
         </UserDashboardLayout>

@@ -16,40 +16,25 @@ const WebsiteHeaderComponent = styled.div`
 type Props = {
     title: string;
     description: string;
-    highlight: 'title' | 'description';
 };
 const WebsiteHeader = (props: Props) => {
     const theme = useTheme();
 
     return (
-        <>
-            <WebsiteHeaderComponent theme={theme}>
-                {props.highlight === 'title' ? (
-                    <div>
-                        <Typography variant='subtitle2' component='div'>
-                            {props.title}
-                        </Typography>
-                        <Typography variant='h5' component='div'>
-                            {props.description}
-                        </Typography>
-                    </div>
-                ) : (
-                    <div>
-                        <Typography variant='subtitle2' component='div'>
-                            {props.title}
-                        </Typography>
-                        <Typography variant='h5' component='div'>
-                            {props.description}
-                        </Typography>
-                    </div>
-                )}
-            </WebsiteHeaderComponent>
-        </>
+        <WebsiteHeaderComponent theme={theme}>
+            <div>
+                <Typography variant='caption' component='div'>
+                    {props.title}
+                </Typography>
+                <Typography variant='h5' component='div'>
+                    {props.description}
+                </Typography>
+            </div>
+        </WebsiteHeaderComponent>
     );
 };
 
 WebsiteHeader.defaultProps = {
-    highlight: 'title',
     title: '',
 };
 
