@@ -12,14 +12,12 @@ const TranslationProgressViewContainer = styled.div`
                 justify-content: space-between;
                 .first-section {
                 }
-                .middle-section {
-                    flex: 1;
-                    display: flex;
-                    align-items: flex-end;
-                }
                 .last-section {
                     align-items: end;
                     text-align: right;
+                }
+                .percentage-section {
+                    display: flex;
                 }
             }
         `}
@@ -58,7 +56,7 @@ const TranslationProgressView = (props: Props) => {
                 value={props.translationPercentage}
             />
             <div className='stats'>
-                <div className='middle-section'>
+                <div className='percentage-section'>
                     <Typography variant='subtitle2' color='secondary'>
                         {props.translationPercentage}% Translated{' '}
                     </Typography>
