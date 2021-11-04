@@ -18,7 +18,6 @@ const TranslationProgressViewContainer = styled.div`
                     align-items: flex-end;
                 }
                 .last-section {
-                    padding: 0 ${props.theme.spacing(4)}px;
                     align-items: end;
                     text-align: right;
                 }
