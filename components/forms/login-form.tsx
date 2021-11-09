@@ -32,7 +32,7 @@ const SignInComponent = styled.div`
                 .login-button {
                     color: #fff;
                     height: 40px;
-                    background: #008caa;
+                    background: ${props.theme.secondary[500]};
                 }
             }
         `}
