@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -10,6 +10,12 @@ import Menu from '@material-ui/core/Menu';
 import deleteAllCookiesFactory from 'delete-all-cookies';
 import Store from '../../shared/Store';
 import { useRouter } from 'next/router';
+
+const OcAppBar = withStyles({
+    root: {
+        backgroundColor: '#FFFFFF',
+    },
+})(AppBar);
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -56,7 +62,7 @@ function MenuAppBar() {
 
     return (
         <div className='menuAppBar'>
-            <AppBar position='static'>
+            <OcAppBar position='static'>
                 <Toolbar>
                     <IconButton
                         edge='start'
@@ -100,7 +106,7 @@ function MenuAppBar() {
                         </div>
                     )}
                 </Toolbar>
-            </AppBar>
+            </OcAppBar>
         </div>
     );
 }
