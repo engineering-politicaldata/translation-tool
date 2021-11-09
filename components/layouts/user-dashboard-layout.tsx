@@ -10,6 +10,8 @@ import {
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import FolderIcon from '@material-ui/icons/Folder';
+import PermMediaIcon from '@material-ui/icons/PermMedia';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Link from 'next/link';
@@ -52,7 +54,7 @@ const useStyles = makeStyles((theme: CustomTheme) =>
         listRoot: {
             width: '100%',
             padding: 0,
-            backgroundColor: theme.palette.secondary.main,
+            backgroundColor: theme.contrastColor,
         },
         listItemRoot: {
             paddingTop: 0,
@@ -61,10 +63,14 @@ const useStyles = makeStyles((theme: CustomTheme) =>
         listItemTextRoot: {
             paddingTop: '8px',
             paddingBottom: '8px',
-            color: theme.contrastColor,
+            color: theme.palette.secondary.main,
         },
         addProjectButtomRoot: {
             bottom: '16px',
+            font: '14px',
+        },
+        addNewProjectText: {
+            color: theme.contrastColor,
         },
     }),
 );
@@ -72,7 +78,6 @@ const useStyles = makeStyles((theme: CustomTheme) =>
 const Accordion = withStyles((theme: CustomTheme) => {
     return {
         root: {
-            border: '1px solid rgba(0, 0, 0, .125)',
             backgroundColor: theme.palette.secondary.main,
             boxShadow: 'none',
             '&:not(:last-child)': {
@@ -94,12 +99,12 @@ const AccordionSummary = withStyles((theme: CustomTheme) => {
         root: {
             color: theme.contrastColor,
             backgroundColor: 'rgba(0, 0, 0, .03)',
-            borderBottom: '1px solid rgba(0, 0, 0, .125)',
-            marginBottom: -1,
+            borderBottom: '1px solid rgba(255,255,255)',
             minHeight: 56,
             '&$expanded': {
                 minHeight: 56,
             },
+            alignItems: 'center',
         },
         content: {
             '&$expanded': {
@@ -236,6 +241,11 @@ const UserDashboardLayout = props => {
                     onChange={handleChange(menuItem.projectId)}
                 >
                     <AccordionSummary id='accordion-summary'>
+                        {menuItem.title === 'All Projects' ? (
+                            <PermMediaIcon style={{ paddingRight: 5, fontSize: 30 }} />
+                        ) : (
+                            <FolderIcon style={{ paddingRight: 5, fontSize: 30 }} />
+                        )}
                         <Typography color='inherit'>{menuItem.title}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -291,9 +301,11 @@ const UserDashboardLayout = props => {
                         color='secondary'
                         onClick={addNewProject}
                         disableElevation
-                        size='small'
+                        size='medium'
                     >
-                        Add New Project
+                        <Typography variant='subtitle2' className={classes.addNewProjectText}>
+                            Add New Project
+                        </Typography>
                     </Button>
                 </Drawer>
             )}

@@ -165,7 +165,7 @@ function ProjectSettingsPage(props: Props) {
         return (
             <UserDashboardLayout>
                 <ProjectSettingsComponent theme={theme}>
-                    <WebsiteHeader title='Loading...' description='' />
+                    <WebsiteHeader title='Loading...' description='Settings' />
                     <div className='project-settings-body'>
                         <div className='progress'>
                             <CircularProgress size={'80px'} />
@@ -187,10 +187,7 @@ function ProjectSettingsPage(props: Props) {
                     {({ errors, submitForm }) => {
                         return (
                             <>
-                                <WebsiteHeader
-                                    title={activeProject.name}
-                                    description={activeProject.description}
-                                />
+                                <WebsiteHeader title={activeProject.name} description='Settings' />
 
                                 <div className='project-settings-body'>
                                     <Typography

@@ -80,10 +80,7 @@ function OverviewPage() {
         return (
             <UserDashboardLayout>
                 <ProjectOverviewPage theme={theme}>
-                    <WebsiteHeader
-                        title={activeProject.name}
-                        description={activeProject.description}
-                    />
+                    <WebsiteHeader title={activeProject.name} description='Overview' />
 
                     <NoDataFoundPage
                         message={'No resources found'}
@@ -104,7 +101,7 @@ function OverviewPage() {
     return (
         <UserDashboardLayout>
             <ProjectOverviewPage theme={theme}>
-                <WebsiteHeader title={activeProject.name} description={activeProject.description} />
+                <WebsiteHeader title={activeProject.name} description='Overview' />
 
                 <div className='project-overview-page-body'>
                     <TranslationProgressView

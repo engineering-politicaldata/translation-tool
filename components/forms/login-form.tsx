@@ -10,11 +10,15 @@ import { APP_ROUTES, LoadingState } from '../../shared/Constants';
 import { apiRequest } from '../../shared/RequestHandler';
 import { LoginSchema } from '../../utils/validation-schemas';
 import GenericTextField from '../common/generic-text-field';
+import Visibility from '@material-ui/icons/Visibility';
 
 const SignInComponent = styled.div`
     ${props =>
         props.theme &&
         css`
+            display: flex;
+            width: 100%;
+
             .form-container {
                 justify-content: center;
                 align-items: center;
@@ -31,6 +35,7 @@ const SignInComponent = styled.div`
                 .login-button {
                     color: #fff;
                     height: 40px;
+                    background: ${props.theme.secondary[500]};
                 }
             }
         `}
@@ -40,6 +45,7 @@ export const LoginForm = () => {
     const [loginForm, setContactForm] = useState({
         email: '',
         password: '',
+        showPassword: false,
     });
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.initial);
     const router = useRouter();
@@ -75,6 +81,10 @@ export const LoginForm = () => {
         }
     };
 
+    const handleClickShowPassword = () => {
+        setContactForm({ ...loginForm, showPassword: !loginForm.showPassword });
+    };
+
     const handleFormChange = (fieldName: string, value: string) => {
         if (loadingState === LoadingState.success) {
             setLoadingState(LoadingState.initial);
@@ -96,7 +106,7 @@ export const LoginForm = () => {
                 {({ errors, submitForm }) => (
                     <div className='form-container'>
                         <div className='sign-in-heading'>
-                            <Typography variant='h4' color='primary'>
+                            <Typography variant='h4' color='secondary'>
                                 Translation Tool
                             </Typography>
                         </div>
@@ -120,24 +130,36 @@ export const LoginForm = () => {
                             }}
                         />
                         <div style={{ padding: 10 }} />
-                        <GenericTextField
-                            key={'password'}
-                            defaultValue={loginForm.password}
-                            fieldName={'password'}
-                            onChange={(field, value, event) => {
-                                handleFormChange(field, value);
-                            }}
-                            onReset={field => {
-                                handleFormChange(field, '');
-                            }}
-                            label={'Password'}
-                            error={!!errors.password}
-                            helperMessage={errors.password}
-                            textFieldProps={{
-                                type: 'password',
-                                label: 'Password',
-                            }}
-                        />
+                        <div style={{ position: 'relative' }}>
+                            <GenericTextField
+                                key={'password'}
+                                defaultValue={loginForm.password}
+                                fieldName={'password'}
+                                onChange={(field, value, event) => {
+                                    handleFormChange(field, value);
+                                }}
+                                label={'Password'}
+                                error={!!errors.password}
+                                helperMessage={errors.password}
+                                textFieldProps={{
+                                    label: 'Password',
+                                    type: loginForm.showPassword ? 'text' : 'password',
+                                }}
+                            />
+
+                            {loginForm.password && (
+                                <Visibility
+                                    style={{
+                                        color: '#777777',
+                                        position: 'absolute',
+                                        top: '20px',
+                                        right: '8px',
+                                        fontSize: '30px',
+                                    }}
+                                    onClick={handleClickShowPassword}
+                                />
+                            )}
+                        </div>
                         <div style={{ padding: 10 }} />
                         <Button
                             className='login-button'

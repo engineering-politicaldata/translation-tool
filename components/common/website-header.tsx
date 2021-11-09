@@ -1,5 +1,4 @@
 import { Typography, useTheme } from '@material-ui/core';
-import { AddCircleOutline } from '@material-ui/icons';
 import React from 'react';
 import styled, { css } from 'styled-components';
 
@@ -17,34 +16,25 @@ const WebsiteHeaderComponent = styled.div`
 type Props = {
     title: string;
     description: string;
-    highlight: 'title' | 'description';
 };
 const WebsiteHeader = (props: Props) => {
     const theme = useTheme();
 
     return (
-        <>
-            <WebsiteHeaderComponent theme={theme}>
-                {props.highlight === 'title' ? (
-                    <div>
-                        <Typography variant='h5' component='div'>
-                            {props.title}
-                        </Typography>
-                    </div>
-                ) : (
-                    <div>
-                        <Typography variant='subtitle2' component='div'>
-                            {props.title}
-                        </Typography>
-                    </div>
-                )}
-            </WebsiteHeaderComponent>
-        </>
+        <WebsiteHeaderComponent theme={theme}>
+            <div>
+                <Typography variant='caption' component='div'>
+                    {props.title}
+                </Typography>
+                <Typography variant='h5' component='div'>
+                    {props.description}
+                </Typography>
+            </div>
+        </WebsiteHeaderComponent>
     );
 };
 
 WebsiteHeader.defaultProps = {
-    highlight: 'title',
     title: '',
 };
 
