@@ -63,18 +63,17 @@ function MenuAppBar() {
         <div className='menuAppBar'>
             <OcAppBar position='static'>
                 <Toolbar>
+                    <img
+                        className={classes.logoImage}
+                        src='/images/logos/pdi_logo_2x.png'
+                        onClick={() => router.replace('/')}
+                    />
                     <IconButton
                         edge='start'
                         className={classes.menuButton}
                         color='inherit'
                         aria-label='menu'
-                    >
-                        <img
-                            className={classes.logoImage}
-                            src='/images/logos/pdi_logo_2x.png'
-                            onClick={() => router.replace('/')}
-                        />
-                    </IconButton>
+                    ></IconButton>
                     <Typography variant='h6' className={classes.title}>
                         Translation Tool
                     </Typography>
