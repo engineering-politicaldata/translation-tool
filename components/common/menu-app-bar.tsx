@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,7 +10,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import deleteAllCookiesFactory from 'delete-all-cookies';
 import Store from '../../shared/Store';
-import { useRouter } from 'next/router';
+import { CustomTheme } from '../../styles/MuiTheme';
 
 const OcAppBar = withStyles({
     root: {
@@ -17,10 +18,10 @@ const OcAppBar = withStyles({
     },
 })(AppBar);
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: CustomTheme) => ({
     root: {
         flexGrow: 1,
-        background: '#008caa',
+        background: theme.contrastColor,
     },
     menuButton: {
         marginRight: theme.spacing(2),
@@ -29,7 +30,7 @@ const useStyles = makeStyles(theme => ({
         flexGrow: 1,
     },
     menuAppBar: {
-        background: '#008caa',
+        background: theme.contrastColor,
     },
     logoImage: {
         height: '50px',
@@ -47,7 +48,6 @@ function MenuAppBar() {
     useEffect(() => {
         let token = Store.getToken();
         setUserToken(token);
-        console.log('test : ', token);
     }, [router.asPath]);
 
     const handleMenu = event => {
@@ -56,7 +56,6 @@ function MenuAppBar() {
 
     const handleClose = async () => {
         await deleteAllCookiesFactory(window)();
-        setAnchorEl(null);
         window.location.href = '/auth/login';
     };
 
@@ -70,7 +69,11 @@ function MenuAppBar() {
                         color='inherit'
                         aria-label='menu'
                     >
-                        <img className={classes.logoImage} src='/images/logos/pdi_logo_2x.png' />
+                        <img
+                            className={classes.logoImage}
+                            src='/images/logos/pdi_logo_2x.png'
+                            onClick={() => router.replace('/')}
+                        />
                     </IconButton>
                     <Typography variant='h6' className={classes.title}>
                         Translation Tool
