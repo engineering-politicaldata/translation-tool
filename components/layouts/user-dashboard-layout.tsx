@@ -23,6 +23,7 @@ import { GET_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
 import { CustomTheme } from '../../styles/MuiTheme';
 import { UserDashboardSummaryContext } from '../contexts/user-dashboard-summary-provider';
+import { APPBAR_HEIGHT } from '../../shared/Constants';
 
 const LoggedInUserLayoutContainer = styled.div`
     display: flex;
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme: CustomTheme) =>
         },
         content: {
             flexGrow: 1,
-            minHeight: '100vh',
+            minHeight: `calc(100vh - ${APPBAR_HEIGHT})`,
         },
         listRoot: {
             width: '100%',

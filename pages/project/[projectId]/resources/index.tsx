@@ -7,7 +7,7 @@ import WebsiteHeader from '../../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
 import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
 import { UploadResourcForProjectInput } from '../../../../model';
-import { LoadingState } from '../../../../shared/Constants';
+import { APPBAR_HEIGHT, LoadingState } from '../../../../shared/Constants';
 import { privateRoute } from '../../../../guard';
 import { apiRequest } from '../../../../shared/RequestHandler';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/ApiConfig';
@@ -16,7 +16,7 @@ const ProjectResourcesPage = styled.div`
     ${props =>
         props.theme &&
         css`
-            min-height: 100vh;
+            min-height: calc(100vh - ${APPBAR_HEIGHT});
             display: flex;
             flex-direction: column;
             .project-resource-page-body {

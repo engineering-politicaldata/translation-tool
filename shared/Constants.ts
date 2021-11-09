@@ -81,3 +81,5 @@ export enum LoadingState {
     loading,
     success,
 }
+
+export const APPBAR_HEIGHT = '64px';
