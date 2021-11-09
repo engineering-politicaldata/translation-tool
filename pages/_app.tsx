@@ -7,6 +7,7 @@ import UserDashboardSummaryProvider from '../components/contexts/user-dashboard-
 import { GRAY_COLOR, PRIMARY_COLOR, SECONDARY_COLOR, TERTIARY_COLOR } from '../shared/Constants';
 import { apiRequest } from '../shared/RequestHandler';
 import { createCustomTheme, ThemeProps } from '../styles/MuiTheme';
+import MenuAppBar from '../components/common/menu-app-bar';
 const themeConfig: ThemeProps = {
     colors: {
         primary: PRIMARY_COLOR,
@@ -51,6 +52,7 @@ class MyApp extends App {
                             fetcher: (resource, init) => apiRequest(resource, init),
                         }}
                     >
+                        <MenuAppBar />
                         <Component {...pageProps} />
                     </SWRConfig>
                 </UserDashboardSummaryProvider>

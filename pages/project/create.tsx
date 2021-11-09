@@ -26,12 +26,13 @@ import { CreateProjectInput, Language } from '../../model';
 import { privateRoute } from '../../guard';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
+import { APPBAR_HEIGHT } from '../../shared/Constants';
 
 const CreateProjectComponent = styled.div`
     ${props =>
         props.theme &&
         css`
-            min-height: 100vh;
+            min-height: calc(100vh - ${APPBAR_HEIGHT});
             display: flex;
             justify-content: center;
             background-color: ${props.theme.grey[200]};
