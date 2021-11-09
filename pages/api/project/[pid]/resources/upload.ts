@@ -5,11 +5,11 @@ import { corsForPost } from '../../../../../lib/backend.config';
 import { ErrorCodes } from '../../../../../lib/backend.constants';
 import { CustomErrorHandler, CustomException } from '../../../../../lib/backend.utils';
 import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
-import { UploadResourcForProjectInput } from '../../../../../model';
+import { UploadResourceInput } from '../../../../../model';
 import { runMiddleware } from '../../../../../lib/run-middleware';
 import { validateAdminAccessToProject } from '../../../../../lib/validations';
 
-async function saveResourceData(input: UploadResourcForProjectInput) {
+async function saveResourceData(input: UploadResourceInput) {
     const data: DataClient = await DataProvider.client();
     let resourceData = null;
     await data.pg.transaction(async trx => {
@@ -63,7 +63,7 @@ async function saveResourceData(input: UploadResourcForProjectInput) {
     return resourceData;
 }
 
-async function verifyIfResourceAlreadyExists(input: UploadResourcForProjectInput) {
+async function verifyIfResourceAlreadyExists(input: UploadResourceInput) {
     const data: DataClient = await DataProvider.client();
     const existingResource = await data.pg
         .select('id')

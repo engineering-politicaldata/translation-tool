@@ -6,7 +6,7 @@ import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
 import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
-import { UploadResourcForProjectInput } from '../../../../model';
+import { UploadResourceInput } from '../../../../model';
 import { LoadingState } from '../../../../shared/Constants';
 import { privateRoute } from '../../../../guard';
 import { apiRequest } from '../../../../shared/RequestHandler';
@@ -236,7 +236,7 @@ function ResourcesPage() {
         await uploadFileData(input);
     }
 
-    async function uploadFileData(input: UploadResourcForProjectInput) {
+    async function uploadFileData(input: UploadResourceInput) {
         setFileUploadProgressState(LoadingState.loading);
         try {
             const data: { id: string; created: string } = await apiRequest(
@@ -303,8 +303,8 @@ function ResourcesPage() {
             return (
                 <div className='no-source-present-container'>
                     <div className='no-source-present'>
-                        <Typography variant='h5' className='message'>
-                            Please upload source file to kick start translation
+                        <Typography variant='h6' className='message'>
+                            Please upload source file to translate
                         </Typography>
 
                         <UploadSourceButtom title={'Select Resources'} />

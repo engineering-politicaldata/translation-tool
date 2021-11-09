@@ -266,9 +266,7 @@ function ProjectSettingsPage(props: Props) {
                                             )}
                                             {spinnerState.complete && <Check />}
                                             {!spinnerState.inProgress && !spinnerState.complete && (
-                                                <Typography color={'inherit'}>
-                                                    <div>Save</div>
-                                                </Typography>
+                                                <Typography color={'inherit'}>Save</Typography>
                                             )}
                                         </Button>
                                     </div>
