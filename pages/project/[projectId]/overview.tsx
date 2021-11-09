@@ -7,9 +7,10 @@ import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../../../components/common/no-data-found-page';
 import TranslationProgressView from '../../../components/common/translation-progress-view';
 import WebsiteHeader from '../../../components/common/website-header';
-import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
-import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
-import { GET_API_CONFIG } from '../../../lib/backend.config';
+import { UserDashboardSummaryContext } from '../../../components/contexts/user-dashboard-summary-provider';
+import UserDashboardLayout from '../../../components/layouts/user-dashboard-layout';
+import { privateRoute } from '../../../guard';
+import { GET_API_CONFIG } from '../../../shared/ApiConfig';
 import { apiRequest } from '../../../shared/RequestHandler';
 const ProjectOverviewPage = styled.div`
     ${props =>
@@ -24,7 +25,7 @@ const ProjectOverviewPage = styled.div`
             }
         `}
 `;
-export default function OverviewPage() {
+function OverviewPage() {
     const router = useRouter();
     const projectId = router.query.projectId;
     const theme = useTheme();
@@ -116,3 +117,5 @@ export default function OverviewPage() {
         </UserDashboardLayout>
     );
 }
+
+export default privateRoute(OverviewPage);

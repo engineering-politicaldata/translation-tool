@@ -4,12 +4,13 @@ import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
-import { UserDashboardSummaryContext } from '../../../../components/contexts/UserDashboardSummaryProvider';
-import UserDashboardLayout from '../../../../components/layouts/UserDashboardLayout';
-import { GET_API_CONFIG } from '../../../../lib/backend.config';
-import { UploadResourcForProjectInput } from '../../../../lib/model';
+import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
+import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
+import { UploadResourcForProjectInput } from '../../../../model';
 import { LoadingState } from '../../../../shared/Constants';
+import { privateRoute } from '../../../../guard';
 import { apiRequest } from '../../../../shared/RequestHandler';
+import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/ApiConfig';
 
 const ProjectResourcesPage = styled.div`
     ${props =>
@@ -129,7 +130,7 @@ const ResourceListItemView = styled.div`
             }
         `}
 `;
-export default function ResourcesPage() {
+function ResourcesPage() {
     const router = useRouter();
     const projectId = router.query.projectId;
 
@@ -211,7 +212,7 @@ export default function ResourcesPage() {
             const existingResource = activeProject.resources.find(
                 resource => resource.sourceName === fileName,
             );
-            console.log('existing resource with same name found');
+            // TODO go to resource page for updating the translation
         }
 
         const obj: { [key: string]: string } = JSON.parse(event.target.result);
@@ -241,11 +242,8 @@ export default function ResourcesPage() {
             const data: { id: string; created: string } = await apiRequest(
                 `/api/project/${projectId}/resources/upload`,
                 {
-                    method: 'POST',
+                    ...POST_API_CONFIG,
                     body: JSON.stringify(input),
-                    headers: {
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
                 },
             );
 
@@ -424,3 +422,5 @@ export default function ResourcesPage() {
         </UserDashboardLayout>
     );
 }
+
+export default privateRoute(ResourcesPage);

@@ -7,8 +7,7 @@ export async function apiRequest(input: RequestInfo, init?: RequestInit) {
         }
         return data;
     }
-    if (res.status == 500) {
-        const error = await res.json();
-        throw error;
-    }
+    // TODO handle 403 error correctly
+    const error = await res.json();
+    throw error;
 }

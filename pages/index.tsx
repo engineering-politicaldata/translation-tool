@@ -4,7 +4,8 @@ import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../components/common/no-data-found-page';
 import TranslationProgressView from '../components/common/translation-progress-view';
 import WebsiteHeader from '../components/common/website-header';
-import UserDashboardLayout from '../components/layouts/UserDashboardLayout';
+import UserDashboardLayout from '../components/layouts/user-dashboard-layout';
+import { privateRoute } from '../guard';
 
 const AllProjectListPage = styled.div`
     ${props =>
@@ -32,7 +33,7 @@ export interface AllProjectSummary {
     totalSourceWords: number;
 }
 
-export default function Home() {
+function LandingPage() {
     const [allProjectsSummary, setAllProjectSummary] = useState<AllProjectSummary>(undefined);
     const theme = useTheme();
     useEffect(() => {
@@ -122,3 +123,5 @@ export default function Home() {
         </UserDashboardLayout>
     );
 }
+
+export default privateRoute(LandingPage);

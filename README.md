@@ -18,17 +18,41 @@ You can start editing the page by modifying `pages/index.js`. The page auto-upda
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Learn More
+<br>
 
-To learn more about Next.js, take a look at the following resources:
+# Guidelines
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## `Note:` Lib folder is created for managing backend. Please do not use it in frontend code. It can cause unexpected errors
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+<br>
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<br>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Pre Commit Hook
+
+This is to put the branch name (which is usually the JIRA ticket number) into the commit message automatically
+
+```
+yarn init-prepare-commit-message
+```
+
+## Coding practice
+
+### `Frontend:`
+
+1. All the page/route files will follow smallcase with hypen separated
+2. All the components follow smallcase with hypen separated.
+3. Remaining typescript file will follow camel case
+
+<br>
+
+---
+
+<br>
+
+### `Backend:` - code is spread across lib, model, api folders
+
+1. All the api routes also follow smallcase with hypen separated.
+2. Remaining typescript files in backend will follow smallcase

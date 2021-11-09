@@ -1,61 +1,83 @@
+import { Button, CircularProgress, Typography, useTheme } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { Button, Typography, useTheme } from '@material-ui/core';
-import GenericTextField from '../common/generic-text-field';
 import styled, { css } from 'styled-components';
+import { User, UserLoginInput } from '../../model';
+import { POST_API_CONFIG } from '../../shared/ApiConfig';
+import { APP_ROUTES, LoadingState } from '../../shared/Constants';
+import { apiRequest } from '../../shared/RequestHandler';
 import { LoginSchema } from '../../utils/validation-schemas';
+import GenericTextField from '../common/generic-text-field';
 
 const SignInComponent = styled.div`
     ${props =>
         props.theme &&
         css`
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-top: 80px;
-            max-width: 700px;
-
             .form-container {
-                .sign-up-text {
-                    padding-top: 20px;
-                    flex-direction: row;
-                }
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                min-width: 450px;
+
                 .sign-in-heading {
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     padding-bottom: 10px;
                 }
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-                width: 450px;
+
+                .login-button {
+                    color: #fff;
+                    height: 40px;
+                }
             }
         `}
 `;
 
 export const LoginForm = () => {
-    const handleLogin = async (values: { email: string; password: string }) => {
-        console.log(values);
-        //TODo:: implement sign-in
-    };
-
     const [loginForm, setContactForm] = useState({
         email: '',
         password: '',
     });
-    const [spinnerState, setSpinnerState] = useState({
-        inProgress: false,
-        complete: false,
-    });
+    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.initial);
+    const router = useRouter();
+
+    const handleLogin = async (values: { email: string; password: string }) => {
+        setLoadingState(LoadingState.loading);
+        try {
+            const input: UserLoginInput = values;
+            const data: { user: User } = await apiRequest('/api/auth/login', {
+                ...POST_API_CONFIG,
+                body: JSON.stringify(input),
+            });
+            setLoadingState(LoadingState.success);
+            setTimeout(() => {
+                const { query } = router;
+                // if (query['redirectUri']) {
+                //     window.location.replace(String(query['redirectUri']));
+                // } else {
+                //     router.replace({
+                //         pathname: APP_ROUTES.LANDING,
+                //     });
+                // }
+
+                // TODO use above code and remove following line after adding error handling for 403
+                router.replace({
+                    pathname: APP_ROUTES.LANDING,
+                });
+            }, 500);
+        } catch (error) {
+            console.log(error);
+
+            setLoadingState(LoadingState.initial);
+        }
+    };
 
     const handleFormChange = (fieldName: string, value: string) => {
-        if (spinnerState.complete) {
-            setSpinnerState({
-                inProgress: false,
-                complete: false,
-            });
+        if (loadingState === LoadingState.success) {
+            setLoadingState(LoadingState.initial);
         }
         let newState: any = {};
         newState[fieldName] = value;
@@ -112,27 +134,31 @@ export const LoginForm = () => {
                             error={!!errors.password}
                             helperMessage={errors.password}
                             textFieldProps={{
-                                type: 'text',
+                                type: 'password',
                                 label: 'Password',
                             }}
                         />
                         <div style={{ padding: 10 }} />
                         <Button
+                            className='login-button'
                             type='submit'
                             variant='contained'
                             color='primary'
                             onClick={submitForm}
                             fullWidth
+                            disableElevation
                         >
-                            Login
+                            {loadingState === LoadingState.loading && (
+                                <CircularProgress
+                                    color='inherit'
+                                    size={20}
+                                    thickness={3}
+                                    variant='indeterminate'
+                                ></CircularProgress>
+                            )}
+                            {loadingState === LoadingState.success && <Check />}
+                            {loadingState === LoadingState.initial && 'Login'}
                         </Button>
-
-                        <div className='sign-up-text'>
-                            <a>Don't have an account? </a>
-                            <Link href='/auth/sign-up'>
-                                <a>Sign up</a>
-                            </Link>
-                        </div>
                     </div>
                 )}
             </Formik>

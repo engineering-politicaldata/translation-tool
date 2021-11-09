@@ -1,12 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { authGuard } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import { CustomErrorHandler, CustomException } from '../../../lib/backend.utils';
 import { ErrorCodes } from '../../../lib/backend.constants';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { CreateProjectInput } from '../../../lib/model';
+import { CreateProjectInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 
-async function createProjectWithDetails(input: CreateProjectInput) {
+async function createProjectWithDetails(input: CreateProjectInput, userId: string) {
     const data: DataClient = await DataProvider.client();
 
     const projectAlreadyExists = await data.pg
@@ -23,12 +24,11 @@ async function createProjectWithDetails(input: CreateProjectInput) {
     let projectId = null;
     await data.pg.transaction(async trx => {
         try {
-            // FIXME move table name to mapper function
-            const newProject = await trx('project').returning('id').insert({
+            const result = await trx('project').returning('id').insert({
                 name: input.name,
                 description: input.description,
             });
-            projectId = newProject[0];
+            projectId = result[0];
             // update project source language
             await trx('project__language').insert({
                 id_project: projectId,
@@ -42,7 +42,11 @@ async function createProjectWithDetails(input: CreateProjectInput) {
                     id_language,
                 });
             }
-            trx();
+
+            await trx('user__project').insert({
+                id_user: userId,
+                id_project: projectId,
+            });
             await trx.commit();
         } catch (e) {
             console.error(e);
@@ -63,8 +67,9 @@ async function createProjectHandler(req: NextApiRequest, res: NextApiResponse<an
         return;
     }
     try {
+        const { userId, isSuperAdmin } = await authGuard(req);
         // TODO throw error name already exists or name is empty https://votercircle.atlassian.net/browse/TT-3
-        const projectId = await createProjectWithDetails({ ...req.body });
+        const projectId = await createProjectWithDetails({ ...req.body }, userId);
         res.status(200).json({
             id: projectId,
         });

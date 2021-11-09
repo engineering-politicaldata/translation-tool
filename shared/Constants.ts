@@ -1,3 +1,5 @@
+export const KEY_TOKEN = '__tt_token';
+
 // Defaults color palette
 export const PRIMARY_COLOR = {
     50: '#e0f7ee',
@@ -57,6 +59,12 @@ export const TERTIARY_COLOR = {
     800: '#194A59',
     900: '#023849',
     contrastDefaultColor: 'light',
+};
+
+export const APP_ROUTES = {
+    LANDING: '/',
+    LOGIN: '/auth/login',
+    SIGNUP: '/auth/sign-up',
 };
 
 export const EMAIL_VALIDATION_REGEX =

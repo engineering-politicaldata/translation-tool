@@ -24,7 +24,6 @@ export async function getQueryBuilder() {
         if (knex) {
             return knex;
         }
-        console.log('creating new knex connector');
         // TODO How should we avoid creating builder everytime - is the following approach ok?
         knex = Knex({
             client: 'pg',

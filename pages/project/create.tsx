@@ -21,9 +21,10 @@ import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
 import SnackBarCustom from '../../components/common/SnackBarCustom';
 import WebsiteHeader from '../../components/common/website-header';
-import { UserDashboardSummaryContext } from '../../components/contexts/UserDashboardSummaryProvider';
-import { GET_API_CONFIG } from '../../lib/backend.config';
-import { CreateProjectInput, Language } from '../../lib/model';
+import { UserDashboardSummaryContext } from '../../components/contexts/user-dashboard-summary-provider';
+import { CreateProjectInput, Language } from '../../model';
+import { privateRoute } from '../../guard';
+import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
 
 const CreateProjectComponent = styled.div`
@@ -123,7 +124,7 @@ const getStyles = (id, languangeIdArray, theme) => {
     };
 };
 
-export default function CreateProject() {
+function CreateProject() {
     const projectListContext = useContext(UserDashboardSummaryContext);
     const [projectData, setProjectData] = useState({
         projectName: '',
@@ -224,11 +225,8 @@ export default function CreateProject() {
         };
         try {
             const data: { id: string } = await apiRequest('/api/project/create', {
-                method: 'POST',
+                ...POST_API_CONFIG,
                 body: JSON.stringify(input),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
             });
 
             // redirect to project page
@@ -436,3 +434,5 @@ export default function CreateProject() {
         </CreateProjectComponent>
     );
 }
+
+export default privateRoute(CreateProject);

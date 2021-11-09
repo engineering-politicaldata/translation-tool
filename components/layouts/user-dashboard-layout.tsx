@@ -16,11 +16,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { GET_API_CONFIG } from '../../lib/backend.config';
-import { ProjectListItemInfo } from '../../lib/model';
+import { ProjectListItemInfo } from '../../model';
+import { GET_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
 import { CustomTheme } from '../../styles/MuiTheme';
-import { UserDashboardSummaryContext } from '../contexts/UserDashboardSummaryProvider';
+import { UserDashboardSummaryContext } from '../contexts/user-dashboard-summary-provider';
 
 const LoggedInUserLayoutContainer = styled.div`
     display: flex;

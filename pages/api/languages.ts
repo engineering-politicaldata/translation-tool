@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { corsForGet } from '../../lib/backend.config';
 import DataProvider from '../../lib/data/DataProvider';
 import { Database } from '../../lib/data/PostgresProvider';
-import { Language } from '../../lib/model';
+import { Language } from '../../model';
 import { runMiddleware } from '../../lib/run-middleware';
 
 async function getLanguages(): Promise<Language[]> {

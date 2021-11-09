@@ -5,8 +5,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import GenericTextField from '../../../components/common/generic-text-field';
 import WebsiteHeader from '../../../components/common/website-header';
-import { UserDashboardSummaryContext } from '../../../components/contexts/UserDashboardSummaryProvider';
-import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
+import { UserDashboardSummaryContext } from '../../../components/contexts/user-dashboard-summary-provider';
+import UserDashboardLayout from '../../../components/layouts/user-dashboard-layout';
+import { privateRoute } from '../../../guard';
+import { POST_API_CONFIG } from '../../../shared/ApiConfig';
 import { apiRequest } from '../../../shared/RequestHandler';
 
 const ProjectSettingsComponent = styled.div`
@@ -52,7 +54,7 @@ type Props = {
     title: string;
     description: string;
 };
-export default function ProjectSettingsPage(props: Props) {
+function ProjectSettingsPage(props: Props) {
     const [projectDetails, setProjectDetails] = useState({
         id: null,
         projectName: '',
@@ -111,11 +113,8 @@ export default function ProjectSettingsPage(props: Props) {
             };
 
             await apiRequest('/api/project/update', {
-                method: 'POST',
+                ...POST_API_CONFIG,
                 body: JSON.stringify(input),
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
             });
 
             setTimeout(() => {
@@ -282,3 +281,5 @@ export default function ProjectSettingsPage(props: Props) {
         </UserDashboardLayout>
     );
 }
+
+export default privateRoute(ProjectSettingsPage);

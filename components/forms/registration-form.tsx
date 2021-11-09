@@ -40,6 +40,7 @@ const SignUpComponent = styled.div`
             }
         `}
 `;
+// TODO refactor and use in update profile page
 const RegistrationForm = () => {
     const router = useRouter();
     const handleSignUp = async (values: {

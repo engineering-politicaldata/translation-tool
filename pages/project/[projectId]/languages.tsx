@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import UserDashboardLayout from '../../../components/layouts/UserDashboardLayout';
+import UserDashboardLayout from '../../../components/layouts/user-dashboard-layout';
 
 export default function LanguagesPage() {
     const router = useRouter();

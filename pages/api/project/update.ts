@@ -1,11 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { authGuard, CustomErrorHandler } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { UpdateProjectBasicDetailsInput } from '../../../lib/model';
+import { UpdateProjectBasicDetailsInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
+import { validateAdminAccessToProject } from '../../../lib/validations';
 
 async function updateProjectDetails(input: UpdateProjectBasicDetailsInput) {
     const data: DataClient = await DataProvider.client();
+
     const updated = await data
         .pg('project')
         .update({
@@ -27,15 +30,14 @@ async function updateProjectHandler(req: NextApiRequest, res: NextApiResponse<an
     }
 
     try {
+        const { userId, isSuperAdmin } = await authGuard(req);
+        await validateAdminAccessToProject(userId, req.body.id, isSuperAdmin);
         const id = await updateProjectDetails({ ...req.body });
         res.status(200).json({
             id,
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Error while updating the project details',
-        });
+        CustomErrorHandler(res, error, 'Error while updating the project details');
     }
 }
 
