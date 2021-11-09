@@ -25,3 +25,7 @@ export function CustomErrorHandler(res: NextApiResponse<any>, error: any, messag
         message,
     });
 }
+
+export function joinAndQuote(s: string[]) {
+    return "'" + s.join("','") + "'";
+}
