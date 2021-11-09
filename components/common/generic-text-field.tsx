@@ -87,7 +87,6 @@ export interface GenericTextFieldInputProps {
     defaultValue: string;
     inputStyles?: any;
     charCounter?: number; // show char counter if char counter is > 0
-    type?: string;
 }
 export default function GenericTextField(props: GenericTextFieldInputProps) {
     const classes = useStyles();
@@ -165,7 +164,6 @@ export default function GenericTextField(props: GenericTextFieldInputProps) {
                     }}
                     ref={textfieldRef}
                     color={'secondary'}
-                    type={props.type}
                 />
                 <div className={classes.helperView}>
                     <FormHelperText component='div' error={!!props.error}>

@@ -135,15 +135,12 @@ export const LoginForm = () => {
                                 onChange={(field, value, event) => {
                                     handleFormChange(field, value);
                                 }}
-                                // onReset={field => {
-                                //     handleFormChange(field, '');
-                                // }}
                                 label={'Password'}
                                 error={!!errors.password}
                                 helperMessage={errors.password}
-                                type={loginForm.showPassword ? 'text' : 'password'}
                                 textFieldProps={{
                                     label: 'Password',
+                                    type: loginForm.showPassword ? 'text' : 'password',
                                 }}
                             />
 
