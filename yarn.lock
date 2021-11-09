@@ -1146,6 +1146,11 @@ delegates@^1.0.0:
   resolved "https://registry.yarnpkg.com/delegates/-/delegates-1.0.0.tgz#84c6e159b81904fdca59a0ef44cd870d31250f9a"
   integrity sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
 
+delete-all-cookies@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/delete-all-cookies/-/delete-all-cookies-0.3.0.tgz#4441835324c6c3fdae4934ae21a01adb9d5dfaf7"
+  integrity sha1-REGDUyTGw/2uSTSuIaAa251d+vc=
+
 depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"

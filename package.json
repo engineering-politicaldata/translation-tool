@@ -19,6 +19,7 @@
         "classnames": "^2.3.1",
         "cookie": "^0.4.1",
         "cors": "^2.8.5",
+        "delete-all-cookies": "^0.3.0",
         "formik": "^2.2.6",
         "js-cookie": "^3.0.1",
         "jsonwebtoken": "^8.5.1",
@@ -33,6 +34,7 @@
         "yup": "^0.32.9"
     },
     "devDependencies": {
+        "@next/bundle-analyzer": "^12.0.1",
         "@types/bcrypt": "^5.0.0",
         "@types/cookie": "^0.4.1",
         "@types/cors": "^2.8.12",
@@ -41,7 +43,6 @@
         "@types/node": "^15.12.2",
         "@types/react": "^17.0.11",
         "@types/yup": "^0.29.11",
-        "@next/bundle-analyzer": "^12.0.1",
         "babel-plugin-import": "^1.13.3",
         "husky": "4",
         "lint-staged": "^10.5.4",
