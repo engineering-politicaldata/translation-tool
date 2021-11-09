@@ -16,6 +16,9 @@ const SignInComponent = styled.div`
     ${props =>
         props.theme &&
         css`
+            display: flex;
+            width: 100%;
+
             .form-container {
                 justify-content: center;
                 align-items: center;
@@ -93,7 +96,7 @@ export const LoginForm = () => {
 
     const theme = useTheme();
     return (
-        <SignInComponent theme={theme} style={{ display: 'flex', width: '100%' }}>
+        <SignInComponent theme={theme}>
             <Formik
                 initialValues={loginForm}
                 enableReinitialize={true}
