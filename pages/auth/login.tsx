@@ -3,12 +3,13 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { LoginForm } from '../../components/forms/login-form';
 import { anonRoute } from '../../guard';
+import { APPBAR_HEIGHT } from '../../shared/Constants';
 
 const LoginComponent = styled.div`
     ${props =>
         props.theme &&
         css`
-            min-height: 100vh;
+            min-height: calc(100vh - ${APPBAR_HEIGHT});
             display: flex;
             justify-content: center;
             align-items: center;

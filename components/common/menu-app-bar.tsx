@@ -12,7 +12,7 @@ import deleteAllCookiesFactory from 'delete-all-cookies';
 import Store from '../../shared/Store';
 import { CustomTheme } from '../../styles/MuiTheme';
 
-const OcAppBar = withStyles({
+const CustomAppBar = withStyles({
     root: {
         backgroundColor: '#FFFFFF',
     },
@@ -61,19 +61,13 @@ function MenuAppBar() {
 
     return (
         <div className='menuAppBar'>
-            <OcAppBar position='static'>
+            <CustomAppBar position='static'>
                 <Toolbar>
                     <img
                         className={classes.logoImage}
                         src='/images/logos/pdi_logo_2x.png'
                         onClick={() => router.replace('/')}
                     />
-                    <IconButton
-                        edge='start'
-                        className={classes.menuButton}
-                        color='inherit'
-                        aria-label='menu'
-                    ></IconButton>
                     <Typography variant='h6' className={classes.title}>
                         Translation Tool
                     </Typography>
@@ -108,7 +102,7 @@ function MenuAppBar() {
                         </div>
                     )}
                 </Toolbar>
-            </OcAppBar>
+            </CustomAppBar>
         </div>
     );
 }
