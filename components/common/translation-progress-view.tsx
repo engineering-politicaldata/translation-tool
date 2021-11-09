@@ -9,16 +9,15 @@ const TranslationProgressViewContainer = styled.div`
                 display: flex;
                 margin-bottom: ${props.theme.spacing(3)}px;
                 margin-top: ${props.theme.spacing(4)}px;
+                justify-content: space-between;
                 .first-section {
                 }
-                .middle-section {
-                    padding: 0 ${props.theme.spacing(4)}px;
-                    flex: 1;
-                    display: flex;
-                    align-items: flex-end;
-                }
                 .last-section {
+                    align-items: end;
                     text-align: right;
+                }
+                .percentage-section {
+                    display: flex;
                 }
             }
         `}
@@ -43,26 +42,30 @@ const TranslationProgressView = (props: Props) => {
                     <Typography variant='h3'>{props.totalSourceKeys}</Typography>
                     <Typography>Total Source keys</Typography>
                 </div>
-                <div className='middle-section'>
-                    <Typography variant='subtitle2' color='secondary'>
-                        {props.translationPercentage}% Translated{' '}
-                    </Typography>
-                    &nbsp; &nbsp;
-                    <Typography variant='subtitle2'>
-                        {props.untranslationPercentage}% UnTranslated{' '}
-                    </Typography>
-                </div>
+
                 <div className='last-section'>
                     <Typography variant='h3'>{props.totalResourcesCount}</Typography>
                     <Typography> Total Resources</Typography>
                 </div>
             </div>
+
             <LinearProgress
                 style={{ height: '10px' }}
                 variant='determinate'
                 color='secondary'
                 value={props.translationPercentage}
             />
+            <div className='stats'>
+                <div className='percentage-section'>
+                    <Typography variant='subtitle2' color='secondary'>
+                        {props.translationPercentage}% Translated{' '}
+                    </Typography>
+                    &nbsp; &nbsp;
+                    <Typography variant='subtitle2'>
+                        {props.untranslationPercentage}% Untranslated{' '}
+                    </Typography>
+                </div>
+            </div>
         </TranslationProgressViewContainer>
     );
 };
