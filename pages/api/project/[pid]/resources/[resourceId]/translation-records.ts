@@ -17,12 +17,11 @@ async function getTranslationRecords(
     const { rows } = await data.pg.raw(
         `
         select kr.id, kr."key", json_agg(
-            (
-                '{
-                    "languageId":"' || l.id || '",
-                    "value":"' || krt.value  || '"
-                }'
+            format('{"languageId": %s,"value": %s}',
+                to_json(l.id::text), 
+                to_json(krt.value::text) 
             )::json
+            
         ) 
         from ${schema}.key_record__translation krt 
         inner join ${schema}."language" l on krt.id_language = l.id 

@@ -78,6 +78,8 @@ function LandingPage() {
     }, []);
 
     const AllProjectsSummary = () => {
+        return <NoDataFoundPage message={'Coming Soon...'} subText={''} />;
+
         if (!allProjectsSummary) {
             return (
                 <NoDataFoundPage

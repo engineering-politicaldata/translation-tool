@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler, CustomException, ErrorCodes } from '../../../../../../lib';
+import { ErrorCodes } from '../../../../../../error-codes';
+import { authGuard, CustomErrorHandler, CustomException } from '../../../../../../lib';
 import { corsForGet } from '../../../../../../lib/backend.config';
 import DataProvider, { DataClient } from '../../../../../../lib/data/DataProvider';
 import { runMiddleware } from '../../../../../../lib/run-middleware';

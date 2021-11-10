@@ -11,10 +11,9 @@ async function downloadResourceAsJSON(resourceId: string, languageId: string) {
     const schema = Database.schema;
     const { rows } = await data.pg.raw(
         `SELECT json_agg(
-                (
-                    '{
-                        "' || kr."key" || '":"' || krt.value || '"
-                    }'
+                    format('{%s : %s}',
+                    to_json(kr."key"::text), 
+                    to_json(krt.value::text) 
                 )::json
             )
             FROM ${schema}.key_record__translation krt 

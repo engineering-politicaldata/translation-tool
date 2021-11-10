@@ -1,5 +1,6 @@
 import { NextApiRequest } from 'next';
-import { CustomExceptionWithStatus, decodeToken, ErrorCodes, USER_TOKEN } from '.';
+import { CustomExceptionWithStatus, decodeToken, USER_TOKEN } from '.';
+import { ErrorCodes } from '../error-codes';
 import DataProvider, { DataClient } from './data/DataProvider';
 
 export async function authGuard(req: NextApiRequest) {

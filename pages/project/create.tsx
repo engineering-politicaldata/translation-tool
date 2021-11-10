@@ -189,19 +189,6 @@ function CreateProject() {
     if (!projectData.sourceLanguage) {
         initializeSourceLanguage();
     }
-    const addTargetLanguage = lang => () => {
-        setProjectData({
-            ...projectData,
-            targetLanguages: [...projectData.targetLanguages, lang],
-        });
-    };
-
-    const deleteTargetLanguage = lang => () => {
-        setProjectData({
-            ...projectData,
-            targetLanguages: projectData.targetLanguages.filter(tLang => tLang.id !== lang.id),
-        });
-    };
 
     const handleFormChange = (fieldName: string, value: string) => {
         let newState: any = {};
@@ -218,12 +205,12 @@ function CreateProject() {
 
     const createProject = async (values: any) => {
         const input: CreateProjectInput = {
-            // userId: 'default_user_id', // TODO add user id
             name: values.projectName,
             description: values.projectDescription,
             sourceLanguageId: values.sourceLanguage.id,
-            targetLanguageIds: values.targetLanguages.map(lang => lang.id),
+            targetLanguageIds: values.targetLanguages,
         };
+
         try {
             const data: { id: string } = await apiRequest('/api/project/create', {
                 ...POST_API_CONFIG,
@@ -270,7 +257,7 @@ function CreateProject() {
     return (
         <CreateProjectComponent theme={theme}>
             <div className='create-project-container'>
-                <WebsiteHeader title={'Add New Project'} description={''} />
+                <WebsiteHeader title={''} description={'Add New Project'} />
                 <Formik
                     initialValues={projectData}
                     enableReinitialize={true}
@@ -416,9 +403,7 @@ function CreateProject() {
                                     onClick={submitForm}
                                     disableElevation
                                 >
-                                    <Typography color={'inherit'}>
-                                        <div>create</div>
-                                    </Typography>
+                                    <Typography color={'inherit'}>create</Typography>
                                 </Button>
                             </div>
                         </div>

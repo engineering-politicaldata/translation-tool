@@ -1,4 +1,5 @@
-import { CustomExceptionWithStatus, ErrorCodes } from '..';
+import { CustomExceptionWithStatus } from '..';
+import { ErrorCodes } from '../../error-codes';
 import DataProvider, { DataClient } from '../data/DataProvider';
 
 export async function validateAdminAccessToProject(

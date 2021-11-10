@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import { ErrorCodes } from '../../../error-codes';
 import {
     authGuard,
     CustomErrorHandler,
     CustomException,
     CustomExceptionWithStatus,
-    ErrorCodes,
     generateEncrypedPassword,
 } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';

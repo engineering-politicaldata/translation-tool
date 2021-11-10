@@ -3,7 +3,6 @@ import {
     comparePassword,
     CustomErrorHandler,
     CustomException,
-    ErrorCodes,
     generateToken,
     USER_TOKEN,
 } from '../../../lib';
@@ -13,6 +12,7 @@ import { User, UserLoginInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
 import { isEmailValid, isPasswordValid } from '../../../lib/validations';
 import { setCookie } from './../../../lib/cookies.utils';
+import { ErrorCodes } from '../../../error-codes';
 
 function validateAdminLoginInput(email: string, password: string) {
     if (!isEmailValid(email)) {

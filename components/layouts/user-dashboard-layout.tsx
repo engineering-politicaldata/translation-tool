@@ -101,15 +101,17 @@ const AccordionSummary = withStyles((theme: CustomTheme) => {
             color: theme.contrastColor,
             backgroundColor: 'rgba(0, 0, 0, .03)',
             borderBottom: '1px solid rgba(255,255,255)',
-            minHeight: 56,
+            minHeight: 45,
             '&$expanded': {
-                minHeight: 56,
+                minHeight: 45,
             },
             alignItems: 'center',
         },
         content: {
+            alignItems: 'center',
+            margin: '8px 0',
             '&$expanded': {
-                margin: '12px 0',
+                margin: '8px 0',
             },
         },
         expanded: {},

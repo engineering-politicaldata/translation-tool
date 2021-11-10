@@ -100,8 +100,9 @@ const LanguageTranslationListItem = (props: Props) => {
             const url = URL.createObjectURL(blob);
             // Create a new anchor element
             const a = document.createElement('a');
+            const splitName = props.resourceName.split('.');
             a.href = url;
-            a.download = `${props.resourceName}-${item.languageCode}`;
+            a.download = `${splitName[0]}-${item.languageCode}.json`;
             a.click();
             a.remove();
         } catch (error) {}

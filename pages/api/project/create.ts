@@ -2,18 +2,18 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { authGuard } from '../../../lib';
 import { corsForPost } from '../../../lib/backend.config';
 import { CustomErrorHandler, CustomException } from '../../../lib/backend.utils';
-import { ErrorCodes } from '../../../lib/backend.constants';
 import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
 import { CreateProjectInput } from '../../../model';
 import { runMiddleware } from '../../../lib/run-middleware';
+import { ErrorCodes } from '../../../error-codes';
 
 async function createProjectWithDetails(input: CreateProjectInput, userId: string) {
     const data: DataClient = await DataProvider.client();
 
-    const projectAlreadyExists = await data.pg
-        .select('id')
-        .from('project')
-        .where('name', 'ilike', `%${input.name}%`);
+    const projectAlreadyExists = await data.pg.select('id').from('project').where({
+        name: input.name,
+    });
+
     if (projectAlreadyExists.length !== 0) {
         throw new CustomException(
             'A Project with the given name already exists',
@@ -36,6 +36,8 @@ async function createProjectWithDetails(input: CreateProjectInput, userId: strin
                 is_source_language: true,
             });
             // update project target language
+            console.log('log', input, projectId);
+
             for (const id_language of input.targetLanguageIds) {
                 await trx('project__language').insert({
                     id_project: projectId,
@@ -50,6 +52,7 @@ async function createProjectWithDetails(input: CreateProjectInput, userId: strin
             await trx.commit();
         } catch (e) {
             console.error(e);
+            projectId = null;
             await trx.rollback();
         }
     });

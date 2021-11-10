@@ -2,12 +2,12 @@ import { KeyRecordTranslation } from 'knex/types/tables';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { authGuard } from '../../../../../lib';
 import { corsForPost } from '../../../../../lib/backend.config';
-import { ErrorCodes } from '../../../../../lib/backend.constants';
 import { CustomErrorHandler, CustomException } from '../../../../../lib/backend.utils';
 import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
 import { UploadResourceInput } from '../../../../../model';
 import { runMiddleware } from '../../../../../lib/run-middleware';
 import { validateAdminAccessToProject } from '../../../../../lib/validations';
+import { ErrorCodes } from '../../../../../error-codes';
 
 async function saveResourceData(input: UploadResourceInput) {
     const data: DataClient = await DataProvider.client();
