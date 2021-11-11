@@ -7,7 +7,7 @@ import WebsiteHeader from '../../../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
 import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
 import { privateRoute } from '../../../../guard';
-import { UploadResourceInput } from '../../../../model';
+import { UploadResourceInput } from '@data-model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/ApiConfig';
 import { APPBAR_HEIGHT, LoadingState } from '../../../../shared/Constants';
 import { apiRequest } from '../../../../shared/RequestHandler';

@@ -20,11 +20,7 @@ import LanguageTranslationListItem from '../../../../../components/resource/lang
 import ResourceStatsSection from '../../../../../components/resource/resource-stats-section';
 
 import { privateRoute } from '../../../../../guard';
-import {
-    ResourceSummary,
-    ResourceSummaryByLanguage,
-    UpdateResourceInput,
-} from '../../../../../model';
+import { ResourceSummary, ResourceSummaryByLanguage, UpdateResourceInput } from '@data-model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../../shared/ApiConfig';
 import { LoadingState } from '../../../../../shared/Constants';
 import { apiRequest } from '../../../../../shared/RequestHandler';

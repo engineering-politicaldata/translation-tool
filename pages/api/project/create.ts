@@ -1,14 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard } from '../../../lib';
-import { corsForPost } from '../../../lib/backend.config';
-import { CustomErrorHandler, CustomException } from '../../../lib/backend.utils';
-import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { CreateProjectInput } from '../../../model';
-import { runMiddleware } from '../../../lib/run-middleware';
+import { corsForPost } from '@backend-config';
+import { CustomErrorHandler, CustomException } from '@backend-utils';
+import { getClient } from '@database';
+import { CreateProjectInput } from '@data-model';
+import { runMiddleware } from '../../../lib/middleware/run-middleware';
 import { ErrorCodes } from '../../../error-codes';
+import { authGuard } from '@backend-guards';
 
 async function createProjectWithDetails(input: CreateProjectInput, userId: string) {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
 
     const projectAlreadyExists = await data.pg.select('id').from('project').where({
         name: input.name,

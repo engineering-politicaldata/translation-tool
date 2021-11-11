@@ -1,6 +1,6 @@
-import { CustomExceptionWithStatus } from '..';
+import { CustomExceptionWithStatus } from '@backend-utils';
 import { ErrorCodes } from '../../error-codes';
-import DataProvider, { DataClient } from '../data/DataProvider';
+import { getClient } from '@database';
 
 export async function validateAdminAccessToProject(
     userId: string,
@@ -13,7 +13,7 @@ export async function validateAdminAccessToProject(
     }
 
     if (!hasAccess) {
-        const data: DataClient = await DataProvider.client();
+        const data = await getClient();
         const result = await data.pg.count('*').from('user__project').where({
             id_user: userId,
             id_project: projectId,

@@ -1,13 +1,14 @@
 import { Project } from 'knex/types/tables';
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler } from '@backend-utils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler } from '../../../../lib';
-import { corsForGet } from '../../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../../lib/data/DataProvider';
-import { runMiddleware } from '../../../../lib/run-middleware';
-import { validateAdminAccessToProject } from '../../../../lib/validations';
+import { corsForGet } from '@backend-config';
+import { getClient } from '@database';
+import { runMiddleware } from '../../../../lib/middleware/run-middleware';
+import { validateAdminAccessToProject } from '@backend-validations';
 
 async function getProjectBasicInfo(projectId: string) {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
 
     const project = data.pg
         .select('id', 'name', 'description')

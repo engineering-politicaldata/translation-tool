@@ -22,7 +22,7 @@ import GenericTextField from '../../components/common/generic-text-field';
 import SnackBarCustom from '../../components/common/SnackBarCustom';
 import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/user-dashboard-summary-provider';
-import { CreateProjectInput, Language } from '../../model';
+import { CreateProjectInput, Language } from '@data-model';
 import { privateRoute } from '../../guard';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';

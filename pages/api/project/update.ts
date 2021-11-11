@@ -1,13 +1,14 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler } from '../../../lib';
-import { corsForPost } from '../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { UpdateProjectBasicDetailsInput } from '../../../model';
-import { runMiddleware } from '../../../lib/run-middleware';
-import { validateAdminAccessToProject } from '../../../lib/validations';
+import { corsForPost } from '@backend-config';
+import { getClient } from '@database';
+import { UpdateProjectBasicDetailsInput } from '@data-model';
+import { runMiddleware } from '../../../lib/middleware/run-middleware';
+import { CustomErrorHandler } from '@backend-utils';
+import { authGuard } from '@backend-guards';
+import { validateAdminAccessToProject } from '@backend-validations';
 
 async function updateProjectDetails(input: UpdateProjectBasicDetailsInput) {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
 
     const updated = await data
         .pg('project')

@@ -1,12 +1,13 @@
+import { corsForGet } from '@backend-config';
+
 import { NextApiRequest, NextApiResponse } from 'next';
-import { corsForGet } from '../../lib/backend.config';
-import DataProvider from '../../lib/data/DataProvider';
 import { Database } from '../../lib/data/PostgresProvider';
-import { Language } from '../../model';
-import { runMiddleware } from '../../lib/run-middleware';
+import { Language } from '@data-model';
+import { runMiddleware } from '../../lib/middleware/run-middleware';
+import { getClient } from '@database';
 
 async function getLanguages(): Promise<Language[]> {
-    const client = await DataProvider.client();
+    const client = await getClient();
     const s = Database.schema;
     const { rows } = await client.pg.raw(`select * from ${s}.language`);
     return rows;

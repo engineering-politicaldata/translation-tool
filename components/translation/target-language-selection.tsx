@@ -14,7 +14,7 @@ import { ArrowBack, ArrowForward } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import useSWR from 'swr';
-import { ProjectLanguage } from '../../model';
+import { ProjectLanguage } from '@data-model';
 import { GET_API_CONFIG } from '../../shared/ApiConfig';
 import { handleBack } from '../../shared/Utils';
 

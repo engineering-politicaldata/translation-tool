@@ -2,7 +2,7 @@ import { Typography, useTheme } from '@material-ui/core';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { TranslationKeyRecord } from '../../model';
+import { TranslationKeyRecord } from '@data-model';
 import { POST_API_CONFIG } from '../../shared/ApiConfig';
 import { LoadingState } from '../../shared/Constants';
 import { apiRequest } from '../../shared/RequestHandler';

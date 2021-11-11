@@ -1,7 +1,8 @@
+import { CustomExceptionWithStatus, decodeToken } from '@backend-utils';
 import { NextApiRequest } from 'next';
-import { CustomExceptionWithStatus, decodeToken, USER_TOKEN } from '.';
 import { ErrorCodes } from '../error-codes';
-import DataProvider, { DataClient } from './data/DataProvider';
+import { USER_TOKEN } from './config';
+import { getClient } from '@database';
 
 export async function authGuard(req: NextApiRequest) {
     const userId: string = decodeToken(req.cookies[USER_TOKEN]);
@@ -12,7 +13,7 @@ export async function authGuard(req: NextApiRequest) {
             403,
         );
     }
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
     const result = await data.pg('user').select('id').where({
         id: userId,
     });
