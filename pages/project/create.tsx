@@ -349,7 +349,7 @@ function CreateProject() {
                                                 className={classes.selectRootInput}
                                             />
                                         }
-                                        renderValue={selected => (
+                                        renderValue={(selected: any[]) => (
                                             <div className={classes.chips}>
                                                 {selected.map(languageId => {
                                                     const selectedLanguage = allLanguages.find(

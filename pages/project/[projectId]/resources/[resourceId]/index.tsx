@@ -1,15 +1,15 @@
 import {
     Button,
     CircularProgress,
-    Dialog,
     DialogActions,
-    DialogContentText,
     DialogTitle,
     Typography,
     useTheme,
     withStyles,
 } from '@material-ui/core';
+import MuiDialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogContentText from '@material-ui/core/DialogContentText';
 import { Check } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -43,15 +43,24 @@ const ResourcePageContainer = styled.div`
         `}
 `;
 
+const Dialog = withStyles(theme => ({
+    root: {},
+}))(MuiDialog);
+
 const DialogContent = withStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: theme.spacing(6),
+        padding: `${theme.spacing()}px ${theme.spacing(6)}px`,
     },
 }))(MuiDialogContent);
 
+const DialogContentText = withStyles(theme => ({
+    root: {
+        marginBottom: 24,
+    },
+}))(MuiDialogContentText);
 const UploadSourceButtonStyled = styled.div`
     ${props =>
         props.theme &&
@@ -206,11 +215,7 @@ function ResourcePage() {
     return (
         <UserDashboardLayout>
             <ResourcePageContainer theme={theme}>
-                <WebsiteHeader
-                    title={'Resources'}
-                    description={resourceName}
-                    highlight='description'
-                />
+                <WebsiteHeader title={'Resources'} description={resourceName} />
                 <div className='resource-page-body'>
                     <ResourceStatsSection
                         languageCount={languageTranslationList.length}

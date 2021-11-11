@@ -36,8 +36,6 @@ async function createProjectWithDetails(input: CreateProjectInput, userId: strin
                 is_source_language: true,
             });
             // update project target language
-            console.log('log', input, projectId);
-
             for (const id_language of input.targetLanguageIds) {
                 await trx('project__language').insert({
                     id_project: projectId,

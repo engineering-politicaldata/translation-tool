@@ -35,8 +35,6 @@ async function updateTranslationsForTragetLanguage(
         })
         .filter(item => item !== null);
 
-    console.log(keyRecordTranslationList);
-
     await data.pg
         .insert(keyRecordTranslationList, ['id_key_record'])
         .into('key_record__translation')
