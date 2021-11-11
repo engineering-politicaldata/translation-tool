@@ -15,10 +15,10 @@ import { CreateAdminInput } from '../../../model';
 
 function validateCreateAdminInput(email: string, password: string) {
     if (!isEmailValid(email)) {
-        throw new CustomException('Invalid admin email', ErrorCodes.INVALID_PASSWORD);
+        throw new CustomException('Invalid email', ErrorCodes.INVALID_EMAIL);
     }
     if (!isPasswordValid(password, 5)) {
-        throw new CustomException('Invalid admin password', ErrorCodes.INVALID_PASSWORD);
+        throw new CustomException('Invalid password', ErrorCodes.INVALID_PASSWORD);
     }
 }
 

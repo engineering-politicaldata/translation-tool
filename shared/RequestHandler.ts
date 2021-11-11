@@ -3,7 +3,7 @@ export async function apiRequest(input: RequestInfo, init?: RequestInit) {
     if (res.ok) {
         const data = await res.json();
         if (data.backendError) {
-            throw data;
+            throw data.backendError;
         }
         return data;
     }

@@ -11,6 +11,7 @@ import { apiRequest } from '../../shared/RequestHandler';
 import { LoginSchema } from '../../utils/validation-schemas';
 import GenericTextField from '../common/generic-text-field';
 import Visibility from '@material-ui/icons/Visibility';
+import { ErrorCodes } from '../../error-codes';
 
 const SignInComponent = styled.div`
     ${props =>
@@ -42,6 +43,11 @@ const SignInComponent = styled.div`
 `;
 
 export const LoginForm = () => {
+    const [apiError, setApiError] = useState<{
+        errorCode: ErrorCodes;
+        message: string;
+    }>(undefined);
+
     const [loginForm, setContactForm] = useState({
         email: '',
         password: '',
@@ -76,7 +82,7 @@ export const LoginForm = () => {
             }, 500);
         } catch (error) {
             console.log(error);
-
+            setApiError(error);
             setLoadingState(LoadingState.initial);
         }
     };
@@ -88,6 +94,9 @@ export const LoginForm = () => {
     const handleFormChange = (fieldName: string, value: string) => {
         if (loadingState === LoadingState.success) {
             setLoadingState(LoadingState.initial);
+        }
+        if (apiError) {
+            setApiError(undefined);
         }
         let newState: any = {};
         newState[fieldName] = value;
@@ -103,86 +112,102 @@ export const LoginForm = () => {
                 onSubmit={values => handleLogin(values)}
                 validationSchema={LoginSchema}
             >
-                {({ errors, submitForm }) => (
-                    <div className='form-container'>
-                        <div className='sign-in-heading'>
-                            <Typography variant='h4' color='secondary'>
-                                Translation Tool
-                            </Typography>
-                        </div>
-                        <div style={{ padding: 10 }} />
-                        <GenericTextField
-                            key={'email'}
-                            defaultValue={loginForm.email}
-                            fieldName={'email'}
-                            onChange={(field, value, event) => {
-                                handleFormChange(field, value);
-                            }}
-                            onReset={field => {
-                                handleFormChange(field, '');
-                            }}
-                            label={'Email address'}
-                            error={!!errors.email}
-                            helperMessage={errors.email}
-                            textFieldProps={{
-                                type: 'text',
-                                label: 'Email address',
-                            }}
-                        />
-                        <div style={{ padding: 10 }} />
-                        <div style={{ position: 'relative' }}>
+                {({ errors, submitForm }) => {
+                    let emailErrorMessage: any = errors.email;
+                    if (
+                        apiError &&
+                        [ErrorCodes.INVALID_EMAIL, ErrorCodes.USER_NOT_FOUND].includes(
+                            apiError.errorCode,
+                        )
+                    ) {
+                        emailErrorMessage = apiError.message;
+                    }
+
+                    let passwordErrorMessage: any = errors.password;
+                    if (apiError && apiError.errorCode === ErrorCodes.INVALID_PASSWORD) {
+                        passwordErrorMessage = apiError.message;
+                    }
+                    return (
+                        <div className='form-container'>
+                            <div className='sign-in-heading'>
+                                <Typography variant='h4' color='secondary'>
+                                    Translation Tool
+                                </Typography>
+                            </div>
+                            <div style={{ padding: 10 }} />
                             <GenericTextField
-                                key={'password'}
-                                defaultValue={loginForm.password}
-                                fieldName={'password'}
+                                key={'email'}
+                                defaultValue={loginForm.email}
+                                fieldName={'email'}
                                 onChange={(field, value, event) => {
                                     handleFormChange(field, value);
                                 }}
-                                label={'Password'}
-                                error={!!errors.password}
-                                helperMessage={errors.password}
+                                onReset={field => {
+                                    handleFormChange(field, '');
+                                }}
+                                label={'Email address'}
+                                error={!!emailErrorMessage}
+                                helperMessage={emailErrorMessage}
                                 textFieldProps={{
-                                    label: 'Password',
-                                    type: loginForm.showPassword ? 'text' : 'password',
+                                    type: 'text',
+                                    label: 'Email address',
                                 }}
                             />
-
-                            {loginForm.password && (
-                                <Visibility
-                                    style={{
-                                        color: '#777777',
-                                        position: 'absolute',
-                                        top: '20px',
-                                        right: '8px',
-                                        fontSize: '30px',
+                            <div style={{ padding: 10 }} />
+                            <div style={{ position: 'relative' }}>
+                                <GenericTextField
+                                    key={'password'}
+                                    defaultValue={loginForm.password}
+                                    fieldName={'password'}
+                                    onChange={(field, value, event) => {
+                                        handleFormChange(field, value);
                                     }}
-                                    onClick={handleClickShowPassword}
+                                    label={'Password'}
+                                    error={!!passwordErrorMessage}
+                                    helperMessage={passwordErrorMessage}
+                                    textFieldProps={{
+                                        label: 'Password',
+                                        type: loginForm.showPassword ? 'text' : 'password',
+                                    }}
                                 />
-                            )}
+
+                                {loginForm.password && (
+                                    <Visibility
+                                        style={{
+                                            color: '#777777',
+                                            position: 'absolute',
+                                            top: '20px',
+                                            right: '8px',
+                                            fontSize: '30px',
+                                        }}
+                                        onClick={handleClickShowPassword}
+                                    />
+                                )}
+                            </div>
+                            <div style={{ padding: 10 }} />
+                            <Button
+                                className='login-button'
+                                type='submit'
+                                variant='contained'
+                                color='primary'
+                                onClick={submitForm}
+                                fullWidth
+                                disableElevation
+                            >
+                                {loadingState === LoadingState.loading && (
+                                    <CircularProgress
+                                        color='inherit'
+                                        size={20}
+                                        thickness={3}
+                                        variant='indeterminate'
+                                    ></CircularProgress>
+                                )}
+                                {loadingState === LoadingState.success && <Check />}
+                                {loadingState === LoadingState.initial && 'Login'}
+                            </Button>
                         </div>
-                        <div style={{ padding: 10 }} />
-                        <Button
-                            className='login-button'
-                            type='submit'
-                            variant='contained'
-                            color='primary'
-                            onClick={submitForm}
-                            fullWidth
-                            disableElevation
-                        >
-                            {loadingState === LoadingState.loading && (
-                                <CircularProgress
-                                    color='inherit'
-                                    size={20}
-                                    thickness={3}
-                                    variant='indeterminate'
-                                ></CircularProgress>
-                            )}
-                            {loadingState === LoadingState.success && <Check />}
-                            {loadingState === LoadingState.initial && 'Login'}
-                        </Button>
-                    </div>
-                )}
+                    );
+                }}
             </Formik>
         </SignInComponent>
     );

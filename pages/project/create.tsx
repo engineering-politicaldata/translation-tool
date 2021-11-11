@@ -227,7 +227,7 @@ function CreateProject() {
             router.replace(`/project/${data.id}/resources`);
         } catch (err) {
             openSnackbar({
-                errorMessage: err.backendError.message,
+                errorMessage: err.message,
                 isSnackBarOpen: true,
             });
         }
