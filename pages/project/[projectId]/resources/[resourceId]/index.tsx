@@ -208,6 +208,15 @@ function ResourcePage() {
             setFileUploadProgressState(LoadingState.initial);
         }
     }
+    async function getDialogWarningText() {
+        if (!openUpdateDialogForLanguage) {
+            return '';
+        }
+        if (!openUpdateDialogForLanguage.isSourceLanguage) {
+            return `<b>Note:</b> When you update the source file, the already existing strings will be ignored and only the new strings will be added to be translated.`;
+        }
+        return `<b>Note:</b> When you update the translations file, only the keys in the source file will be translated.`;
+    }
     return (
         <UserDashboardLayout>
             <ResourcePageContainer theme={theme}>
@@ -237,9 +246,7 @@ function ResourcePage() {
                     <DialogTitle id='alert-dialog-title'>{'Update Resource'}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id='alert-dialog-description'>
-                            <b>Note:</b> When you update the source file, the already existing
-                            strings will be ignored and only the new strings will be added to be
-                            translated
+                            {getDialogWarningText()}
                         </DialogContentText>
                         {fileUploadProgressState === LoadingState.loading && (
                             <CircularProgress

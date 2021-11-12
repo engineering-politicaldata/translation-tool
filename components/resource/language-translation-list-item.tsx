@@ -55,7 +55,7 @@ const options = [
     },
     {
         type: OptionTypes.DOWNLOAD,
-        value: 'Download',
+        value: 'Download File',
     },
     {
         type: OptionTypes.UPDATE,
