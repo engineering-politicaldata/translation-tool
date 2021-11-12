@@ -10,7 +10,6 @@ module.exports = async () => {
             port: Number(process.env.DB_PORT || '5432'),
             database: process.env.DB_NAME || 'translationtool',
         },
-        // searchPath: [schema],
         migrations: {
             tableName: 'knex_migrations',
             directory: 'lib/migrations',
