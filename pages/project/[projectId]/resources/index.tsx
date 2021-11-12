@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
+import SnackBarCustom from '../../../../components/common/SnackBarCustom';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
 import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
 import { privateRoute } from '../../../../guard';
@@ -139,6 +140,11 @@ function ResourcesPage() {
         LoadingState.initial,
     );
 
+    const [snackBarData, openSnackbar] = useState({
+        isSnackBarOpen: false,
+        errorMessage: '',
+    });
+
     const projectListContext = useContext(UserDashboardSummaryContext);
     const { activeProject } = projectListContext;
     const theme = useTheme();
@@ -188,6 +194,13 @@ function ResourcesPage() {
             </UserDashboardLayout>
         );
     }
+
+    const onSnackbarClose = () => {
+        openSnackbar({
+            ...snackBarData,
+            isSnackBarOpen: false,
+        });
+    };
 
     const handleFileSelected = event => {
         try {
@@ -270,7 +283,10 @@ function ResourcesPage() {
             }, 1000);
         } catch (error) {
             // TODO handler error correctly - Toast with - Resource Already exists. Go to resource for updating the content
-            console.log('error', error);
+            openSnackbar({
+                errorMessage: error.message,
+                isSnackBarOpen: true,
+            });
             setFileUploadProgressState(LoadingState.initial);
         }
     }
@@ -405,6 +421,14 @@ function ResourcesPage() {
                 </div>
 
                 <div>{resourceListItems}</div>
+                <SnackBarCustom
+                    message={snackBarData.errorMessage}
+                    snackbarProps={{
+                        open: snackBarData.isSnackBarOpen,
+                        autoHideDuration: 2000,
+                        onClose: onSnackbarClose,
+                    }}
+                />
             </div>
         );
     };
