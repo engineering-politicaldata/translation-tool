@@ -416,7 +416,11 @@ function ResourcesPage() {
                 </div>
 
                 <div className='upload-resource-button'>
-                    <UploadSourceButtom title={'Add Resource'} />
+                    {fileUploadProgressState === 1 ? (
+                        <CircularProgress size={'20px'} />
+                    ) : (
+                        <UploadSourceButtom title={'Add Resource'} />
+                    )}
                 </div>
 
                 <div>{resourceListItems}</div>
