@@ -282,7 +282,6 @@ function ResourcesPage() {
                 setFileUploadProgressState(LoadingState.initial);
             }, 1000);
         } catch (error) {
-            // TODO handler error correctly - Toast with - Resource Already exists. Go to resource for updating the content
             openSnackbar({
                 errorMessage: error.message,
                 isSnackBarOpen: true,
