@@ -5,7 +5,7 @@
     "scripts": {
         "init-prepare-commit-message": "cp ./prepare-commit-msg ./.git/hooks",
         "dev": "next dev",
-        "build": "next build",
+        "build": "yarn migration && next build",
         "start": "next start",
         "format-tsx": "prettier --write \"./**/*.tsx\"",
         "format-ts": "prettier --write \"./**/*.ts\"",
