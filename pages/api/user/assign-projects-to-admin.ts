@@ -1,15 +1,11 @@
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler, CustomException, CustomExceptionWithStatus } from '@backend-utils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import {
-    authGuard,
-    CustomErrorHandler,
-    CustomException,
-    CustomExceptionWithStatus,
-    ErrorCodes,
-} from '../../../lib';
-import { corsForPost } from '../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { runMiddleware } from '../../../lib/run-middleware';
-import { AssginProjectsToAdminInput } from '../../../model';
+import { ErrorCodes } from '../../../error-codes';
+import { corsForPost } from '@backend-config';
+import { getClient } from '@database';
+import { runMiddleware } from '../../../lib/middleware/run-middleware';
+import { AssginProjectsToAdminInput } from '@data-model';
 
 async function assignProjectsToAdmin(input: AssginProjectsToAdminInput) {
     if (!input.adminEmail || !input.projectIds?.length) {
@@ -18,7 +14,7 @@ async function assignProjectsToAdmin(input: AssginProjectsToAdminInput) {
             ErrorCodes.INVALID_INPUT_FOR_ASSIGNING_PROJECTS,
         );
     }
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
     const user = await data.pg
         .select('id')
         .from('user')

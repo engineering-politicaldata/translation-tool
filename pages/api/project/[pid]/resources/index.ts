@@ -1,13 +1,14 @@
+import { validateAdminAccessToProject } from '@backend-validations';
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler } from '@backend-utils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler } from '../../../../../lib';
-import { corsForGet } from '../../../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
+import { corsForGet } from '@backend-config';
+import { getClient } from '@database';
 import { Database } from '../../../../../lib/data/PostgresProvider';
-import { runMiddleware } from '../../../../../lib/run-middleware';
-import { validateAdminAccessToProject } from '../../../../../lib/validations';
+import { runMiddleware } from '../../../../../lib/middleware/run-middleware';
 
 async function getResourcesList(projectId: string) {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
 
     const schema = Database.schema;
     const resources = await data.pg.raw(
@@ -30,35 +31,26 @@ async function getResourcesList(projectId: string) {
 
     const resourceIds = resources.rows.map(item => item.id);
 
-    const totalSourceKeys = await data.pg
-        .select(data.pg.raw('count(distinct id)'))
-        .from('key_record as kr')
-        .whereIn('kr.id_resource', resourceIds);
+    let totalSourceKeys = 0;
+    let totalTranslatedKeys = 0;
 
-    const totalTranslatedKeys = await data.pg.raw(
-        `
-        SELECT count(id_key_record) FROM  (
-            SELECT id_key_record, 
-                count(id_key_record) 
-                FROM ${schema}.key_record__translation krt 
-                GROUP BY id_key_record 
-                HAVING count(id_key_record) >= (SELECT count(1) FROM ${schema}.project__language pl WHERE pl.id_project = :projectId) 
-        ) AS x
-    `,
-        { projectId },
-    );
-
-    return {
-        totalResourcesCount: resourceIds.length,
-        totalSourceKeys: Number((totalSourceKeys[0] as any)?.count) || 0,
-        translatedKeysCount: Number(totalTranslatedKeys.rows[0]?.count) || 0, // Total number of translated strings/keys
-        resources: resources.rows?.map(resource => ({
+    const resourceList = resources.rows?.map(resource => {
+        totalSourceKeys = totalSourceKeys + Number(resource.source_key_count) || 0;
+        totalTranslatedKeys = totalTranslatedKeys + Number(resource.translated_key_count) || 0;
+        return {
             id: resource.id,
             created: resource.created,
             sourceName: resource.resource_name,
             totalSourceKeys: Number(resource.source_key_count) || 0,
             translatedKeysCount: Number(resource.translated_key_count) || 0,
-        })),
+        };
+    });
+
+    return {
+        totalResourcesCount: resourceIds.length,
+        totalSourceKeys: totalSourceKeys,
+        translatedKeysCount: totalTranslatedKeys, // Total number of translated strings/keys
+        resources: resourceList,
     };
 }
 export default async function resourcesSummarythandler(

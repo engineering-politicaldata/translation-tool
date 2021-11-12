@@ -83,8 +83,8 @@ function OverviewPage() {
                     <WebsiteHeader title={activeProject.name} description='Overview' />
 
                     <NoDataFoundPage
-                        message={'No Resources Found'}
-                        subText={'Please setup resources for this project'}
+                        message={'No resources found'}
+                        subText={'Please add resources for this project'}
                     >
                         <NextLink href={`/project/${projectId}/resources`}>
                             <Link color='secondary'>Add Resources</Link>

@@ -1,5 +1,5 @@
 import { NextApiResponse } from 'next';
-import { ErrorCodes } from './backend.constants';
+import { ErrorCodes } from '../../error-codes';
 
 export function CustomException(message, errorCode: ErrorCodes) {
     this.message = message;
@@ -24,4 +24,8 @@ export function CustomErrorHandler(res: NextApiResponse<any>, error: any, messag
     res.status(500).json({
         message,
     });
+}
+
+export function joinAndQuote(s: string[]) {
+    return "'" + s.join("','") + "'";
 }

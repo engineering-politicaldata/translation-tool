@@ -1,16 +1,16 @@
 import { KeyRecordTranslation } from 'knex/types/tables';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard } from '../../../../../lib';
-import { corsForPost } from '../../../../../lib/backend.config';
-import { ErrorCodes } from '../../../../../lib/backend.constants';
-import { CustomErrorHandler, CustomException } from '../../../../../lib/backend.utils';
-import DataProvider, { DataClient } from '../../../../../lib/data/DataProvider';
-import { UploadResourcForProjectInput } from '../../../../../model';
-import { runMiddleware } from '../../../../../lib/run-middleware';
-import { validateAdminAccessToProject } from '../../../../../lib/validations';
+import { corsForPost } from '@backend-config';
+import { CustomErrorHandler, CustomException } from '@backend-utils';
+import { getClient } from '@database';
+import { UploadResourceInput } from '@data-model';
+import { runMiddleware } from '../../../../../lib/middleware/run-middleware';
+import { validateAdminAccessToProject } from '@backend-validations';
+import { ErrorCodes } from '../../../../../error-codes';
+import { authGuard } from '@backend-guards';
 
-async function saveResourceData(input: UploadResourcForProjectInput) {
-    const data: DataClient = await DataProvider.client();
+async function saveResourceData(input: UploadResourceInput) {
+    const data = await getClient();
     let resourceData = null;
     await data.pg.transaction(async trx => {
         try {
@@ -63,8 +63,8 @@ async function saveResourceData(input: UploadResourcForProjectInput) {
     return resourceData;
 }
 
-async function verifyIfResourceAlreadyExists(input: UploadResourcForProjectInput) {
-    const data: DataClient = await DataProvider.client();
+async function verifyIfResourceAlreadyExists(input: UploadResourceInput) {
+    const data = await getClient();
     const existingResource = await data.pg
         .select('id')
         .from('resource')

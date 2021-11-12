@@ -1,15 +1,12 @@
+import { getQueryBuilder } from '@database';
 import { Knex } from 'knex';
-
-import PostgresProvider from './PostgresProvider';
 
 export interface DataClient {
     pg: Knex;
 }
 
-export async function client(): Promise<DataClient> {
+export async function getClient(): Promise<DataClient> {
     return {
-        pg: await PostgresProvider.getQueryBuilder(),
+        pg: await getQueryBuilder(),
     };
 }
-
-export default { client };

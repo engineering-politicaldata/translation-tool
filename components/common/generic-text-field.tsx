@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: CustomTheme) => ({
             lineHeight: '18px',
         },
         '& .MuiInputLabel-formControl': {
-            left: '3px',
+            left: '-5px',
         },
         '& .MuiFilledInput-root': {
             background: theme.contrastColor,
@@ -23,14 +23,14 @@ const useStyles = makeStyles((theme: CustomTheme) => ({
         },
 
         '& .MuiFilledInput-input': {
-            paddingLeft: '16px',
+            paddingLeft: '8px',
             paddingRight: '8px',
         },
         '& .MuiFilledInput-multiline': {
             paddingLeft: '0',
         },
         '& .MuiFilledInput-inputMultiline': {
-            paddingLeft: '16px',
+            paddingLeft: '8px',
             paddingRight: '8px',
         },
         '& .MuiFormHelperText-root': {

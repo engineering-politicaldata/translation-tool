@@ -1,12 +1,13 @@
 import { Project } from 'knex/types/tables';
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler } from '@backend-utils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler } from '../../../lib';
-import { corsForGet } from '../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { runMiddleware } from '../../../lib/run-middleware';
+import { corsForGet } from '@backend-config';
+import { getClient } from '@database';
+import { runMiddleware } from '../../../lib/middleware/run-middleware';
 
 async function getProjectsList(userId: string, isSuperAdmin: boolean) {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
     if (isSuperAdmin) {
         return data.pg
             .select('id', 'name', 'description')

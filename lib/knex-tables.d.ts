@@ -1,3 +1,4 @@
+import { knex } from 'knex';
 declare module 'knex/types/tables' {
     interface Project {
         id: string;

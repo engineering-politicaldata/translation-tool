@@ -49,5 +49,3 @@ export async function getQueryBuilder() {
         throw new Error('Unable to connect to Postgres via Knex. Ensure a valid connection.');
     }
 }
-
-export default { getQueryBuilder };
