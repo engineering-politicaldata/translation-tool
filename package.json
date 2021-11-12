@@ -9,7 +9,9 @@
         "start": "next start",
         "format-tsx": "prettier --write \"./**/*.tsx\"",
         "format-ts": "prettier --write \"./**/*.ts\"",
-        "build:analyze": "ANALYZE=true yarn build"
+        "build:analyze": "ANALYZE=true yarn build",
+        "migration": "yarn && knex migrate:latest",
+        "migration:new": "yarn && knex migrate:make $1"
     },
     "dependencies": {
         "@material-ui/core": "^4.11.3",

@@ -56,3 +56,21 @@ yarn init-prepare-commit-message
 
 1. All the api routes also follow smallcase with hypen separated.
 2. Remaining typescript files in backend will follow smallcase
+
+### install knex cli - [Knex Documentation](https://knexjs.org/#Migrations)
+
+```
+npm install knex -g
+```
+
+### run migration
+
+```
+yarn migration
+```
+
+## add new migration
+
+```
+yarn migration:new $migration-name
+```

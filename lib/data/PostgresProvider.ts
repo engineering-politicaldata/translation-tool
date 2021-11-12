@@ -3,7 +3,7 @@ import Knex from 'knex';
 
 export namespace Database {
     export const schema = process.env.DB_SCHEMA || 'translation';
-    export const database = process.env.DB_NAME || 'vc_translation';
+    export const database = process.env.DB_NAME || 'translationtool';
     export const user = process.env.DB_USER || 'postgres';
     export const password = process.env.DB_PASSWORD || 'postgres';
     export const host = process.env.DB_HOST || 'localhost';
@@ -15,6 +15,26 @@ export namespace Database {
 
 let knex = null;
 
+export async function fetchConfiguration() {
+    return {
+        client: 'pg',
+        connection: {
+            user: Database.user,
+            password: Database.password,
+            host: Database.host,
+            port: Database.port,
+            database: Database.database,
+        },
+        pool: {
+            min: Database.poolMin,
+            max: Database.poolMax,
+            idleTimeoutMillis: Database.poolIdle,
+        },
+        acquireConnectionTimeout: 2000,
+        searchPath: [Database.schema],
+        debug: true,
+    };
+}
 /**
  * Initialize a new Postgres provider
  */
@@ -25,24 +45,8 @@ export async function getQueryBuilder() {
             return knex;
         }
         // TODO How should we avoid creating builder everytime - is the following approach ok?
-        knex = Knex({
-            client: 'pg',
-            connection: {
-                user: Database.user,
-                password: Database.password,
-                host: Database.host,
-                port: Database.port,
-                database: Database.database,
-            },
-            pool: {
-                min: Database.poolMin,
-                max: Database.poolMax,
-                idleTimeoutMillis: Database.poolIdle,
-            },
-            acquireConnectionTimeout: 2000,
-            searchPath: [Database.schema],
-            debug: true,
-        });
+        const configuration = await fetchConfiguration();
+        knex = Knex(configuration);
         await knex.raw('SELECT now()');
         return knex;
     } catch (error) {
