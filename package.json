@@ -10,6 +10,7 @@
         "format-tsx": "prettier --write \"./**/*.tsx\"",
         "format-ts": "prettier --write \"./**/*.ts\"",
         "build:analyze": "ANALYZE=true yarn build",
+        "migration-dev": "yarn && knex migrate:latest",
         "migration": "knex migrate:latest",
         "migration:new": "yarn && knex migrate:make $1"
     },

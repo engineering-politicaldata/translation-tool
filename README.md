@@ -63,7 +63,13 @@ yarn init-prepare-commit-message
 npm install knex -g
 ```
 
-### run migration
+### run migration for development
+
+```
+yarn migration-dev
+```
+
+### run migration for production
 
 ```
 yarn migration
@@ -74,3 +80,13 @@ yarn migration
 ```
 yarn migration:new $migration-name
 ```
+
+## Deployment Steps
+
+### yarn install
+
+### yarn migration
+
+### yarn build
+
+### yarn start
