@@ -10,7 +10,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { useRouter } from 'next/router';
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { ResourceSummaryByLanguage } from '../../model';
+import { ResourceSummaryByLanguage } from '@data-model';
 import { GET_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
 
@@ -31,7 +31,6 @@ const ResourceListItemView = styled.div`
                     }
                 }
                 .section-2 {
-                    // margin-right: ${props.theme.spacing(4)}px;
                     display: grid;
                     grid-gap: ${props.theme.spacing(2)}px;
                     text-align: center;
@@ -56,7 +55,7 @@ const options = [
     },
     {
         type: OptionTypes.DOWNLOAD,
-        value: 'Download',
+        value: 'Download File',
     },
     {
         type: OptionTypes.UPDATE,
@@ -100,8 +99,9 @@ const LanguageTranslationListItem = (props: Props) => {
             const url = URL.createObjectURL(blob);
             // Create a new anchor element
             const a = document.createElement('a');
+            const splitName = props.resourceName.split('.');
             a.href = url;
-            a.download = `${props.resourceName}-${item.languageCode}`;
+            a.download = `${splitName[0]}-${item.languageCode}.json`;
             a.click();
             a.remove();
         } catch (error) {}

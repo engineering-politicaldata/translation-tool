@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -23,16 +23,12 @@ const useStyles = makeStyles((theme: CustomTheme) => ({
         flexGrow: 1,
         background: theme.contrastColor,
     },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
     title: {
         flexGrow: 1,
     },
-    menuAppBar: {
-        background: theme.contrastColor,
-    },
+
     logoImage: {
+        marginRight: theme.spacing(2),
         height: '50px',
     },
 }));
@@ -55,26 +51,30 @@ function MenuAppBar() {
     };
 
     const handleClose = async () => {
+        setAnchorEl(null);
+    };
+
+    const handleLogout = async () => {
         await deleteAllCookiesFactory(window)();
         window.location.href = '/auth/login';
     };
 
     return (
-        <div className='menuAppBar'>
-            <CustomAppBar position='static'>
+        <Fragment>
+            <CustomAppBar position='sticky'>
                 <Toolbar>
                     <img
                         className={classes.logoImage}
                         src='/images/logos/pdi_logo_2x.png'
                         onClick={() => router.replace('/')}
                     />
-                    <Typography variant='h6' className={classes.title}>
+                    <Typography variant='subtitle1' className={classes.title}>
                         Translation Tool
                     </Typography>
                     {userToken && (
                         <div>
                             <IconButton
-                                aria-label='account of current user'
+                                aria-label='User account actions'
                                 aria-controls='menu-appbar'
                                 aria-haspopup='true'
                                 onClick={handleMenu}
@@ -85,25 +85,16 @@ function MenuAppBar() {
                             <Menu
                                 id='menu-appbar'
                                 anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
                                 open={open}
                                 onClose={handleClose}
                             >
-                                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
                         </div>
                     )}
                 </Toolbar>
             </CustomAppBar>
-        </div>
+        </Fragment>
     );
 }
 

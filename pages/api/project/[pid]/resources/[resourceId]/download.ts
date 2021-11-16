@@ -1,20 +1,20 @@
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler } from '@backend-utils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler } from '../../../../../../lib';
-import { corsForGet } from '../../../../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../../../../lib/data/DataProvider';
+import { corsForGet } from '@backend-config';
+import { getClient } from '@database';
 import { Database } from '../../../../../../lib/data/PostgresProvider';
-import { runMiddleware } from '../../../../../../lib/run-middleware';
-import { validateAdminAccessToProject } from '../../../../../../lib/validations';
+import { runMiddleware } from '../../../../../../lib/middleware/run-middleware';
+import { validateAdminAccessToProject } from '@backend-validations';
 
 async function downloadResourceAsJSON(resourceId: string, languageId: string) {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
     const schema = Database.schema;
     const { rows } = await data.pg.raw(
         `SELECT json_agg(
-                (
-                    '{
-                        "' || kr."key" || '":"' || krt.value || '"
-                    }'
+                    format('{%s : %s}',
+                    to_json(kr."key"::text), 
+                    to_json(krt.value::text) 
                 )::json
             )
             FROM ${schema}.key_record__translation krt 

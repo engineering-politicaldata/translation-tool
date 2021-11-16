@@ -3,6 +3,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 module.exports = withBundleAnalyzer({
+    target: 'server',
     env: {
         DB_SCHEMA: process.env.DB_SCHEMA,
         DB_NAME: process.env.DB_NAME,
@@ -20,7 +21,12 @@ module.exports = withBundleAnalyzer({
         return [
             {
                 source: '/auth',
-                destination: '/auth/sign-up',
+                destination: '/auth/login',
+                permanent: true,
+            },
+            {
+                source: '/auth/sign-up',
+                destination: '/auth/login',
                 permanent: true,
             },
         ];

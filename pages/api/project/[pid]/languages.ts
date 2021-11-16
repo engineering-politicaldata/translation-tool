@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import DataProvider from '../../../../lib/data/DataProvider';
 import { Database } from '../../../../lib/data/PostgresProvider';
-import { runMiddleware } from '../../../../lib/run-middleware';
-import { corsForGet } from './../../../../lib/backend.config';
+import { runMiddleware } from '../../../../lib/middleware/run-middleware';
+import { corsForGet } from '@backend-config';
 import { ProjectLanguage } from './../../../../model/project';
+import { getClient } from '@database';
 
 async function getProjectLanguages(projectId: string): Promise<ProjectLanguage[]> {
-    const client = await DataProvider.client();
+    const client = await getClient();
     const s = Database.schema;
     const { rows } = await client.pg.raw(
         `

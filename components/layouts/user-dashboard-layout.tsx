@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ProjectListItemInfo } from '../../model';
+import { ProjectListItemInfo } from '@data-model';
 import { GET_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
 import { CustomTheme } from '../../styles/MuiTheme';
@@ -101,15 +101,17 @@ const AccordionSummary = withStyles((theme: CustomTheme) => {
             color: theme.contrastColor,
             backgroundColor: 'rgba(0, 0, 0, .03)',
             borderBottom: '1px solid rgba(255,255,255)',
-            minHeight: 56,
+            minHeight: 45,
             '&$expanded': {
-                minHeight: 56,
+                minHeight: 45,
             },
             alignItems: 'center',
         },
         content: {
+            alignItems: 'center',
+            margin: '8px 0',
             '&$expanded': {
-                margin: '12px 0',
+                margin: '8px 0',
             },
         },
         expanded: {},

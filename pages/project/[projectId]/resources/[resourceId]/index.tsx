@@ -1,15 +1,15 @@
 import {
     Button,
     CircularProgress,
-    Dialog,
     DialogActions,
-    DialogContentText,
     DialogTitle,
     Typography,
     useTheme,
     withStyles,
 } from '@material-ui/core';
+import MuiDialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogContentText from '@material-ui/core/DialogContentText';
 import { Check } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -20,11 +20,7 @@ import LanguageTranslationListItem from '../../../../../components/resource/lang
 import ResourceStatsSection from '../../../../../components/resource/resource-stats-section';
 
 import { privateRoute } from '../../../../../guard';
-import {
-    ResourceSummary,
-    ResourceSummaryByLanguage,
-    UpdateResourceInput,
-} from '../../../../../model';
+import { ResourceSummary, ResourceSummaryByLanguage, UpdateResourceInput } from '@data-model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../../shared/ApiConfig';
 import { LoadingState } from '../../../../../shared/Constants';
 import { apiRequest } from '../../../../../shared/RequestHandler';
@@ -43,15 +39,24 @@ const ResourcePageContainer = styled.div`
         `}
 `;
 
+const Dialog = withStyles(theme => ({
+    root: {},
+}))(MuiDialog);
+
 const DialogContent = withStyles(theme => ({
     root: {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: theme.spacing(6),
+        padding: `${theme.spacing()}px ${theme.spacing(6)}px`,
     },
 }))(MuiDialogContent);
 
+const DialogContentText = withStyles(theme => ({
+    root: {
+        marginBottom: 24,
+    },
+}))(MuiDialogContentText);
 const UploadSourceButtonStyled = styled.div`
     ${props =>
         props.theme &&
@@ -203,14 +208,25 @@ function ResourcePage() {
             setFileUploadProgressState(LoadingState.initial);
         }
     }
+    function getDialogWarningText() {
+        if (!openUpdateDialogForLanguage) {
+            return '';
+        }
+        if (!openUpdateDialogForLanguage.isSourceLanguage) {
+            return [
+                <b key='note'>Note:</b>,
+                ' When you update the source file, the already existing strings will be ignored and only the new strings will be added to be translated.',
+            ];
+        }
+        return [
+            <b key='note'>Note:</b>,
+            'When you update the translations file, only the keys in the source file will be translated.',
+        ];
+    }
     return (
         <UserDashboardLayout>
             <ResourcePageContainer theme={theme}>
-                <WebsiteHeader
-                    title={'Resources'}
-                    description={resourceName}
-                    highlight='description'
-                />
+                <WebsiteHeader title={'Resources'} description={resourceName} />
                 <div className='resource-page-body'>
                     <ResourceStatsSection
                         languageCount={languageTranslationList.length}
@@ -236,9 +252,7 @@ function ResourcePage() {
                     <DialogTitle id='alert-dialog-title'>{'Update Resource'}</DialogTitle>
                     <DialogContent>
                         <DialogContentText id='alert-dialog-description'>
-                            <b>Note:</b> When you update the source file, the already existing
-                            strings will be ignored and only the new strings will be added to be
-                            translated
+                            {getDialogWarningText()}
                         </DialogContentText>
                         {fileUploadProgressState === LoadingState.loading && (
                             <CircularProgress

@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { JWT_SECRET } from 'lib/config';
 import * as sha256 from 'sha256';
-import { JWT_SECRET } from '.';
 export function generateEncrypedPassword(password: string) {
     return bcrypt.hash(sha256(password), 10);
 }

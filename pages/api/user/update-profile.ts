@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler } from '../../../lib';
-import { corsForPost } from '../../../lib/backend.config';
-import { User } from '../../../model';
-import { runMiddleware } from '../../../lib/run-middleware';
+import { User } from '@data-model';
+import { runMiddleware } from '../../../lib/middleware/run-middleware';
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler } from '@backend-utils';
+import { corsForPost } from '@backend-config';
 
 async function saveUserProfile(input: User) {}
 

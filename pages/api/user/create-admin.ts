@@ -1,24 +1,24 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { corsForPost } from '@backend-config';
+import { authGuard } from '@backend-guards';
 import {
-    authGuard,
     CustomErrorHandler,
     CustomException,
     CustomExceptionWithStatus,
-    ErrorCodes,
     generateEncrypedPassword,
-} from '../../../lib';
-import { corsForPost } from '../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../lib/data/DataProvider';
-import { runMiddleware } from '../../../lib/run-middleware';
-import { isEmailValid, isPasswordValid } from '../../../lib/validations';
-import { CreateAdminInput } from '../../../model';
+} from '@backend-utils';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { ErrorCodes } from '../../../error-codes';
+import { getClient } from '@database';
+import { runMiddleware } from '../../../lib/middleware/run-middleware';
+import { isEmailValid, isPasswordValid } from '@backend-validations';
+import { CreateAdminInput } from '@data-model';
 
 function validateCreateAdminInput(email: string, password: string) {
     if (!isEmailValid(email)) {
-        throw new CustomException('Invalid admin email', ErrorCodes.INVALID_PASSWORD);
+        throw new CustomException('Invalid email', ErrorCodes.INVALID_EMAIL);
     }
     if (!isPasswordValid(password, 5)) {
-        throw new CustomException('Invalid admin password', ErrorCodes.INVALID_PASSWORD);
+        throw new CustomException('Invalid password', ErrorCodes.INVALID_PASSWORD);
     }
 }
 
@@ -27,7 +27,7 @@ async function createAdminWithDetails(input: CreateAdminInput) {
     // TODO validate and email is in correct format - Regx
     validateCreateAdminInput(input.email, input.password);
 
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
     const encryptedPassword = await generateEncrypedPassword(input.password);
     const result = await data
         .pg('user')

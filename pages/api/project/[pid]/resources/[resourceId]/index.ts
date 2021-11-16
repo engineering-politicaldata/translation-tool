@@ -1,14 +1,15 @@
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler } from '@backend-utils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler } from '../../../../../../lib';
-import { corsForGet } from '../../../../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../../../../lib/data/DataProvider';
+import { corsForGet } from '@backend-config';
+import { getClient } from '@database';
 import { Database } from '../../../../../../lib/data/PostgresProvider';
-import { runMiddleware } from '../../../../../../lib/run-middleware';
-import { validateAdminAccessToProject } from '../../../../../../lib/validations';
-import { ResourceSummary, ResourceSummaryByLanguage } from '../../../../../../model';
+import { runMiddleware } from '../../../../../../lib/middleware/run-middleware';
+import { validateAdminAccessToProject } from '@backend-validations';
+import { ResourceSummary, ResourceSummaryByLanguage } from '@data-model';
 
 async function getResourceSummary(projectId: string, resourceId: string): Promise<ResourceSummary> {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
     const schema = Database.schema;
     const resource = await data.pg('resource').select('resource_name').first().where({
         id: resourceId,

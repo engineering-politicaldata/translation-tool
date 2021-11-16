@@ -6,7 +6,7 @@ const ResourceContainer = styled.div`
         props.theme &&
         css`
             display: grid;
-            grid-template-columns: 1fr auto auto auto;
+            grid-template-columns: 1fr;
             grid-gap: ${props.theme.spacing(3)}px;
             padding-bottom: ${props.theme.spacing(4)}px;
             border-bottom: 1px solid ${props.theme.grey[300]};
@@ -16,8 +16,8 @@ const ResourceContainer = styled.div`
                 flex: 1;
                 display: flex;
                 justify-content: space-between;
-                border-right: 1px solid ${props.theme.grey[300]};
-                padding-right: ${props.theme.spacing(3)}px;
+                // border-right: 1px solid ${props.theme.grey[300]};
+                // padding-right: ${props.theme.spacing(3)}px;
 
                 .word-count {
                     text-align: right;
@@ -54,7 +54,7 @@ const ResourceStatsSection = (props: Props) => {
                     </Typography>
                 </div>
             </div>
-            <div className='section-2'>
+            {/* <div className='section-2'>
                 <Typography variant='h5'>
                     {props.totalSourceKeys - props.translatedKeysCount}
                 </Typography>
@@ -70,7 +70,7 @@ const ResourceStatsSection = (props: Props) => {
                 <Typography variant='subtitle2' color='inherit'>
                     Translated Keys
                 </Typography>
-            </div>
+            </div> */}
         </ResourceContainer>
     );
 };

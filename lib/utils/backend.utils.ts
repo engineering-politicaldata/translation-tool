@@ -1,5 +1,5 @@
 import { NextApiResponse } from 'next';
-import { ErrorCodes } from './backend.constants';
+import { ErrorCodes } from '../../error-codes';
 
 export function CustomException(message, errorCode: ErrorCodes) {
     this.message = message;

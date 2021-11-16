@@ -1,28 +1,28 @@
+import { authGuard } from '@backend-guards';
+import { CustomErrorHandler, joinAndQuote } from '@backend-utils';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { authGuard, CustomErrorHandler, joinAndQuote } from '../../../../../../lib';
-import { corsForGet } from '../../../../../../lib/backend.config';
-import DataProvider, { DataClient } from '../../../../../../lib/data/DataProvider';
+import { corsForGet } from '@backend-config';
+import { getClient } from '@database';
 import { Database } from '../../../../../../lib/data/PostgresProvider';
-import { runMiddleware } from '../../../../../../lib/run-middleware';
-import { validateAdminAccessToProject } from '../../../../../../lib/validations';
-import { TranslationKeyRecord } from '../../../../../../model';
+import { runMiddleware } from '../../../../../../lib/middleware/run-middleware';
+import { validateAdminAccessToProject } from '@backend-validations';
+import { TranslationKeyRecord } from '@data-model';
 
 async function getTranslationRecords(
     resourceId: string,
     input: { languageIds: string[] },
 ): Promise<TranslationKeyRecord[]> {
-    const data: DataClient = await DataProvider.client();
+    const data = await getClient();
     const schema = Database.schema;
 
     const { rows } = await data.pg.raw(
         `
         select kr.id, kr."key", json_agg(
-            (
-                '{
-                    "languageId":"' || l.id || '",
-                    "value":"' || krt.value  || '"
-                }'
+            format('{"languageId": %s,"value": %s}',
+                to_json(l.id::text), 
+                to_json(krt.value::text) 
             )::json
+            
         ) 
         from ${schema}.key_record__translation krt 
         inner join ${schema}."language" l on krt.id_language = l.id 

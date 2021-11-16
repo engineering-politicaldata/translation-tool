@@ -2,7 +2,7 @@ import { Typography, useTheme } from '@material-ui/core';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { TranslationKeyRecord } from '../../model';
+import { TranslationKeyRecord } from '@data-model';
 import { POST_API_CONFIG } from '../../shared/ApiConfig';
 import { LoadingState } from '../../shared/Constants';
 import { apiRequest } from '../../shared/RequestHandler';
@@ -16,6 +16,7 @@ const KeyRecordRow = styled.div`
             display: flex;
             flex-wrap: wrap;
             align-items: center;
+            align-items: flex-start;
             gap: ${props.theme.spacing(3)}px;
             padding: ${props.theme.spacing(2)}px ${props.theme.spacing(2)}px;
             border-top: 1px solid ${props.theme.grey[300]};
@@ -24,10 +25,14 @@ const KeyRecordRow = styled.div`
             }
             position: relative;
 
+            .source-key-record {
+                flex: 1;
+            }
             .indicator {
                 width: 12px;
                 height: 12px;
                 border-radius: 6px;
+                margin-top: ${props.theme.spacing(2)}px;
                 background-color: ${props.theme.grey[300]};
                 &.checked {
                     background-color: ${props.theme.primary[500]};
@@ -56,6 +61,7 @@ const KeyRecordRow = styled.div`
                 border-left: 4px solid
                     ${props.isTranslated ? props.theme.primary[500] : props.theme.secondary[500]};
                 position: absolute;
+                top: 0;
                 left: -4px;
                 height: 100%;
             }
@@ -144,7 +150,7 @@ const SourceKeyValueList = (props: Props) => {
                 }}
             >
                 <div className={classes}></div>
-                <div>
+                <div className='source-key-record'>
                     <Typography variant={'subtitle2'}>{item.key}</Typography>
                     <Typography variant={'caption'}>{sourceLanguage.value}</Typography>
                 </div>

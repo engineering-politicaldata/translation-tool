@@ -7,7 +7,7 @@ import GenericTextField from '../../../../../components/common/generic-text-fiel
 import SourceKeyValueList from '../../../../../components/translation/source-key-value-list';
 import TargetLanguageSelection from '../../../../../components/translation/target-language-selection';
 import { privateRoute } from '../../../../../guard';
-import { TranslationKeyRecord } from '../../../../../model';
+import { TranslationKeyRecord } from '@data-model';
 import { POST_API_CONFIG } from '../../../../../shared/ApiConfig';
 import { apiRequest } from '../../../../../shared/RequestHandler';
 
