@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
-import SnackBarCustom from '../../../../components/common/SnackBarCustom';
+import SnackBarCustom from '../../../../components/common/snack-bar-custom';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
 import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
 import { privateRoute } from '../../../../guard';
