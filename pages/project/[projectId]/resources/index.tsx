@@ -282,9 +282,9 @@ function ResourcesPage() {
                 setFileUploadProgressState(LoadingState.initial);
             }, 1000);
         } catch (error) {
-            if (error.backendError.errorCode === 'RESOURCE_ALREADY_EXITS') {
+            if (error.errorCode === 'RESOURCE_ALREADY_EXITS') {
                 openSnackbar({
-                    errorMessage: error.backendError.message,
+                    errorMessage: error.message,
                     isSnackBarOpen: true,
                 });
             }
