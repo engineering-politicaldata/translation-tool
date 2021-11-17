@@ -1,4 +1,5 @@
 import { Chip, CircularProgress, LinearProgress, Typography, useTheme } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -418,9 +419,17 @@ function ResourcesPage() {
                 </div>
 
                 <div className='upload-resource-button'>
-                    {fileUploadProgressState === 1 ? (
-                        <CircularProgress size={'20px'} />
-                    ) : (
+                    {fileUploadProgressState === LoadingState.loading && (
+                        <CircularProgress
+                            color='secondary'
+                            size={20}
+                            variant='indeterminate'
+                        ></CircularProgress>
+                    )}
+                    {fileUploadProgressState === LoadingState.success && (
+                        <Check color='secondary' fontSize={'medium'} />
+                    )}
+                    {fileUploadProgressState === LoadingState.initial && (
                         <UploadSourceButtom title={'Add Resource'} />
                     )}
                 </div>
