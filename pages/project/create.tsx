@@ -198,8 +198,8 @@ function CreateProject() {
 
     const onSnackbarClose = () => {
         openSnackbar({
-            ...snackBarData,
             isSnackBarOpen: false,
+            errorMessage: '',
         });
     };
 
