@@ -1,4 +1,5 @@
-import { Button, Typography, useTheme } from '@material-ui/core';
+import { Button, Typography, useTheme, CircularProgress } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
@@ -10,6 +11,7 @@ import { privateRoute } from '../../../../../guard';
 import { TranslationKeyRecord } from '@data-model';
 import { POST_API_CONFIG } from '../../../../../shared/ApiConfig';
 import { apiRequest } from '../../../../../shared/RequestHandler';
+import { LoadingState } from '../../../../../shared/Constants';
 
 const TranslatePageContainer = styled.div`
     ${props =>
@@ -40,10 +42,12 @@ const TranslatePageContainer = styled.div`
                 .translation-form {
                     position: relative;
                     .save-button {
-                        position: absolute;
-                        bottom: ${props.theme.spacing(7)}px;
-                        right: ${props.theme.spacing(1)}px;
+                        bottom: ${props.theme.spacing(4)}px;
+                        left: ${props.theme.spacing(140)}px;
                     }
+                }
+                .source-text-label{
+                    padding: ${props.theme.spacing(2)}px;
                 }
             }
         `}
@@ -59,6 +63,8 @@ const TranslatePage = () => {
     const [selectedKeyRecord, setSelectedKeyRecord] = useState<TranslationKeyRecord>(undefined);
 
     const [translationForm, setTranslationForm] = useState<any>({});
+    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.initial);
+
     useEffect(() => {}, []);
 
     const changeTargetLanguageId = (id: string) => {
@@ -88,6 +94,7 @@ const TranslatePage = () => {
     };
 
     const saveTranslation = async (values: { translationRecord: any }) => {
+        setLoadingState(LoadingState.loading);
         try {
             const data = await apiRequest(
                 `/api/project/${projectId}/resources/${resourceId}/update-key-translation`,
@@ -107,9 +114,11 @@ const TranslatePage = () => {
                     { languageId: targetLanguageId.toString(), value: values.translationRecord },
                 ],
             };
-
+            setLoadingState(LoadingState.success);
             setSelectedKeyRecord(updatedKeyRecord);
-        } catch (error) {}
+        } catch (error) {
+            setLoadingState(LoadingState.initial);
+        }
     };
 
     const getSourceValue = () => {
@@ -142,6 +151,7 @@ const TranslatePage = () => {
                     />
                 </section>
                 <section>
+                    <Typography className='source-text-label'>Source Text </Typography>
                     <div className='source-language-value'>{getSourceValue()} </div>
                     <div className='translation-form'>
                         <Formik
@@ -166,8 +176,11 @@ const TranslatePage = () => {
                                             fieldName={'translationRecord'}
                                             onChange={(field, value, event) => {
                                                 handleChange(event);
+                                                if (loadingState === LoadingState.success) {
+                                                    setLoadingState(LoadingState.initial);
+                                                }
                                             }}
-                                            label={'Translate'}
+                                            label={'Translated'}
                                             error={!!errors.translationRecord}
                                             helperMessage={errors.translationRecord}
                                             textFieldProps={{
@@ -193,7 +206,18 @@ const TranslatePage = () => {
                                             }
                                             onClick={submitForm}
                                         >
-                                            <Typography color='inherit'> Save </Typography>
+                                            <Typography color='inherit'>
+                                                {loadingState === LoadingState.loading && (
+                                                    <CircularProgress
+                                                        color='inherit'
+                                                        size={20}
+                                                        thickness={3}
+                                                        variant='indeterminate'
+                                                    ></CircularProgress>
+                                                )}
+                                                {loadingState === LoadingState.success && <Check />}
+                                                {loadingState === LoadingState.initial && 'Save '}
+                                            </Typography>
                                         </Button>
                                     </Fragment>
                                 );
