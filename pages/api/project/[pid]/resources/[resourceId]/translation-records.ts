@@ -15,7 +15,8 @@ async function getTranslationRecords(
     const data = await getClient();
     const schema = Database.schema;
 
-    const { rows } = await data.pg.raw(
+    //
+    let { rows } = await data.pg.raw(
         `
         select kr.id, kr."key", json_agg(
             format('{"languageId": %s,"value": %s}',
@@ -34,6 +35,24 @@ async function getTranslationRecords(
             resourceId,
         },
     );
+
+    rows.sort(function (a, b) {
+        return Object.keys(a.json_agg).length - Object.keys(b.json_agg).length;
+    });
+
+    rows.sort(function (a, b) {
+        if (Object.keys(a.json_agg).length === 1) {
+            let keyA = a.key.toUpperCase();
+            let keyB = b.key.toUpperCase();
+            if (keyA < keyB) {
+                return -1;
+            }
+            if (keyA > keyB) {
+                return 1;
+            }
+        }
+        return 0;
+    });
 
     return rows.map(row => {
         return {
