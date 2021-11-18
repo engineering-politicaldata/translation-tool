@@ -49,14 +49,14 @@ async function createAdminHandler(req: NextApiRequest, res: NextApiResponse<any>
     }
 
     try {
-        // const { userId, isSuperAdmin } = await authGuard(req);
-        // if (!isSuperAdmin) {
-        //     throw new CustomExceptionWithStatus(
-        //         'Permission denied',
-        //         ErrorCodes.PERMISSION_DENIED,
-        //         403,
-        //     );
-        // }
+        const { userId, isSuperAdmin } = await authGuard(req);
+        if (!isSuperAdmin) {
+            throw new CustomExceptionWithStatus(
+                'Permission denied',
+                ErrorCodes.PERMISSION_DENIED,
+                403,
+            );
+        }
 
         const newAdmin = await createAdminWithDetails({ ...req.body });
 
