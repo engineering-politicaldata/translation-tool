@@ -15,7 +15,6 @@ async function getTranslationRecords(
     const data = await getClient();
     const schema = Database.schema;
 
-    //
     let { rows } = await data.pg.raw(
         `
         select kr.id, kr."key", json_agg(
