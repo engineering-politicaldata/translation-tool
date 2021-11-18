@@ -33,8 +33,8 @@ module.exports = withBundleAnalyzer({
     },
     webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
         if (!isServer) {
-            config.node = {
-                fs: 'empty',
+            config.resolve.fallback = {
+                fs: false,
             };
         }
         return config;
