@@ -5,11 +5,14 @@
     "scripts": {
         "init-prepare-commit-message": "cp ./prepare-commit-msg ./.git/hooks",
         "dev": "next dev",
-        "build": "next build",
+        "build": "yarn migration && next build",
         "start": "next start",
         "format-tsx": "prettier --write \"./**/*.tsx\"",
         "format-ts": "prettier --write \"./**/*.ts\"",
-        "build:analyze": "ANALYZE=true yarn build"
+        "build:analyze": "ANALYZE=true yarn build",
+        "migration-dev": "yarn && knex migrate:latest",
+        "migration": "knex migrate:latest",
+        "migration:new": "yarn && knex migrate:make $1"
     },
     "dependencies": {
         "@material-ui/core": "^4.11.3",

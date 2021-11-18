@@ -208,14 +208,20 @@ function ResourcePage() {
             setFileUploadProgressState(LoadingState.initial);
         }
     }
-    async function getDialogWarningText() {
+    function getDialogWarningText() {
         if (!openUpdateDialogForLanguage) {
             return '';
         }
         if (!openUpdateDialogForLanguage.isSourceLanguage) {
-            return `<b>Note:</b> When you update the source file, the already existing strings will be ignored and only the new strings will be added to be translated.`;
+            return [
+                <b key='note'>Note:</b>,
+                ' When you update the source file, the already existing strings will be ignored and only the new strings will be added to be translated.',
+            ];
         }
-        return `<b>Note:</b> When you update the translations file, only the keys in the source file will be translated.`;
+        return [
+            <b key='note'>Note:</b>,
+            'When you update the translations file, only the keys in the source file will be translated.',
+        ];
     }
     return (
         <UserDashboardLayout>
