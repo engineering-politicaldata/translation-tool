@@ -1,4 +1,4 @@
-import { Chip, CircularProgress, LinearProgress, Typography, useTheme } from '@material-ui/core';
+import { CircularProgress, Typography, useTheme } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -11,7 +11,7 @@ import { UploadResourceInput } from '@data-model';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/ApiConfig';
 import { APPBAR_HEIGHT, LoadingState } from '../../../../shared/Constants';
 import { apiRequest } from '../../../../shared/RequestHandler';
-import { ResourceList } from '../../../../components/resources/resource-list';
+import { ResourceList, ResourceHeader } from '../../../../components/resources/resource-list';
 
 const ProjectResourcesPage = styled.div`
     ${props =>
@@ -282,41 +282,7 @@ function ResourcesPage() {
 
         return (
             <div className='project-resource-page-body'>
-                <div className='resources-summary'>
-                    <div className='section-1'>
-                        <div>
-                            <Typography variant='h5'>
-                                {' '}
-                                {activeProject.totalResourcesCount}{' '}
-                            </Typography>{' '}
-                            <Typography color='inherit'>Resources</Typography>
-                        </div>
-                        <div className='word-count'>
-                            <Typography variant='h5'> {activeProject.totalSourceKeys} </Typography>{' '}
-                            <Typography variant='subtitle2' color='inherit'>
-                                Total Source Keys
-                            </Typography>
-                        </div>
-                    </div>
-                    <div className='section-2'>
-                        <Typography variant='h5'>
-                            {activeProject.totalSourceKeys - activeProject.translatedKeysCount}
-                        </Typography>
-                        <Typography variant='subtitle2' color='inherit'>
-                            Untranslated Keys{' '}
-                        </Typography>
-                    </div>
-                    <div className='section-3'>
-                        <Typography variant='h5'>/ </Typography>
-                    </div>
-                    <div className='section-4'>
-                        <Typography variant='h5'>{activeProject.translatedKeysCount}</Typography>
-                        <Typography variant='subtitle2' color='inherit'>
-                            Translated Keys
-                        </Typography>
-                    </div>
-                </div>
-
+                <ResourceHeader activeProject={activeProject} />
                 <div className='upload-resource-button'>
                     <UploadSourceButtom title={'Add Resource'} />
                 </div>
