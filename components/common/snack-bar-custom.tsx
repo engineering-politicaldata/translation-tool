@@ -10,7 +10,7 @@ const SnackbarContentStyled = withStyles({
 })(SnackbarContent);
 
 interface Props {
-    message: string; // Message tobe displayed
+    message: string; // Message to be displayed
     snackbarProps: SnackbarProps; // additional snackbar properties
     bottomPercent?: number;
 }

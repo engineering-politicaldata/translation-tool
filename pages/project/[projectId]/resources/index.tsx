@@ -1,9 +1,11 @@
 import { Chip, CircularProgress, LinearProgress, Typography, useTheme } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../../../../components/common/no-data-found-page';
 import WebsiteHeader from '../../../../components/common/website-header';
+import SnackBarCustom from '../../../../components/common/snack-bar-custom';
 import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
 import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
 import { privateRoute } from '../../../../guard';
@@ -139,6 +141,11 @@ function ResourcesPage() {
         LoadingState.initial,
     );
 
+    const [snackBarData, openSnackbar] = useState({
+        isSnackBarOpen: false,
+        errorMessage: '',
+    });
+
     const projectListContext = useContext(UserDashboardSummaryContext);
     const { activeProject } = projectListContext;
     const theme = useTheme();
@@ -188,6 +195,13 @@ function ResourcesPage() {
             </UserDashboardLayout>
         );
     }
+
+    const onSnackbarClose = () => {
+        openSnackbar({
+            isSnackBarOpen: false,
+            errorMessage: '',
+        });
+    };
 
     const handleFileSelected = event => {
         try {
@@ -269,8 +283,12 @@ function ResourcesPage() {
                 setFileUploadProgressState(LoadingState.initial);
             }, 1000);
         } catch (error) {
-            // TODO handler error correctly - Toast with - Resource Already exists. Go to resource for updating the content
-            console.log('error', error);
+            if (error.errorCode === 'RESOURCE_ALREADY_EXITS') {
+                openSnackbar({
+                    errorMessage: error.message,
+                    isSnackBarOpen: true,
+                });
+            }
             setFileUploadProgressState(LoadingState.initial);
         }
     }
@@ -401,10 +419,30 @@ function ResourcesPage() {
                 </div>
 
                 <div className='upload-resource-button'>
-                    <UploadSourceButtom title={'Add Resource'} />
+                    {fileUploadProgressState === LoadingState.loading && (
+                        <CircularProgress
+                            color='secondary'
+                            size={20}
+                            variant='indeterminate'
+                        ></CircularProgress>
+                    )}
+                    {fileUploadProgressState === LoadingState.success && (
+                        <Check color='secondary' fontSize={'medium'} />
+                    )}
+                    {fileUploadProgressState === LoadingState.initial && (
+                        <UploadSourceButtom title={'Add Resource'} />
+                    )}
                 </div>
 
                 <div>{resourceListItems}</div>
+                <SnackBarCustom
+                    message={snackBarData.errorMessage}
+                    snackbarProps={{
+                        open: snackBarData.isSnackBarOpen,
+                        autoHideDuration: 2000,
+                        onClose: onSnackbarClose,
+                    }}
+                />
             </div>
         );
     };
