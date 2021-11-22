@@ -19,7 +19,7 @@ import React, { useContext, useState } from 'react';
 import styled, { css } from 'styled-components';
 import useSWR from 'swr';
 import GenericTextField from '../../components/common/generic-text-field';
-import SnackBarCustom from '../../components/common/SnackBarCustom';
+import SnackBarCustom from '../../components/common/snack-bar-custom';
 import WebsiteHeader from '../../components/common/website-header';
 import { UserDashboardSummaryContext } from '../../components/contexts/user-dashboard-summary-provider';
 import { CreateProjectInput, Language } from '@data-model';
@@ -198,8 +198,8 @@ function CreateProject() {
 
     const onSnackbarClose = () => {
         openSnackbar({
-            ...snackBarData,
             isSnackBarOpen: false,
+            errorMessage: '',
         });
     };
 
