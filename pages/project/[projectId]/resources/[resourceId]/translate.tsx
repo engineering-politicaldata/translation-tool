@@ -77,6 +77,7 @@ const TranslatePage = () => {
         setTimeout(() => {
             setSelectedKeyRecord(record);
             setTranslationForm({});
+            setLoadingState(LoadingState.initial);
             if (record) {
                 const targetLanguage = record.translations.find(
                     lang => lang.languageId == targetLanguageId,
@@ -114,8 +115,15 @@ const TranslatePage = () => {
                     { languageId: targetLanguageId.toString(), value: values.translationRecord },
                 ],
             };
+
             setLoadingState(LoadingState.success);
+            setTranslationForm({
+                translationRecord: values.translationRecord,
+            });
             setSelectedKeyRecord(updatedKeyRecord);
+            setTimeout(() => {
+                setLoadingState(LoadingState.initial);
+            }, 1000);
         } catch (error) {
             setLoadingState(LoadingState.initial);
         }
@@ -130,6 +138,8 @@ const TranslatePage = () => {
         );
         return sourceLanguage.value;
     };
+    console.log(LoadingState.loading, 'loading');
+    debugger;
     return (
         <TranslatePageContainer theme={theme}>
             <TargetLanguageSelection
@@ -176,9 +186,6 @@ const TranslatePage = () => {
                                             fieldName={'translationRecord'}
                                             onChange={(field, value, event) => {
                                                 handleChange(event);
-                                                if (loadingState === LoadingState.success) {
-                                                    setLoadingState(LoadingState.initial);
-                                                }
                                             }}
                                             label={'Translated'}
                                             error={!!errors.translationRecord}
@@ -210,12 +217,14 @@ const TranslatePage = () => {
                                                 {loadingState === LoadingState.loading && (
                                                     <CircularProgress
                                                         color='inherit'
-                                                        size={20}
+                                                        size={18}
                                                         thickness={3}
                                                         variant='indeterminate'
                                                     ></CircularProgress>
                                                 )}
-                                                {loadingState === LoadingState.success && <Check />}
+                                                {loadingState === LoadingState.success && (
+                                                    <Check style={{ fontSize: 18 }} />
+                                                )}
                                                 {loadingState === LoadingState.initial && 'Save '}
                                             </Typography>
                                         </Button>
