@@ -1,8 +1,8 @@
-import { Link } from '@material-ui/core';
+import { Link, CircularProgress } from '@material-ui/core';
 import { useTheme } from '@material-ui/styles';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import NoDataFoundPage from '../../../components/common/no-data-found-page';
 import TranslationProgressView from '../../../components/common/translation-progress-view';
@@ -22,6 +22,13 @@ const ProjectOverviewPage = styled.div`
             .project-overview-page-body {
                 flex: 1;
                 padding: ${props.theme.spacing(8)}px;
+
+                .progress {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
             }
         `}
 `;
@@ -32,6 +39,8 @@ function OverviewPage() {
 
     const projectListContext = useContext(UserDashboardSummaryContext);
     const { activeProject } = projectListContext;
+
+    const [isPageReady, setPageReadyState] = useState(false);
 
     async function getProjectResourceSummary(projectId: string) {
         try {
@@ -44,6 +53,8 @@ function OverviewPage() {
                 ...activeProject,
                 ...resourceSummary,
             });
+
+            setPageReadyState(true);
         } catch (error) {
             console.log(error);
             // TODO handle error correctly
@@ -64,6 +75,22 @@ function OverviewPage() {
         //     //update active project in context
         // }
     }, [activeProject]);
+
+    if (!activeProject || !isPageReady) {
+        debugger;
+        return (
+            <UserDashboardLayout>
+                <ProjectOverviewPage theme={theme}>
+                    <WebsiteHeader title='Loading...' description='Overview' />
+                    <div className='project-overview-page-body'>
+                        <div className='progress'>
+                            <CircularProgress size={'80px'} />
+                        </div>
+                    </div>
+                </ProjectOverviewPage>
+            </UserDashboardLayout>
+        );
+    }
 
     if (!activeProject) {
         return (
