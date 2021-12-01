@@ -1,4 +1,5 @@
-import { Button, Typography, useTheme } from '@material-ui/core';
+import { Button, Typography, useTheme, CircularProgress, Box } from '@material-ui/core';
+import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { Fragment, useEffect, useState } from 'react';
@@ -10,6 +11,7 @@ import { privateRoute } from '../../../../../guard';
 import { TranslationKeyRecord } from '@data-model';
 import { POST_API_CONFIG } from '../../../../../shared/ApiConfig';
 import { apiRequest } from '../../../../../shared/RequestHandler';
+import { LoadingState } from '../../../../../shared/Constants';
 
 const TranslatePageContainer = styled.div`
     ${props =>
@@ -39,11 +41,12 @@ const TranslatePageContainer = styled.div`
                 }
                 .translation-form {
                     position: relative;
-                    .save-button {
-                        position: absolute;
-                        bottom: ${props.theme.spacing(7)}px;
-                        right: ${props.theme.spacing(1)}px;
-                    }
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                }
+                .source-text-label{
+                    padding: ${props.theme.spacing(2)}px;
                 }
             }
         `}
@@ -59,6 +62,8 @@ const TranslatePage = () => {
     const [selectedKeyRecord, setSelectedKeyRecord] = useState<TranslationKeyRecord>(undefined);
 
     const [translationForm, setTranslationForm] = useState<any>({});
+    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.initial);
+
     useEffect(() => {}, []);
 
     const changeTargetLanguageId = (id: string) => {
@@ -71,6 +76,7 @@ const TranslatePage = () => {
         setTimeout(() => {
             setSelectedKeyRecord(record);
             setTranslationForm({});
+            setLoadingState(LoadingState.initial);
             if (record) {
                 const targetLanguage = record.translations.find(
                     lang => lang.languageId == targetLanguageId,
@@ -88,6 +94,7 @@ const TranslatePage = () => {
     };
 
     const saveTranslation = async (values: { translationRecord: any }) => {
+        setLoadingState(LoadingState.loading);
         try {
             const data = await apiRequest(
                 `/api/project/${projectId}/resources/${resourceId}/update-key-translation`,
@@ -108,8 +115,17 @@ const TranslatePage = () => {
                 ],
             };
 
+            setLoadingState(LoadingState.success);
+            setTranslationForm({
+                translationRecord: values.translationRecord,
+            });
             setSelectedKeyRecord(updatedKeyRecord);
-        } catch (error) {}
+            setTimeout(() => {
+                setLoadingState(LoadingState.initial);
+            }, 1000);
+        } catch (error) {
+            setLoadingState(LoadingState.initial);
+        }
     };
 
     const getSourceValue = () => {
@@ -142,6 +158,7 @@ const TranslatePage = () => {
                     />
                 </section>
                 <section>
+                    <Typography className='source-text-label'>Source Text </Typography>
                     <div className='source-language-value'>{getSourceValue()} </div>
                     <div className='translation-form'>
                         <Formik
@@ -159,33 +176,34 @@ const TranslatePage = () => {
                             }) => {
                                 return (
                                     <Fragment>
-                                        <GenericTextField
-                                            key={'translationRecord'}
-                                            defaultValue={values['translationRecord']}
-                                            isControlledField={true}
-                                            fieldName={'translationRecord'}
-                                            onChange={(field, value, event) => {
-                                                handleChange(event);
-                                            }}
-                                            label={'Translate'}
-                                            error={!!errors.translationRecord}
-                                            helperMessage={errors.translationRecord}
-                                            textFieldProps={{
-                                                placeholder: 'Type your translation here',
-                                                multiline: true,
-                                                type: 'text',
-                                                maxRows: 5,
-                                                minRows: 5,
-                                                focused: true,
-                                                autoFocus: true,
-                                            }}
-                                        />
+                                        <Box width={'100%'}>
+                                            <GenericTextField
+                                                key={'translationRecord'}
+                                                defaultValue={values['translationRecord']}
+                                                isControlledField={true}
+                                                fieldName={'translationRecord'}
+                                                onChange={(field, value, event) => {
+                                                    handleChange(event);
+                                                }}
+                                                label={'Translated'}
+                                                error={!!errors.translationRecord}
+                                                helperMessage={errors.translationRecord}
+                                                textFieldProps={{
+                                                    placeholder: 'Type your translation here',
+                                                    multiline: true,
+                                                    type: 'text',
+                                                    maxRows: 5,
+                                                    minRows: 5,
+                                                    focused: true,
+                                                    autoFocus: true,
+                                                }}
+                                            />
+                                        </Box>
                                         <Button
                                             size='small'
                                             color='secondary'
                                             disableElevation
                                             variant='contained'
-                                            className='save-button'
                                             disabled={
                                                 !dirty ||
                                                 initialValues['translationRecord'] ===
@@ -193,7 +211,20 @@ const TranslatePage = () => {
                                             }
                                             onClick={submitForm}
                                         >
-                                            <Typography color='inherit'> Save </Typography>
+                                            <Typography color='inherit'>
+                                                {loadingState === LoadingState.loading && (
+                                                    <CircularProgress
+                                                        color='inherit'
+                                                        size={18}
+                                                        thickness={3}
+                                                        variant='indeterminate'
+                                                    ></CircularProgress>
+                                                )}
+                                                {loadingState === LoadingState.success && (
+                                                    <Check style={{ fontSize: 18 }} />
+                                                )}
+                                                {loadingState === LoadingState.initial && 'Save '}
+                                            </Typography>
                                         </Button>
                                     </Fragment>
                                 );
