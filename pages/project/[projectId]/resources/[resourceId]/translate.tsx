@@ -1,4 +1,4 @@
-import { Button, Typography, useTheme, CircularProgress } from '@material-ui/core';
+import { Button, Typography, useTheme, CircularProgress, Box } from '@material-ui/core';
 import { Check } from '@material-ui/icons';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
@@ -41,10 +41,9 @@ const TranslatePageContainer = styled.div`
                 }
                 .translation-form {
                     position: relative;
-                    .save-button {
-                        bottom: ${props.theme.spacing(4)}px;
-                        left: ${props.theme.spacing(140)}px;
-                    }
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
                 }
                 .source-text-label{
                     padding: ${props.theme.spacing(2)}px;
@@ -138,8 +137,6 @@ const TranslatePage = () => {
         );
         return sourceLanguage.value;
     };
-    console.log(LoadingState.loading, 'loading');
-    debugger;
     return (
         <TranslatePageContainer theme={theme}>
             <TargetLanguageSelection
@@ -179,33 +176,34 @@ const TranslatePage = () => {
                             }) => {
                                 return (
                                     <Fragment>
-                                        <GenericTextField
-                                            key={'translationRecord'}
-                                            defaultValue={values['translationRecord']}
-                                            isControlledField={true}
-                                            fieldName={'translationRecord'}
-                                            onChange={(field, value, event) => {
-                                                handleChange(event);
-                                            }}
-                                            label={'Translated'}
-                                            error={!!errors.translationRecord}
-                                            helperMessage={errors.translationRecord}
-                                            textFieldProps={{
-                                                placeholder: 'Type your translation here',
-                                                multiline: true,
-                                                type: 'text',
-                                                maxRows: 5,
-                                                minRows: 5,
-                                                focused: true,
-                                                autoFocus: true,
-                                            }}
-                                        />
+                                        <Box width={'100%'}>
+                                            <GenericTextField
+                                                key={'translationRecord'}
+                                                defaultValue={values['translationRecord']}
+                                                isControlledField={true}
+                                                fieldName={'translationRecord'}
+                                                onChange={(field, value, event) => {
+                                                    handleChange(event);
+                                                }}
+                                                label={'Translated'}
+                                                error={!!errors.translationRecord}
+                                                helperMessage={errors.translationRecord}
+                                                textFieldProps={{
+                                                    placeholder: 'Type your translation here',
+                                                    multiline: true,
+                                                    type: 'text',
+                                                    maxRows: 5,
+                                                    minRows: 5,
+                                                    focused: true,
+                                                    autoFocus: true,
+                                                }}
+                                            />
+                                        </Box>
                                         <Button
                                             size='small'
                                             color='secondary'
                                             disableElevation
                                             variant='contained'
-                                            className='save-button'
                                             disabled={
                                                 !dirty ||
                                                 initialValues['translationRecord'] ===
