@@ -1,4 +1,4 @@
-import { Typography, useTheme } from '@material-ui/core';
+import { Typography, useTheme, CircularProgress } from '@material-ui/core';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
@@ -129,7 +129,13 @@ const SourceKeyValueList = (props: Props) => {
     }
 
     if (loadingState == LoadingState.loading || !props.selectedKeyRecord) {
-        return <div>loading</div>;
+        return (
+            <div className='key-record-row'>
+                <div className='progress'>
+                    <CircularProgress size={'80px'} />
+                </div>
+            </div>
+        );
     }
 
     const listView = keyRecordList.map((item, index) => {
