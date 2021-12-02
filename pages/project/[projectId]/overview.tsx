@@ -56,7 +56,7 @@ function OverviewPage() {
 
             setPageReadyState(true);
         } catch (error) {
-            setPageReadyState(true);
+            setPageReadyState(false);
             console.log(error);
             // TODO handle error correctly
         }

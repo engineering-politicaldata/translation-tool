@@ -7,7 +7,12 @@ import { POST_API_CONFIG } from '../../shared/ApiConfig';
 import { LoadingState } from '../../shared/Constants';
 import { apiRequest } from '../../shared/RequestHandler';
 
-const KeyRecordListView = styled.div``;
+const KeyRecordListView = styled.div`
+    .progress {
+        display: flex;
+        justify-content: center;
+    }
+`;
 
 const KeyRecordRow = styled.div`
     ${props =>
@@ -130,11 +135,11 @@ const SourceKeyValueList = (props: Props) => {
 
     if (loadingState == LoadingState.loading || !props.selectedKeyRecord) {
         return (
-            <div className='key-record-row'>
+            <KeyRecordListView>
                 <div className='progress'>
-                    <CircularProgress size={'80px'} />
+                    <CircularProgress size={'40px'} />
                 </div>
-            </div>
+            </KeyRecordListView>
         );
     }
 
