@@ -40,7 +40,7 @@ function OverviewPage() {
     const projectListContext = useContext(UserDashboardSummaryContext);
     const { activeProject } = projectListContext;
 
-    const [isPageReady, setPageReadyState] = useState(false);
+    const [isPageReady, setPageReadyState] = useState(!!activeProject && !!activeProject.resources);
 
     async function getProjectResourceSummary(projectId: string) {
         try {
@@ -69,6 +69,7 @@ function OverviewPage() {
 
         if (activeProject.resources === undefined) {
             getProjectResourceSummary(activeProject.id);
+            return;
         }
         // if (!activeProject.totalSourceKeys) {
         //     //TODO api call to get project translation summary
@@ -78,14 +79,13 @@ function OverviewPage() {
     }, [activeProject]);
 
     if (!activeProject || !isPageReady) {
-        debugger;
         return (
             <UserDashboardLayout>
                 <ProjectOverviewPage theme={theme}>
                     <WebsiteHeader title='Loading...' description='Overview' />
                     <div className='project-overview-page-body'>
                         <div className='progress'>
-                            <CircularProgress size={'80px'} />
+                            <CircularProgress size={'60px'} />
                         </div>
                     </div>
                 </ProjectOverviewPage>

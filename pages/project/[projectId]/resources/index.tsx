@@ -3,17 +3,18 @@ import { Check } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
-import NoDataFoundPage from '../../../../components/common/no-data-found-page';
-import WebsiteHeader from '../../../../components/common/website-header';
-import SnackBarCustom from '../../../../components/common/snack-bar-custom';
-import { UserDashboardSummaryContext } from '../../../../components/contexts/user-dashboard-summary-provider';
-import UserDashboardLayout from '../../../../components/layouts/user-dashboard-layout';
-import { privateRoute } from '../../../../guard';
+import NoDataFoundPage from 'components/common/no-data-found-page';
+import WebsiteHeader from 'components/common/website-header';
+import SnackBarCustom from 'components/common/snack-bar-custom';
+import { UserDashboardSummaryContext } from 'components/contexts/user-dashboard-summary-provider';
+import UserDashboardLayout from 'components/layouts/user-dashboard-layout';
+import { privateRoute } from 'guard';
 import { UploadResourceInput } from '@data-model';
-import { GET_API_CONFIG, POST_API_CONFIG } from '../../../../shared/ApiConfig';
-import { APPBAR_HEIGHT, LoadingState } from '../../../../shared/Constants';
-import { apiRequest } from '../../../../shared/RequestHandler';
-import { ResourceList, ResourceHeader } from '../../../../components/resources/resource-list';
+import { GET_API_CONFIG, POST_API_CONFIG } from 'shared/ApiConfig';
+import { APPBAR_HEIGHT, LoadingState } from 'shared/Constants';
+import { apiRequest } from 'shared/RequestHandler';
+import ResourcesSummary from 'components/resources/resources-summary';
+import ResourceList from 'components/resources/resource-list';
 
 const ProjectResourcesPage = styled.div`
     ${props =>
@@ -29,33 +30,6 @@ const ProjectResourcesPage = styled.div`
                 .upload-resource-button {
                     padding: ${props.theme.spacing(8)}px;
                     text-align: center;
-                }
-                .resources-summary {
-                    display: grid;
-                    grid-template-columns: 1fr auto auto auto;
-                    grid-gap: ${props.theme.spacing(3)}px;
-                    padding-bottom: ${props.theme.spacing(4)}px;
-                    border-bottom: 1px solid ${props.theme.grey[300]};
-                    color: ${props.theme.grey[500]};
-
-                    .section-1 {
-                        flex: 1;
-                        display: flex;
-                        justify-content: space-between;
-                        border-right: 1px solid ${props.theme.grey[300]};
-                        padding-right: ${props.theme.spacing(3)}px;
-
-                        .word-count {
-                            text-align: right;
-                        }
-                    }
-                    .section-2 {
-                        text-align: right;
-                    }
-                    .section-3 {
-                    }
-                    .section-4 {
-                    }
                 }
             }
 
@@ -144,7 +118,7 @@ function ResourcesPage() {
                     message={'Loading project information '}
                     subText={'please wait...'}
                 >
-                    <CircularProgress size={'80px'} />
+                    <CircularProgress size={'60px'} />
                 </NoDataFoundPage>
             </UserDashboardLayout>
         );
@@ -246,7 +220,7 @@ function ResourcesPage() {
             setFileUploadProgressState(LoadingState.success);
             setTimeout(() => {
                 setFileUploadProgressState(LoadingState.initial);
-            }, 1000);
+            }, 500);
         } catch (error) {
             if (error.errorCode === 'RESOURCE_ALREADY_EXITS') {
                 openSnackbar({
@@ -294,13 +268,17 @@ function ResourcesPage() {
             const translationPercentage =
                 (resource.translatedKeysCount / resource.totalSourceKeys) * 100;
             return (
-                <ResourceList resource={resource} translationPercentage={translationPercentage} />
+                <ResourceList
+                    key={resource.id}
+                    resource={resource}
+                    translationPercentage={translationPercentage}
+                />
             );
         });
 
         return (
             <div className='project-resource-page-body'>
-                <ResourceHeader activeProject={activeProject} />
+                <ResourcesSummary activeProject={activeProject} />
                 <div className='upload-resource-button'>
                     {fileUploadProgressState === LoadingState.loading && (
                         <CircularProgress

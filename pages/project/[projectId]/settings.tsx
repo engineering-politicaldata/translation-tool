@@ -85,7 +85,7 @@ function ProjectSettingsPage(props: Props) {
                     projectDescription: activeProject.description,
                 });
                 setPageReadyState(true);
-            }, 500);
+            }, 250);
         }
     }, [activeProject]);
 
@@ -122,7 +122,7 @@ function ProjectSettingsPage(props: Props) {
                     inProgress: false,
                     complete: true,
                 });
-            }, 1000);
+            }, 500);
 
             setTimeout(() => {
                 setSpinnerState({
@@ -134,7 +134,7 @@ function ProjectSettingsPage(props: Props) {
                     name: values.projectName,
                     description: values.projectDescription,
                 });
-            }, 3000);
+            }, 1000);
         } catch (error) {
             // handle project name exists error
             setTimeout(() => {
@@ -168,7 +168,7 @@ function ProjectSettingsPage(props: Props) {
                     <WebsiteHeader title='Loading...' description='Settings' />
                     <div className='project-settings-body'>
                         <div className='progress'>
-                            <CircularProgress size={'80px'} />
+                            <CircularProgress size={'60px'} />
                         </div>
                     </div>
                 </ProjectSettingsComponent>

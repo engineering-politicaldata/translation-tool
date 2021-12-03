@@ -39,44 +39,7 @@ const ResourceListItemView = styled.div`
         `}
 `;
 
-export const ResourceHeader = props => {
-    const { activeProject } = props;
-    return (
-        <div className='resources-summary'>
-            <div className='section-1'>
-                <div>
-                    <Typography variant='h5'> {activeProject.totalResourcesCount} </Typography>{' '}
-                    <Typography color='inherit'>Resources</Typography>
-                </div>
-                <div className='word-count'>
-                    <Typography variant='h5'> {activeProject.totalSourceKeys} </Typography>{' '}
-                    <Typography variant='subtitle2' color='inherit'>
-                        Total Source Keys
-                    </Typography>
-                </div>
-            </div>
-            <div className='section-2'>
-                <Typography variant='h5'>
-                    {activeProject.totalSourceKeys - activeProject.translatedKeysCount}
-                </Typography>
-                <Typography variant='subtitle2' color='inherit'>
-                    Untranslated Keys{' '}
-                </Typography>
-            </div>
-            <div className='section-3'>
-                <Typography variant='h5'>/ </Typography>
-            </div>
-            <div className='section-4'>
-                <Typography variant='h5'>{activeProject.translatedKeysCount}</Typography>
-                <Typography variant='subtitle2' color='inherit'>
-                    Translated Keys
-                </Typography>
-            </div>
-        </div>
-    );
-};
-
-export const ResourceList = (props: any) => {
+const ResourceList = (props: any) => {
     const theme = useTheme();
     const router = useRouter();
     const { resource, translationPercentage } = props;
@@ -89,11 +52,7 @@ export const ResourceList = (props: any) => {
     };
 
     return (
-        <ResourceListItemView
-            key={resource.id}
-            theme={theme}
-            onClick={() => handleResourceItemClick(resource.id)}
-        >
+        <ResourceListItemView theme={theme} onClick={() => handleResourceItemClick(resource.id)}>
             <div className='resource-item-stats'>
                 <div className='section-1'>
                     <Typography variant='subtitle1'>
@@ -134,3 +93,5 @@ export const ResourceList = (props: any) => {
         </ResourceListItemView>
     );
 };
+
+export default ResourceList;

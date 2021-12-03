@@ -202,7 +202,7 @@ function ResourcePage() {
                     getResourceSummary();
                 }
                 handleCloseOfUpdateResourceDialog();
-            }, 1000);
+            }, 500);
         } catch (error) {
             console.log('error', error);
             setFileUploadProgressState(LoadingState.initial);

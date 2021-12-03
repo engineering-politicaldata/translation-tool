@@ -44,6 +44,10 @@ const TranslatePageContainer = styled.div`
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
+
+                    .btn-save-translation {
+                        height: 32px;
+                    }
                 }
                 .source-text-label{
                     padding: ${props.theme.spacing(2)}px;
@@ -122,7 +126,7 @@ const TranslatePage = () => {
             setSelectedKeyRecord(updatedKeyRecord);
             setTimeout(() => {
                 setLoadingState(LoadingState.initial);
-            }, 1000);
+            }, 500);
         } catch (error) {
             setLoadingState(LoadingState.initial);
         }
@@ -200,6 +204,7 @@ const TranslatePage = () => {
                                             />
                                         </Box>
                                         <Button
+                                            className='btn-save-translation'
                                             size='small'
                                             color='secondary'
                                             disableElevation
@@ -211,20 +216,20 @@ const TranslatePage = () => {
                                             }
                                             onClick={submitForm}
                                         >
-                                            <Typography color='inherit'>
-                                                {loadingState === LoadingState.loading && (
-                                                    <CircularProgress
-                                                        color='inherit'
-                                                        size={18}
-                                                        thickness={3}
-                                                        variant='indeterminate'
-                                                    ></CircularProgress>
-                                                )}
-                                                {loadingState === LoadingState.success && (
-                                                    <Check style={{ fontSize: 18 }} />
-                                                )}
-                                                {loadingState === LoadingState.initial && 'Save '}
-                                            </Typography>
+                                            {loadingState === LoadingState.loading && (
+                                                <CircularProgress
+                                                    color='inherit'
+                                                    size={18}
+                                                    thickness={3}
+                                                    variant='indeterminate'
+                                                ></CircularProgress>
+                                            )}
+                                            {loadingState === LoadingState.success && (
+                                                <Check style={{ fontSize: 18 }} />
+                                            )}
+                                            {loadingState === LoadingState.initial && (
+                                                <Typography color='inherit'>Save </Typography>
+                                            )}
                                         </Button>
                                     </Fragment>
                                 );

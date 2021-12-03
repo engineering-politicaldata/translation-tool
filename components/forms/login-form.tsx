@@ -79,7 +79,7 @@ export const LoginForm = () => {
                 router.replace({
                     pathname: APP_ROUTES.LANDING,
                 });
-            }, 500);
+            }, 250);
         } catch (error) {
             console.log(error);
             setApiError(error);
@@ -92,7 +92,7 @@ export const LoginForm = () => {
     };
 
     const handleFormChange = (fieldName: string, value: string) => {
-        if (loadingState === LoadingState.success) {
+        if (loadingState !== LoadingState.initial) {
             setLoadingState(LoadingState.initial);
         }
         if (apiError) {

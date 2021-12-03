@@ -26,7 +26,8 @@ import { CreateProjectInput, Language } from '@data-model';
 import { privateRoute } from '../../guard';
 import { GET_API_CONFIG, POST_API_CONFIG } from '../../shared/ApiConfig';
 import { apiRequest } from '../../shared/RequestHandler';
-import { APPBAR_HEIGHT } from '../../shared/Constants';
+import { APPBAR_HEIGHT, LoadingState } from '../../shared/Constants';
+import { Check } from '@material-ui/icons';
 
 const CreateProjectComponent = styled.div`
     ${props =>
@@ -78,6 +79,7 @@ const CreateProjectComponent = styled.div`
                     }
                     .create-project-button {
                         width: 120px;
+                        height: 32px;
                     }
                 }
             }
@@ -140,6 +142,8 @@ function CreateProject() {
         errorMessage: '',
     });
 
+    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.initial);
+
     const router = useRouter();
     const theme = useTheme();
     const classes = useStyles();
@@ -171,7 +175,7 @@ function CreateProject() {
                 <div className='create-project-container'>
                     <WebsiteHeader title={'Add New Project'} description={''} />
                     <div className='progress'>
-                        <CircularProgress size={'80px'} />
+                        <CircularProgress size={'60px'} />
                     </div>
                 </div>
             </CreateProjectComponent>
@@ -191,6 +195,9 @@ function CreateProject() {
     }
 
     const handleFormChange = (fieldName: string, value: string) => {
+        if (loadingState !== LoadingState.initial) {
+            setLoadingState(LoadingState.initial);
+        }
         let newState: any = {};
         newState[fieldName] = value;
         setProjectData({ ...projectData, ...newState });
@@ -210,6 +217,7 @@ function CreateProject() {
             sourceLanguageId: values.sourceLanguage.id,
             targetLanguageIds: values.targetLanguages,
         };
+        setLoadingState(LoadingState.loading);
 
         try {
             const data: { id: string } = await apiRequest('/api/project/create', {
@@ -222,10 +230,13 @@ function CreateProject() {
                 name: input.name,
                 description: input.description,
             });
-
-            // redirect to project page
-            router.replace(`/project/${data.id}/resources`);
+            setLoadingState(LoadingState.success);
+            setTimeout(() => {
+                // redirect to project page
+                router.replace(`/project/${data.id}/resources`);
+            }, 250);
         } catch (err) {
+            setLoadingState(LoadingState.initial);
             openSnackbar({
                 errorMessage: err.message,
                 isSnackBarOpen: true,
@@ -403,7 +414,18 @@ function CreateProject() {
                                     onClick={submitForm}
                                     disableElevation
                                 >
-                                    <Typography color={'inherit'}>create</Typography>
+                                    {loadingState === LoadingState.loading && (
+                                        <CircularProgress
+                                            color='inherit'
+                                            size={20}
+                                            thickness={3}
+                                            variant='indeterminate'
+                                        ></CircularProgress>
+                                    )}
+                                    {loadingState === LoadingState.success && <Check />}
+                                    {loadingState === LoadingState.initial && (
+                                        <Typography color={'inherit'}>create</Typography>
+                                    )}
                                 </Button>
                             </div>
                         </div>
